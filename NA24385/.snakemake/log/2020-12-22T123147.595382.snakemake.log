@@ -1,5 +1,0 @@
-Building DAG of jobs...
-MissingInputException in line 7 of /home/davide/EViNCe/NA24385/Snakefile:
-Missing input files for rule minimap2_map:
-data2/GM24385_2.fastq.gz
-data2/GM24385_3.fastq.gz

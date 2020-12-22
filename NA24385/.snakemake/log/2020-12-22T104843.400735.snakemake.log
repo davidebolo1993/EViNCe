@@ -1,3 +1,0 @@
-NameError in line 8 of /home/davide/EViNCe/NA24385/Snakefile:
-name 'sample' is not defined
-  File "/home/davide/EViNCe/NA24385/Snakefile", line 8, in <module>

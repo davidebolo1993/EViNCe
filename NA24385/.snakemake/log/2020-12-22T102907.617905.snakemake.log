@@ -1,4 +1,0 @@
-Building DAG of jobs...
-WildcardError in line 4 of /home/davide/EViNCe/NA24385/Snakefile:
-Wildcards in input files cannot be determined from output files:
-'sample'
