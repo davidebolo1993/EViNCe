@@ -1,0 +1,35 @@
+FLOWCELLS=[1,2,3]
+
+rule all:
+    input:
+        expand("alignments/GM24385.{aligner}.srt.bam.bai",aligner=['minimap2','ngmlr'])
+
+rule minimap2_map:
+    input:
+        "data/hs37d5.fa.gz",
+        expand("data/GM24385_{flowcell}.fastq.gz",flowcell=FLOWCELLS)
+    output:
+        "alignments/GM24385.minimap2.srt.bam"
+    threads: 7
+    params:
+        rg=r"'@RG\tID:nanopore\tSM:GM24385'"
+    shell:
+        "minimap2 -ax map-ont --MD -Y --sam-hit-only -t {threads} -R {params.rg} {input} | samtools sort -o {output}"
+
+rule ngmlr_map:
+    input:
+        ref="data/hs37d5.fa.gz",
+        fq=expand("data/GM24385_{flowcell}.fastq.gz",flowcell=FLOWCELLS)
+    output:
+        "alignments/GM24385.ngmlr.srt.bam"
+    threads:7
+    shell:
+        "zcat {input.fq} | ngmlr -r {input.ref} -x ont -t {threads} --rg-id nanopore --rg-sm GM24385 | samtools sort -o {output}"
+
+rule samtools_index:
+    input:
+        expand("alignments/GM24385.{aligner}.srt.bam",aligner=['minimap2','ngmlr']) 
+    output:
+        expand("alignments/GM24385.{aligner}.srt.bam.bai",aligner=['minimap2','ngmlr'])       
+    shell:
+        "ls {input} | xargs -n1 -P7 samtools index"

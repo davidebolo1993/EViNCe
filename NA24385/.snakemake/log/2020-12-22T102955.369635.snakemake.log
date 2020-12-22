@@ -1,0 +1,3 @@
+WildcardError in line 8 of /home/davide/EViNCe/NA24385/Snakefile:
+No values given for wildcard 'sample'.
+  File "/home/davide/EViNCe/NA24385/Snakefile", line 8, in <module>

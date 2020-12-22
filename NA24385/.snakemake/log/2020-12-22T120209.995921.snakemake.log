@@ -1,0 +1,32 @@
+Building DAG of jobs...
+Job counts:
+	count	jobs
+	1	minimap2_map
+	1	ngmlr_map
+	2
+
+[Tue Dec 22 12:02:10 2020]
+rule minimap2_map:
+    input: data/hs37d5.fa.gz, data/GM24385_1.fastq.gz, data/GM24385_2.fastq.gz, data/GM24385_3.fastq.gz
+    output: alignments/GM24385.minimap2.srt.bam
+    jobid: 0
+    wildcards: sample=GM24385
+    threads: 7
+
+minimap2 -ax map-ont --MD -Y --sam-hit-only -t 7 -R @RG\tID:nanopore\tSM:GM24385 data/hs37d5.fa.gz data/GM24385_1.fastq.gz data/GM24385_2.fastq.gz data/GM24385_3.fastq.gz | samtools sort -@ 7 -o alignments/GM24385.minimap2.srt.bam
+
+[Tue Dec 22 12:02:10 2020]
+rule ngmlr_map:
+    input: data/hs37d5.fa.gz
+    output: alignments/GM24385.ngmlr.srt.bam
+    jobid: 1
+    wildcards: sample=GM24385
+    threads: 7
+
+RuleException in line 19 of /home/davide/EViNCe/NA24385/Snakefile:
+'InputFiles' object has no attribute 'fq'
+  File "/home/davide/py3env/lib/python3.8/site-packages/snakemake/executors/__init__.py", line 131, in run_jobs
+  File "/home/davide/py3env/lib/python3.8/site-packages/snakemake/executors/__init__.py", line 140, in run
+  File "/home/davide/py3env/lib/python3.8/site-packages/snakemake/executors/__init__.py", line 151, in _run
+  File "/home/davide/py3env/lib/python3.8/site-packages/snakemake/executors/__init__.py", line 171, in printjob
+  File "/home/davide/py3env/lib/python3.8/site-packages/snakemake/executors/__init__.py", line 157, in printjob
