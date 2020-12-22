@@ -1,16 +1,18 @@
 # NA24385
 
-Oxford Nanopore PromethION ultra long reads of the Ashkenazim son [HG002/NA24385](ftp://ftp.ncbi.nlm.nih.gov/giab/ftp/data/AshkenazimTrio/HG002_NA24385_son/UCSC_Ultralong_OxfordNanopore_Promethion). GIAB variant calls for the same individual are the [ground truth](ftp://ftp-trace.ncbi.nlm.nih.gov/giab/ftp/data/AshkenazimTrio/analysis/NIST_SVs_Integration_v0.6/)
+Oxford Nanopore PromethION ultra long reads of the Ashkenazim son [HG002/NA24385](https://ftp.ncbi.nlm.nih.gov/giab/ftp/data/AshkenazimTrio/HG002_NA24385_son/UCSC_Ultralong_OxfordNanopore_Promethion/). GIAB variant calls for the same individual are also [available](https://ftp-trace.ncbi.nlm.nih.gov/giab/ftp/data/AshkenazimTrio/analysis/NIST_SVs_Integration_v0.6/) and can be used as ground truth.
 
 
-## Get Data
+## Download Data
 
 ``` bash
-bash scripts/getdata.sh
+cd scripts
+bash getdata.sh
+cd ..
 ```
 
-## Alignment
+## Align FASTQ to hs37d5
 
 ``` bash
-snakemake --cores 8 alignments/GM24385.{minimap2,ngmlr}.srt.bam.bai
+snakemake --cores 20 alignments/GM24385.{minimap2,ngmlr}.srt.bam.bai
 ```
