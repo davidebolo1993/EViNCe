@@ -21,8 +21,8 @@ In addition to those above, other tools are required in PATH:
 - [ngmlr](https://github.com/philres/ngmlr) (0.2.7)
 - ~~[samtools](https://github.com/samtools/samtools) (1.11), using [htslib](https://github.com/samtools/htslib) (1.11)~~ , due to "incomplete aux fields" errors occuring when sorting alignments from ngmlr with samtools 1.10/1.11 (there are several open issues about this, https://github.com/philres/ngmlr/issues/89 and https://github.com/philres/ngmlr/issues/86 for instance). Downgrading seems to work.
 - [samtools](https://github.com/samtools/samtools) (1.9), using [htslib](https://github.com/samtools/htslib) (1.9)
-- ~~[[bcftools](https://github.com/samtools/bcftools) (1.11), using [htslib](https://github.com/samtools/htslib) (1.11)~~
-- [[bcftools](https://github.com/samtools/bcftools) (1.9), using [htslib](https://github.com/samtools/htslib) (1.9)
+- ~~[bcftools](https://github.com/samtools/bcftools) (1.11), using [htslib](https://github.com/samtools/htslib) (1.11)~~
+- [bcftools](https://github.com/samtools/bcftools) (1.9), using [htslib](https://github.com/samtools/htslib) (1.9)
 - [truvari](https://github.com/spiralgenetics/truvari) (2.0.0-dev)
 - [VISOR](https://github.com/davidebolo1993/VISOR) (1.1)
 
