@@ -46,7 +46,7 @@ rule plot_cov:
     conda:
         "../envs/plot.yaml"
     params:
-        indir=f"{ALIGNDIR}"
+        indir=f"{ALIGNDIR}",
         script=f"../scripts/coveragestats.R"
     shell:
         "Rscript {params.script} {params.indir} 2> {log}" 
