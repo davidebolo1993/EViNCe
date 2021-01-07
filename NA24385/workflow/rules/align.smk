@@ -11,7 +11,7 @@ rule minimap2_align:
     params:
         rg=r"'@RG\tID:nanopore\tSM:GM24385'"
     shell:
-        "minimap2 --MD -ax map-ont -t {threads} -R {params.rg} {input} | samtools sort -@ {threads} -o {output} - 2> {log}"
+        "minimap2 --MD -ax map-ont -t {threads} -R {params.rg} {input} | samtools sort -@ {threads} -o {output} - 2>{log}"
 
 rule ngmlr_align:
     input:
@@ -24,7 +24,7 @@ rule ngmlr_align:
         f"{LOGDIR}/alignments/ngmlr_samtools_alignment.log"
     conda: "../envs/ngmlr.yaml"
     shell:
-        "zcat {input.fq} | ngmlr -r {input.ref} -x ont -t {threads} --rg-id nanopore --rg-sm GM24385  | samtools sort -@ {threads} -o {output} - 2> {log}"
+        "zcat {input.fq} | ngmlr -r {input.ref} -x ont -t {threads} --rg-id nanopore --rg-sm GM24385  | samtools sort -@ {threads} -o {output} - 2>{log}"
 
 rule samtools_index_minimap2:
     input:
