@@ -6,13 +6,13 @@ Oxford Nanopore PromethION ultra long reads of the Ashkenazim son [HG002/NA24385
 ## Download Data
 
 ``` bash
-cd scripts
+cd workflow/scripts
 bash getdata.sh
-cd ..
+cd -
 ```
 
 ## Align FASTQ to hs37d5
 
 ``` bash
-snakemake --cores 20 alignments/GM24385.{minimap2,ngmlr}.srt.bam.bai
+snakemake align --cores 20 --use-conda 
 ```

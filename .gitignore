@@ -1,3 +1,6 @@
 NA24385/data/
 NA24385/alignments/
 NA24385/.snakemake
+NA24385/results/
+NA24385/logs
+NA24385/nohup.out

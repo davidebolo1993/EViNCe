@@ -1,0 +1,21 @@
+aligndir: alignments
+outdir: results
+logdir: logs
+
+samples:
+
+    sample1: data/GM24385_1.fastq.gz
+    sample2: data/GM24385_2.fastq.gz
+    sample3: data/GM24385_3.fastq.gz
+
+genome:
+
+    data/hs37d5.fa
+
+bed:
+
+    data/HG002_SVs_Tier1_v0.6.bed
+
+vcf:
+
+    data/HG002_SVs_Tier1_v0.6.vcf.gz

@@ -2,8 +2,8 @@
 
 #get NA24385 ultra-long PromethION calls on hs37d5
 
-mkdir ../data 
-cd ../data
+mkdir ../../data 
+cd ../../data
 
 #get calls for NA24385
 
@@ -46,5 +46,9 @@ while true; do
 	wget -T 15 -c ftp://ftp-trace.ncbi.nih.gov/1000genomes/ftp/technical/reference/phase2_reference_assembly_sequence/hs37d5.fa.gz && break
 
 done
+
+#also decompress reference as some tools does not support .gz format
+
+gunzip -c hs37d5.fa.gz > hs37d5.fa
 
 cd -

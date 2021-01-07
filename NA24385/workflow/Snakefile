@@ -1,0 +1,13 @@
+import os
+
+configfile: os.path.abspath("config/config.yaml")
+
+OUTDIR = os.path.abspath(config["outdir"])
+ALIGNDIR = os.path.abspath(config["aligndir"])
+LOGDIR = os.path.abspath(config["logdir"])
+
+include: "rules/align.smk"
+
+rule align:
+    input:
+        expand(f"{ALIGNDIR}/GM24385.{{aligner}}.srt.bam.bai",aligner=["minimap2","ngmlr"])
