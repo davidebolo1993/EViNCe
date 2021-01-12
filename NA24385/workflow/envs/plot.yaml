@@ -2,10 +2,11 @@ channels:
  - conda-forge
  - r
 dependencies:
- - r-base=3.6.1
- - r-ggplot2=3.0.0
- - r-data.table=1.12.2
- - r-rcolorbrewer=1.1_2
- - r-gridextra=2.3
- - r-dplyr=0.8.0.1
- - r-viridis=0.5.1
+ - r-base
+ - r-ggplot2
+ - r-data.table
+ - r-rcolorbrewer
+ - r-gridextra
+ - r-dplyr
+ - r-viridis
+ - r-r.utils

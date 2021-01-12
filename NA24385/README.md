@@ -10,9 +10,16 @@ cd workflow/scripts
 bash getdata.sh
 cd -
 ```
-
 ## Align FASTQ to hs37d5
 
 ``` bash
-snakemake align --cores 20 --use-conda 
+snakemake align --cores 20 
 ```
+
+## Calculate/plot coverage statistics
+
+``` bash
+snakemake depth --cores 20
+```
+
+

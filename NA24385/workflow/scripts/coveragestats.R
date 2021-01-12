@@ -104,3 +104,7 @@ points(subsubtab$V2, subsubtab$V3, type='l', lwd=3, col=colors_[2])
 legend("topright", legend=labels_, col=colors_, lty=1, lwd=4)
 dev.off()
 
+if (file.exists("Rplots.pdf")) {
+
+    file.remove("Rplots.pdf")
+}

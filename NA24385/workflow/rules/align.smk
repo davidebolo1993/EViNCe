@@ -41,7 +41,8 @@ rule samtools_index_ngmlr:
         f"{ALIGNDIR}/GM24385.ngmlr.srt.bam"
     output:
         f"{ALIGNDIR}/GM24385.ngmlr.srt.bam.bai"
-    conda: "../envs/minimap2.yaml"
+    conda: "../envs/ngmlr.yaml"
     threads: 10
     shell:
         "samtools index -@ {threads} {input}"
+

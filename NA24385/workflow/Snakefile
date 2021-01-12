@@ -3,9 +3,11 @@ configfile: "config/config.yaml"
 OUTDIR = config["outdir"]
 ALIGNDIR = config["aligndir"]
 LOGDIR = config["logdir"]
+SCRIPTDIR = config["scriptdir"]
 
 include: "rules/align.smk"
 include: "rules/depth.smk"
+include: "rules/subsample.smk"
 
 #first part: map reads to reference and perform kind of QC (coverage)
 
@@ -23,3 +25,6 @@ rule depth:
         expand(f"{ALIGNDIR}/GM24385.{{aligner}}.coverage_per_chromosome.png", aligner=['minimap2','ngmlr']),
         f"{ALIGNDIR}/GM24385.fraction_of_bases_per_depth.png"
 
+rule subsample:
+    input:
+        expand(f"{ALIGNDIR}/{{coverage}}/GM24385.{{aligner}}.srt.bam.bai", coverage=["5X", "10X", "15X", "20X", "30X", "40X"], aligner=["minimap2","ngmlr"])

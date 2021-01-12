@@ -47,8 +47,5 @@ rule plot_cov:
         f"{LOGDIR}/alignments/plot_depth.log"
     conda:
         "../envs/plot.yaml"
-    params:
-        indir=f"{ALIGNDIR}",
-        script=f"../scripts/coveragestats.R"
     shell:
-        "Rscript {params.script} {params.indir} 2> {log}" 
+        "Rscript {SCRIPTDIR}/coveragestats.R {ALIGNDIR} 2> {log}" 

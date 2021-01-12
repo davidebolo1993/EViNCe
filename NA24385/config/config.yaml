@@ -1,6 +1,7 @@
 aligndir: alignments
 outdir: results
 logdir: logs
+scriptdir: workflow/scripts
 
 samples:
 
@@ -19,3 +20,4 @@ bed:
 vcf:
 
     data/HG002_SVs_Tier1_v0.6.vcf.gz
+
