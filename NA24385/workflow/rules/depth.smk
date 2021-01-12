@@ -6,7 +6,8 @@ rule mosdepth_minimap2_depth:
         f"{ALIGNDIR}/GM24385.minimap2.mosdepth.global.dist.txt",
         f"{ALIGNDIR}/GM24385.minimap2.mosdepth.region.dist.txt",
         f"{ALIGNDIR}/GM24385.minimap2.mosdepth.summary.txt",
-        f"{ALIGNDIR}/GM24385.minimap2.regions.bed.gz"
+        f"{ALIGNDIR}/GM24385.minimap2.regions.bed.gz",
+        f"{ALIGNDIR}/GM24385.minimap2.regions.bed.gz.csi"
     log:
         f"{LOGDIR}/alignments/minimap2_mosdepth_depth.log"
     conda: "../envs/mosdepth.yaml"
@@ -14,7 +15,7 @@ rule mosdepth_minimap2_depth:
     params:
         prefix = f"{ALIGNDIR}/GM24385.minimap2"
     shell:
-        "mosdepth -n --fast-mode -t {threads} {params.prefix} {input.bam} 2> {log}"
+        "mosdepth -n --fast-mode -t {threads} --by 500 {params.prefix} {input.bam} 2> {log}"
 
 rule mosdepth_ngmlr_depth:
     input:
@@ -24,7 +25,8 @@ rule mosdepth_ngmlr_depth:
         f"{ALIGNDIR}/GM24385.ngmlr.mosdepth.global.dist.txt",
         f"{ALIGNDIR}/GM24385.ngmlr.mosdepth.region.dist.txt",
         f"{ALIGNDIR}/GM24385.ngmlr.mosdepth.summary.txt",
-        f"{ALIGNDIR}/GM24385.ngmlr.regions.bed.gz"
+        f"{ALIGNDIR}/GM24385.ngmlr.regions.bed.gz",
+        f"{ALIGNDIR}/GM24385.ngmlr.regions.bed.gz.csi"
     log:
         f"{LOGDIR}/alignments/ngmlr_mosdepth_depth.log"
     conda: "../envs/mosdepth.yaml"
@@ -32,7 +34,7 @@ rule mosdepth_ngmlr_depth:
     params:
         prefix = f"{ALIGNDIR}/GM24385.ngmlr"
     shell:
-        "mosdepth -n --fast-mode -t {threads} {params.prefix} {input.bam} 2> {log}"
+        "mosdepth -n --fast-mode -t {threads} --by 500 {params.prefix} {input.bam} 2> {log}"
 
 rule plot_cov:
     input:
