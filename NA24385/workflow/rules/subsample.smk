@@ -189,3 +189,4 @@ rule subsample_ngmlr_35X:
         fraction="0.8333333" #considering 42X coverage as from mosdepth depth
     shell:
         "samtools view -s {params.fraction} -@ {threads} -o {output.bam} {input.bam} && samtools index -@ {threads} {output.bam} 2>> {log}"
+
