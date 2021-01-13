@@ -10,6 +10,7 @@ cd workflow/scripts
 bash getdata.sh
 cd -
 ```
+
 ## Align FASTQ to hs37d5
 
 ``` bash
@@ -22,4 +23,8 @@ snakemake align --cores 20
 snakemake depth --cores 20
 ```
 
+## Subsample original alignments
 
+``` bash
+snakemake subsample --cores 20
+```

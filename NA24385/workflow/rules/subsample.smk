@@ -12,7 +12,7 @@ rule subsample_minimap2_5X:
     params:
         fraction="0.1111111" #considering 45X coverage as from mosdepth depth
     shell:
-        "samtools view -s {params.fraction} -@ {threads} -o {output.bam} && samtools index -@ {threads} {output.bam} 2>> {log}"
+        "samtools view -s {params.fraction} -@ {threads} -o {output.bam} {input.bam} && samtools index -@ {threads} {output.bam} 2>> {log}"
 
 rule subsample_minimap2_10X:
     input:
@@ -28,7 +28,7 @@ rule subsample_minimap2_10X:
     params:
         fraction="0.2222222" #considering 45X coverage as from mosdepth depth
     shell:
-        "samtools view -s {params.fraction} -@ {threads} -o {output.bam} && samtools index -@ {threads} {output.bam} 2>> {log}"
+        "samtools view -s {params.fraction} -@ {threads} -o {output.bam} {input.bam} && samtools index -@ {threads} {output.bam} 2>> {log}"
 
 rule subsample_minimap2_15X:
     input:
@@ -44,7 +44,7 @@ rule subsample_minimap2_15X:
     params:
         fraction="0.3333333" #considering 45X coverage as from mosdepth depth
     shell:
-        "samtools view -s {params.fraction} -@ {threads} -o {output.bam} && samtools index -@ {threads} {output.bam} 2>> {log}"
+        "samtools view -s {params.fraction} -@ {threads} -o {output.bam} {input.bam} && samtools index -@ {threads} {output.bam} 2>> {log}"
 
 rule subsample_minimap2_20X:
     input:
@@ -60,39 +60,39 @@ rule subsample_minimap2_20X:
     params:
         fraction="0.4444444" #considering 45X coverage as from mosdepth depth
     shell:
-        "samtools view -s {params.fraction} -@ {threads} -o {output.bam} && samtools index -@ {threads} {output.bam} 2>> {log}"
+        "samtools view -s {params.fraction} -@ {threads} -o {output.bam} {input.bam} && samtools index -@ {threads} {output.bam} 2>> {log}"
 
-rule subsample_minimap2_30X:
+rule subsample_minimap2_25X:
     input:
         bam=f"{ALIGNDIR}/GM24385.minimap2.srt.bam",
         bai=f"{ALIGNDIR}/GM24385.minimap2.srt.bam.bai"
     output:
-        bam=f"{ALIGNDIR}/30X/GM24385.minimap2.srt.bam",
-        bai=f"{ALIGNDIR}/30X/GM24385.minimap2.srt.bam.bai"
+        bam=f"{ALIGNDIR}/25X/GM24385.minimap2.srt.bam",
+        bai=f"{ALIGNDIR}/25X/GM24385.minimap2.srt.bam.bai"
     log:
         f"{LOGDIR}/alignments/minimap2_samtools_subsample.log"
     conda: "../envs/minimap2.yaml"
     threads: 10
     params:
-        fraction="0.6666667" #considering 45X coverage as from mosdepth depth
+        fraction="0.5555556" #considering 45X coverage as from mosdepth depth
     shell:
-        "samtools view -s {params.fraction} -@ {threads} -o {output.bam} && samtools index -@ {threads} {output.bam} 2>> {log}"
+        "samtools view -s {params.fraction} -@ {threads} -o {output.bam} {input.bam} && samtools index -@ {threads} {output.bam} 2>> {log}"
 
-rule subsample_minimap2_40X:
+rule subsample_minimap2_35X:
     input:
         bam=f"{ALIGNDIR}/GM24385.minimap2.srt.bam",
         bai=f"{ALIGNDIR}/GM24385.minimap2.srt.bam.bai"
     output:
-        bam=f"{ALIGNDIR}/40X/GM24385.minimap2.srt.bam",
-        bai=f"{ALIGNDIR}/40X/GM24385.minimap2.srt.bam.bai"
+        bam=f"{ALIGNDIR}/35X/GM24385.minimap2.srt.bam",
+        bai=f"{ALIGNDIR}/35X/GM24385.minimap2.srt.bam.bai"
     log:
         f"{LOGDIR}/alignments/minimap2_samtools_subsample.log"
     conda: "../envs/minimap2.yaml"
     threads: 10
     params:
-        fraction="0.8888889" #considering 45X coverage as from mosdepth depth
+        fraction="0.7777778" #considering 45X coverage as from mosdepth depth
     shell:
-        "samtools view -s {params.fraction} -@ {threads} -o {output.bam} && samtools index -@ {threads} {output.bam} 2>> {log}"
+        "samtools view -s {params.fraction} -@ {threads} -o {output.bam} {input.bam} && samtools index -@ {threads} {output.bam} 2>> {log}"
 
 rule subsample_ngmlr_5X:
     input:
@@ -106,9 +106,9 @@ rule subsample_ngmlr_5X:
     conda: "../envs/ngmlr.yaml"
     threads: 10
     params:
-        fraction="0.1111111" #considering 45X coverage as from mosdepth depth
+        fraction="0.1190476" #considering 42X coverage as from mosdepth depth
     shell:
-        "samtools view -s {params.fraction} -@ {threads} -o {output.bam} && samtools index -@ {threads} {output.bam} 2>> {log}"
+        "samtools view -s {params.fraction} -@ {threads} -o {output.bam} {input.bam} && samtools index -@ {threads} {output.bam} 2>> {log}"
 
 rule subsample_ngmlr_10X:
     input:
@@ -122,9 +122,9 @@ rule subsample_ngmlr_10X:
     conda: "../envs/ngmlr.yaml"
     threads: 10
     params:
-        fraction="0.2222222" #considering 45X coverage as from mosdepth depth
+        fraction="0.2380952" #considering 42X coverage as from mosdepth depth
     shell:
-        "samtools view -s {params.fraction} -@ {threads} -o {output.bam} && samtools index -@ {threads} {output.bam} 2>> {log}"
+        "samtools view -s {params.fraction} -@ {threads} -o {output.bam} {input.bam} && samtools index -@ {threads} {output.bam} 2>> {log}"
 
 rule subsample_ngmlr_15X:
     input:
@@ -138,9 +138,9 @@ rule subsample_ngmlr_15X:
     conda: "../envs/ngmlr.yaml"
     threads: 10
     params:
-        fraction="0.3333333" #considering 45X coverage as from mosdepth depth
+        fraction="0.3571429" #considering 42X coverage as from mosdepth depth
     shell:
-        "samtools view -s {params.fraction} -@ {threads} -o {output.bam} && samtools index -@ {threads} {output.bam} 2>> {log}"
+        "samtools view -s {params.fraction} -@ {threads} -o {output.bam} {input.bam} && samtools index -@ {threads} {output.bam} 2>> {log}"
 
 rule subsample_ngmlr_20X:
     input:
@@ -154,38 +154,38 @@ rule subsample_ngmlr_20X:
     conda: "../envs/ngmlr.yaml"
     threads: 10
     params:
-        fraction="0.4444444" #considering 45X coverage as from mosdepth depth
+        fraction="0.4761905" #considering 42X coverage as from mosdepth depth
     shell:
-        "samtools view -s {params.fraction} -@ {threads} -o {output.bam} && samtools index -@ {threads} {output.bam} 2>> {log}"
+        "samtools view -s {params.fraction} -@ {threads} -o {output.bam} {input.bam} && samtools index -@ {threads} {output.bam} 2>> {log}"
 
-rule subsample_ngmlr_30X:
+rule subsample_ngmlr_25X:
     input:
         bam=f"{ALIGNDIR}/GM24385.ngmlr.srt.bam",
         bai=f"{ALIGNDIR}/GM24385.ngmlr.srt.bam.bai"
     output:
-        bam=f"{ALIGNDIR}/30X/GM24385.ngmlr.srt.bam",
-        bai=f"{ALIGNDIR}/30X/GM24385.ngmlr.srt.bam.bai"
+        bam=f"{ALIGNDIR}/25X/GM24385.ngmlr.srt.bam",
+        bai=f"{ALIGNDIR}/25X/GM24385.ngmlr.srt.bam.bai"
     log:
         f"{LOGDIR}/alignments/ngmlr_samtools_subsample.log"
     conda: "../envs/ngmlr.yaml"
     threads: 10
     params:
-        fraction="0.6666667" #considering 45X coverage as from mosdepth depth
+        fraction="0.5952381" #considering 42X coverage as from mosdepth depth
     shell:
-        "samtools view -s {params.fraction} -@ {threads} -o {output.bam} && samtools index -@ {threads} {output.bam} 2>> {log}"
+        "samtools view -s {params.fraction} -@ {threads} -o {output.bam} {input.bam} && samtools index -@ {threads} {output.bam} 2>> {log}"
 
-rule subsample_ngmlr_40X:
+rule subsample_ngmlr_35X:
     input:
         bam=f"{ALIGNDIR}/GM24385.ngmlr.srt.bam",
         bai=f"{ALIGNDIR}/GM24385.ngmlr.srt.bam.bai"
     output:
-        bam=f"{ALIGNDIR}/40X/GM24385.ngmlr.srt.bam",
-        bai=f"{ALIGNDIR}/40X/GM24385.ngmlr.srt.bam.bai"
+        bam=f"{ALIGNDIR}/35X/GM24385.ngmlr.srt.bam",
+        bai=f"{ALIGNDIR}/35X/GM24385.ngmlr.srt.bam.bai"
     log:
         f"{LOGDIR}/alignments/ngmlr_samtools_subsample.log"
     conda: "../envs/ngmlr.yaml"
     threads: 10
     params:
-        fraction="0.8888889" #considering 45X coverage as from mosdepth depth
+        fraction="0.8333333" #considering 42X coverage as from mosdepth depth
     shell:
-        "samtools view -s {params.fraction} -@ {threads} -o {output.bam} && samtools index -@ {threads} {output.bam} 2>> {log}"
+        "samtools view -s {params.fraction} -@ {threads} -o {output.bam} {input.bam} && samtools index -@ {threads} {output.bam} 2>> {log}"

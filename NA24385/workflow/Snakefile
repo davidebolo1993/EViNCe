@@ -28,5 +28,5 @@ rule depth:
 
 rule subsample:
     input:
-        #expand(f"{ALIGNDIR}/{{coverage}}/GM24385.{{aligner}}.srt.bam", coverage=["5X", "10X", "15X", "20X", "30X", "40X"], aligner=["minimap2","ngmlr"]),
-        expand(f"{ALIGNDIR}/{{coverage}}/GM24385.{{aligner}}.srt.bam.bai", coverage=["5X", "10X", "15X", "20X", "30X", "40X"], aligner=["minimap2","ngmlr"])
+        #expand(f"{ALIGNDIR}/{{coverage}}/GM24385.{{aligner}}.srt.bam", coverage=["5X", "10X", "15X", "20X", "25X", "35X"], aligner=["minimap2","ngmlr"]),
+        expand(f"{ALIGNDIR}/{{coverage}}/GM24385.{{aligner}}.srt.bam.bai", coverage=["5X", "10X", "15X", "20X", "25X", "35X"], aligner=["minimap2","ngmlr"])
