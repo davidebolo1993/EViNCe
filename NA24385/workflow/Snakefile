@@ -36,7 +36,7 @@ rule subsample:
         #expand(f"{ALIGNDIR}/{{coverage}}/GM24385.{{aligner}}.srt.bam", coverage=["5X", "10X", "15X", "20X", "25X", "35X"], aligner=["minimap2","ngmlr"]),
         expand(f"{ALIGNDIR}/{{coverage}}/GM24385.{{aligner}}.srt.bam.bai", coverage=["5X", "10X", "15X", "20X", "25X", "35X"], aligner=["minimap2","ngmlr"])
 
-#second part: map reads to reference and perform kind of QC (coverage)
+#second part: call variants
 
 rule cutesv:
     input:

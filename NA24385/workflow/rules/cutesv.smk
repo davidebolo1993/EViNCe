@@ -10,9 +10,9 @@ rule cutesv_call_total_minimap2:
     conda: "../envs/cutesv.yaml"
     threads: 10
     params:
-        wd=f"{RESULTDIR}/minimap2/cutesv/total/tmpdir"
+        wd=f"{RESULTDIR}/minimap2/cutesv/total/tmpdir",
     shell:
-        "cuteSV -s 3 -l 50 --max_cluster_bias_INS 100 --diff_ratio_merging_INS 0.3 --max_cluster_bias_DEL 100 --diff_ratio_merging_DEL 0.3 --genotype -S GM24385 {input.bam} {input.ref} {output} {params.wd} 2>{log}" 
+        "mkdir -p {params.wd} && cuteSV -s 2 -l 50 --max_cluster_bias_INS 100 --diff_ratio_merging_INS 0.3 --max_cluster_bias_DEL 100 --diff_ratio_merging_DEL 0.3 --genotype -t {threads} --retain_work_dir -S GM24385 {input.bam} {input.ref} {output} {params.wd} 2>{log}" 
 
 rule cutesv_call_total_ngmlr:
     input:
@@ -28,7 +28,7 @@ rule cutesv_call_total_ngmlr:
     params:
         wd=f"{RESULTDIR}/ngmlr/cutesv/total/tmpdir"
     shell:
-        "cuteSV -s 3 -l 50 --max_cluster_bias_INS 100 --diff_ratio_merging_INS 0.3 --max_cluster_bias_DEL 100 --diff_ratio_merging_DEL 0.3 --genotype -S GM24385 {input.bam} {input.ref} {output} {params.wd} 2>{log}"
+        "mkdir -p {params.wd} && cuteSV -s 2 -l 50 --max_cluster_bias_INS 100 --diff_ratio_merging_INS 0.3 --max_cluster_bias_DEL 100 --diff_ratio_merging_DEL 0.3 --genotype -t {threads} --retain_work_dir -S GM24385 {input.bam} {input.ref} {output} {params.wd} 2>{log}"
 
 rule cutesv_call_5X_minimap2:
     input:
@@ -44,7 +44,7 @@ rule cutesv_call_5X_minimap2:
     params:
         wd=f"{RESULTDIR}/minimap2/cutesv/5X/tmpdir"
     shell:
-        "cuteSV -s 3 -l 50 --max_cluster_bias_INS 100 --diff_ratio_merging_INS 0.3 --max_cluster_bias_DEL 100 --diff_ratio_merging_DEL 0.3 --genotype -S GM24385 {input.bam} {input.ref} {output} {params.wd} 2>{log}" 
+        "mkdir -p {params.wd} && cuteSV -s 2 -l 50 --max_cluster_bias_INS 100 --diff_ratio_merging_INS 0.3 --max_cluster_bias_DEL 100 --diff_ratio_merging_DEL 0.3 --genotype -t {threads} --retain_work_dir -S GM24385 {input.bam} {input.ref} {output} {params.wd} 2>{log}" 
 
 rule cutesv_call_5X_ngmlr:
     input:
@@ -60,7 +60,7 @@ rule cutesv_call_5X_ngmlr:
     params:
         wd=f"{RESULTDIR}/ngmlr/cutesv/5X/tmpdir"
     shell:
-        "cuteSV -s 3 -l 50 --max_cluster_bias_INS 100 --diff_ratio_merging_INS 0.3 --max_cluster_bias_DEL 100 --diff_ratio_merging_DEL 0.3 --genotype -S GM24385 {input.bam} {input.ref} {output} {params.wd} 2>{log}"
+        "mkdir -p {params.wd} && cuteSV -s 2 -l 50 --max_cluster_bias_INS 100 --diff_ratio_merging_INS 0.3 --max_cluster_bias_DEL 100 --diff_ratio_merging_DEL 0.3 --genotype -t {threads} --retain_work_dir -S GM24385 {input.bam} {input.ref} {output} {params.wd} 2>{log}"
 
 rule cutesv_call_10X_minimap2:
     input:
@@ -76,7 +76,7 @@ rule cutesv_call_10X_minimap2:
     params:
         wd=f"{RESULTDIR}/minimap2/cutesv/10X/tmpdir"
     shell:
-        "cuteSV -s 3 -l 50 --max_cluster_bias_INS 100 --diff_ratio_merging_INS 0.3 --max_cluster_bias_DEL 100 --diff_ratio_merging_DEL 0.3 --genotype -S GM24385 {input.bam} {input.ref} {output} {params.wd} 2>{log}" 
+        "mkdir -p {params.wd} && cuteSV -s 2 -l 50 --max_cluster_bias_INS 100 --diff_ratio_merging_INS 0.3 --max_cluster_bias_DEL 100 --diff_ratio_merging_DEL 0.3 --genotype -t {threads} --retain_work_dir -S GM24385 {input.bam} {input.ref} {output} {params.wd} 2>{log}" 
 
 rule cutesv_call_10X_ngmlr:
     input:
@@ -92,8 +92,7 @@ rule cutesv_call_10X_ngmlr:
     params:
         wd=f"{RESULTDIR}/ngmlr/cutesv/10X/tmpdir"
     shell:
-        "cuteSV -s 3 -l 50 --max_cluster_bias_INS 100 --diff_ratio_merging_INS 0.3 --max_cluster_bias_DEL 100 --diff_ratio_merging_DEL 0.3 --genotype -S GM24385 {input.bam} {input.ref} {output} {params.wd} 2>{log}"
-
+        "mkdir -p {params.wd} && cuteSV -s 2 -l 50 --max_cluster_bias_INS 100 --diff_ratio_merging_INS 0.3 --max_cluster_bias_DEL 100 --diff_ratio_merging_DEL 0.3 --genotype -t {threads} --retain_work_dir -S GM24385 {input.bam} {input.ref} {output} {params.wd} 2>{log}"
 
 rule cutesv_call_15X_minimap2:
     input:
@@ -109,7 +108,7 @@ rule cutesv_call_15X_minimap2:
     params:
         wd=f"{RESULTDIR}/minimap2/cutesv/15X/tmpdir"
     shell:
-        "cuteSV -s 3 -l 50 --max_cluster_bias_INS 100 --diff_ratio_merging_INS 0.3 --max_cluster_bias_DEL 100 --diff_ratio_merging_DEL 0.3 --genotype -S GM24385 {input.bam} {input.ref} {output} {params.wd} 2>{log}" 
+        "mkdir -p {params.wd} && cuteSV -s 2 -l 50 --max_cluster_bias_INS 100 --diff_ratio_merging_INS 0.3 --max_cluster_bias_DEL 100 --diff_ratio_merging_DEL 0.3 --genotype -t {threads} --retain_work_dir -S GM24385 {input.bam} {input.ref} {output} {params.wd} 2>{log}" 
 
 rule cutesv_call_15X_ngmlr:
     input:
@@ -125,7 +124,7 @@ rule cutesv_call_15X_ngmlr:
     params:
         wd=f"{RESULTDIR}/ngmlr/cutesv/15X/tmpdir"
     shell:
-        "cuteSV -s 3 -l 50 --max_cluster_bias_INS 100 --diff_ratio_merging_INS 0.3 --max_cluster_bias_DEL 100 --diff_ratio_merging_DEL 0.3 --genotype -S GM24385 {input.bam} {input.ref} {output} {params.wd} 2>{log}"
+        "mkdir -p {params.wd} && cuteSV -s 2 -l 50 --max_cluster_bias_INS 100 --diff_ratio_merging_INS 0.3 --max_cluster_bias_DEL 100 --diff_ratio_merging_DEL 0.3 --genotype -t {threads} --retain_work_dir -S GM24385 {input.bam} {input.ref} {output} {params.wd} 2>{log}"
 
 rule cutesv_call_20X_minimap2:
     input:
@@ -141,7 +140,7 @@ rule cutesv_call_20X_minimap2:
     params:
         wd=f"{RESULTDIR}/minimap2/cutesv/20X/tmpdir"
     shell:
-        "cuteSV -s 3 -l 50 --max_cluster_bias_INS 100 --diff_ratio_merging_INS 0.3 --max_cluster_bias_DEL 100 --diff_ratio_merging_DEL 0.3 --genotype -S GM24385 {input.bam} {input.ref} {output} {params.wd} 2>{log}" 
+        "mkdir -p {params.wd} && cuteSV -s 2 -l 50 --max_cluster_bias_INS 100 --diff_ratio_merging_INS 0.3 --max_cluster_bias_DEL 100 --diff_ratio_merging_DEL 0.3 --genotype -t {threads} --retain_work_dir -S GM24385 {input.bam} {input.ref} {output} {params.wd} 2>{log}" 
 
 rule cutesv_call_20X_ngmlr:
     input:
@@ -157,7 +156,7 @@ rule cutesv_call_20X_ngmlr:
     params:
         wd=f"{RESULTDIR}/ngmlr/cutesv/20X/tmpdir"
     shell:
-        "cuteSV -s 3 -l 50 --max_cluster_bias_INS 100 --diff_ratio_merging_INS 0.3 --max_cluster_bias_DEL 100 --diff_ratio_merging_DEL 0.3 --genotype -S GM24385 {input.bam} {input.ref} {output} {params.wd} 2>{log}"
+        "mkdir -p {params.wd} && cuteSV -s 2 -l 50 --max_cluster_bias_INS 100 --diff_ratio_merging_INS 0.3 --max_cluster_bias_DEL 100 --diff_ratio_merging_DEL 0.3 --genotype -t {threads} --retain_work_dir -S GM24385 {input.bam} {input.ref} {output} {params.wd} 2>{log}"
 
 
 rule cutesv_call_25X_minimap2:
@@ -174,7 +173,7 @@ rule cutesv_call_25X_minimap2:
     params:
         wd=f"{RESULTDIR}/minimap2/cutesv/25X/tmpdir"
     shell:
-        "cuteSV -s 3 -l 50 --max_cluster_bias_INS 100 --diff_ratio_merging_INS 0.3 --max_cluster_bias_DEL 100 --diff_ratio_merging_DEL 0.3 --genotype -S GM24385 {input.bam} {input.ref} {output} {params.wd} 2>{log}" 
+        "mkdir -p {params.wd} && cuteSV -s 2 -l 50 --max_cluster_bias_INS 100 --diff_ratio_merging_INS 0.3 --max_cluster_bias_DEL 100 --diff_ratio_merging_DEL 0.3 --genotype -t {threads} --retain_work_dir -S GM24385 {input.bam} {input.ref} {output} {params.wd} 2>{log}" 
 
 rule cutesv_call_25X_ngmlr:
     input:
@@ -190,7 +189,7 @@ rule cutesv_call_25X_ngmlr:
     params:
         wd=f"{RESULTDIR}/ngmlr/cutesv/25X/tmpdir"
     shell:
-        "cuteSV -s 3 -l 50 --max_cluster_bias_INS 100 --diff_ratio_merging_INS 0.3 --max_cluster_bias_DEL 100 --diff_ratio_merging_DEL 0.3 --genotype -S GM24385 {input.bam} {input.ref} {output} {params.wd} 2>{log}"
+        "mkdir -p {params.wd} && cuteSV -s 2 -l 50 --max_cluster_bias_INS 100 --diff_ratio_merging_INS 0.3 --max_cluster_bias_DEL 100 --diff_ratio_merging_DEL 0.3 --genotype -t {threads} --retain_work_dir -S GM24385 {input.bam} {input.ref} {output} {params.wd} 2>{log}"
 
 
 rule cutesv_call_35X_minimap2:
@@ -207,7 +206,7 @@ rule cutesv_call_35X_minimap2:
     params:
         wd=f"{RESULTDIR}/minimap2/cutesv/35X/tmpdir"
     shell:
-        "cuteSV -s 3 -l 50 --max_cluster_bias_INS 100 --diff_ratio_merging_INS 0.3 --max_cluster_bias_DEL 100 --diff_ratio_merging_DEL 0.3 --genotype -S GM24385 {input.bam} {input.ref} {output} {params.wd} 2>{log}" 
+        "mkdir -p {params.wd} && cuteSV -s 2 -l 50 --max_cluster_bias_INS 100 --diff_ratio_merging_INS 0.3 --max_cluster_bias_DEL 100 --diff_ratio_merging_DEL 0.3 --genotype -t {threads} --retain_work_dir -S GM24385 {input.bam} {input.ref} {output} {params.wd} 2>{log}" 
 
 rule cutesv_call_35X_ngmlr:
     input:
@@ -223,5 +222,5 @@ rule cutesv_call_35X_ngmlr:
     params:
         wd=f"{RESULTDIR}/ngmlr/cutesv/35X/tmpdir"
     shell:
-        "cuteSV -s 3 -l 50 --max_cluster_bias_INS 100 --diff_ratio_merging_INS 0.3 --max_cluster_bias_DEL 100 --diff_ratio_merging_DEL 0.3 --genotype -S GM24385 {input.bam} {input.ref} {output} {params.wd} 2>{log}"
+        "mkdir -p {params.wd} && cuteSV -s 2 -l 50 --max_cluster_bias_INS 100 --diff_ratio_merging_INS 0.3 --max_cluster_bias_DEL 100 --diff_ratio_merging_DEL 0.3 --genotype -t {threads} --retain_work_dir -S GM24385 {input.bam} {input.ref} {output} {params.wd} 2>{log}"
 

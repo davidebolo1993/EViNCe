@@ -28,3 +28,9 @@ snakemake depth --cores 20
 ``` bash
 snakemake subsample --cores 20
 ```
+
+## Call SVs with cuteSV
+
+``` bash
+snakemake cutesv --cores 20
+```
