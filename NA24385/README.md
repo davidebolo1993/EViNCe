@@ -34,3 +34,10 @@ snakemake subsample --cores 20
 ``` bash
 snakemake cutesv --cores 20
 ```
+
+## Call SVs with sniffles
+
+``` bash
+snakemake sniffles --cores 20
+```
+
