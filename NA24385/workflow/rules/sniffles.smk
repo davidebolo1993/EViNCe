@@ -1,6 +1,5 @@
 rule sniffles_call_total_minimap2:
     input:
-        ref=config["genome"],
         bam=f"{ALIGNDIR}/GM24385.minimap2.srt.bam",
         bai=f"{ALIGNDIR}/GM24385.minimap2.srt.bam.bai"
     output:
@@ -17,7 +16,6 @@ rule sniffles_call_total_minimap2:
 
 rule sniffles_call_total_ngmlr:
     input:
-        ref=config["genome"],
         bam=f"{ALIGNDIR}/GM24385.ngmlr.srt.bam",
         bai=f"{ALIGNDIR}/GM24385.ngmlr.srt.bam.bai"
     output:
@@ -34,7 +32,6 @@ rule sniffles_call_total_ngmlr:
 
 rule sniffles_call_5X_minimap2:
     input:
-        ref=config["genome"],
         bam=f"{ALIGNDIR}/5X/GM24385.minimap2.srt.bam",
         bai=f"{ALIGNDIR}/5X/GM24385.minimap2.srt.bam.bai"
     output:
@@ -51,7 +48,6 @@ rule sniffles_call_5X_minimap2:
 
 rule sniffles_call_5X_ngmlr:
     input:
-        ref=config["genome"],
         bam=f"{ALIGNDIR}/5X/GM24385.ngmlr.srt.bam",
         bai=f"{ALIGNDIR}/5X/GM24385.ngmlr.srt.bam.bai"
     output:
@@ -68,7 +64,6 @@ rule sniffles_call_5X_ngmlr:
 
 rule sniffles_call_10X_minimap2:
     input:
-        ref=config["genome"],
         bam=f"{ALIGNDIR}/10X/GM24385.minimap2.srt.bam",
         bai=f"{ALIGNDIR}/10X/GM24385.minimap2.srt.bam.bai"
     output:
@@ -85,7 +80,6 @@ rule sniffles_call_10X_minimap2:
 
 rule sniffles_call_10X_ngmlr:
     input:
-        ref=config["genome"],
         bam=f"{ALIGNDIR}/10X/GM24385.ngmlr.srt.bam",
         bai=f"{ALIGNDIR}/10X/GM24385.ngmlr.srt.bam.bai"
     output:
@@ -102,7 +96,6 @@ rule sniffles_call_10X_ngmlr:
 
 rule sniffles_call_15X_minimap2:
     input:
-        ref=config["genome"],
         bam=f"{ALIGNDIR}/15X/GM24385.minimap2.srt.bam",
         bai=f"{ALIGNDIR}/15X/GM24385.minimap2.srt.bam.bai"
     output:
@@ -119,7 +112,6 @@ rule sniffles_call_15X_minimap2:
 
 rule sniffles_call_15X_ngmlr:
     input:
-        ref=config["genome"],
         bam=f"{ALIGNDIR}/15X/GM24385.ngmlr.srt.bam",
         bai=f"{ALIGNDIR}/15X/GM24385.ngmlr.srt.bam.bai"
     output:
@@ -136,7 +128,6 @@ rule sniffles_call_15X_ngmlr:
 
 rule sniffles_call_20X_minimap2:
     input:
-        ref=config["genome"],
         bam=f"{ALIGNDIR}/20X/GM24385.minimap2.srt.bam",
         bai=f"{ALIGNDIR}/20X/GM24385.minimap2.srt.bam.bai"
     output:
@@ -153,7 +144,6 @@ rule sniffles_call_20X_minimap2:
 
 rule sniffles_call_20X_ngmlr:
     input:
-        ref=config["genome"],
         bam=f"{ALIGNDIR}/20X/GM24385.ngmlr.srt.bam",
         bai=f"{ALIGNDIR}/20X/GM24385.ngmlr.srt.bam.bai"
     output:
@@ -171,7 +161,6 @@ rule sniffles_call_20X_ngmlr:
 
 rule sniffles_call_25X_minimap2:
     input:
-        ref=config["genome"],
         bam=f"{ALIGNDIR}/25X/GM24385.minimap2.srt.bam",
         bai=f"{ALIGNDIR}/25X/GM24385.minimap2.srt.bam.bai"
     output:
@@ -188,7 +177,6 @@ rule sniffles_call_25X_minimap2:
 
 rule sniffles_call_25X_ngmlr:
     input:
-        ref=config["genome"],
         bam=f"{ALIGNDIR}/25X/GM24385.ngmlr.srt.bam",
         bai=f"{ALIGNDIR}/25X/GM24385.ngmlr.srt.bam.bai"
     output:
@@ -206,7 +194,6 @@ rule sniffles_call_25X_ngmlr:
 
 rule sniffles_call_35X_minimap2:
     input:
-        ref=config["genome"],
         bam=f"{ALIGNDIR}/35X/GM24385.minimap2.srt.bam",
         bai=f"{ALIGNDIR}/35X/GM24385.minimap2.srt.bam.bai"
     output:
@@ -223,7 +210,6 @@ rule sniffles_call_35X_minimap2:
 
 rule sniffles_call_35X_ngmlr:
     input:
-        ref=config["genome"],
         bam=f"{ALIGNDIR}/35X/GM24385.ngmlr.srt.bam",
         bai=f"{ALIGNDIR}/35X/GM24385.ngmlr.srt.bam.bai"
     output:
