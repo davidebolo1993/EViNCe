@@ -12,7 +12,7 @@ rule svim_call_total_minimap2:
     params:
         wd=f"{RESULTDIR}/minimap2/svim/total",
     shell:
-        "mkdir -p {params.wd} && svim alignment --min_sv_size 50 --sample GM24385 {params.wd} {input.bam} {input.ref} && mv {params.wd}/varants.vcf {params.wd}/GM24385.vcf 2>{log}" 
+        "mkdir -p {params.wd} && svim alignment --min_sv_size 50 --sample GM24385 {params.wd} {input.bam} {input.ref} && mv {params.wd}/variants.vcf {params.wd}/GM24385.vcf 2>{log}" 
 
 rule svim_call_total_ngmlr:
     input:
@@ -28,7 +28,7 @@ rule svim_call_total_ngmlr:
     params:
         wd=f"{RESULTDIR}/ngmlr/svim/total"
     shell:
-        "mkdir -p {params.wd} && svim alignment --min_sv_size 50 --sample GM24385 {params.wd} {input.bam} {input.ref} && mv {params.wd}/varants.vcf {params.wd}/GM24385.vcf 2>{log}"
+        "mkdir -p {params.wd} && svim alignment --min_sv_size 50 --sample GM24385 {params.wd} {input.bam} {input.ref} && mv {params.wd}/variants.vcf {params.wd}/GM24385.vcf 2>{log}"
 
 rule svim_call_5X_minimap2:
     input:
@@ -44,7 +44,7 @@ rule svim_call_5X_minimap2:
     params:
         wd=f"{RESULTDIR}/minimap2/svim/5X"
     shell:
-        "mkdir -p {params.wd} && svim alignment --min_sv_size 50 --sample GM24385 {params.wd} {input.bam} {input.ref} && mv {params.wd}/varants.vcf {params.wd}/GM24385.vcf 2>{log}" 
+        "mkdir -p {params.wd} && svim alignment --min_sv_size 50 --sample GM24385 {params.wd} {input.bam} {input.ref} && mv {params.wd}/variants.vcf {params.wd}/GM24385.vcf 2>{log}" 
 
 rule svim_call_5X_ngmlr:
     input:
@@ -60,7 +60,7 @@ rule svim_call_5X_ngmlr:
     params:
         wd=f"{RESULTDIR}/ngmlr/svim/5X"
     shell:
-        "mkdir -p {params.wd} && svim alignment --min_sv_size 50 --sample GM24385 {params.wd} {input.bam} {input.ref} && mv {params.wd}/varants.vcf {params.wd}/GM24385.vcf 2>{log}"
+        "mkdir -p {params.wd} && svim alignment --min_sv_size 50 --sample GM24385 {params.wd} {input.bam} {input.ref} && mv {params.wd}/variants.vcf {params.wd}/GM24385.vcf 2>{log}"
 
 rule svim_call_10X_minimap2:
     input:
@@ -76,7 +76,7 @@ rule svim_call_10X_minimap2:
     params:
         wd=f"{RESULTDIR}/minimap2/svim/10X"
     shell:
-        "mkdir -p {params.wd} && svim alignment --min_sv_size 50 --sample GM24385 {params.wd} {input.bam} {input.ref} && mv {params.wd}/varants.vcf {params.wd}/GM24385.vcf 2>{log}" 
+        "mkdir -p {params.wd} && svim alignment --min_sv_size 50 --sample GM24385 {params.wd} {input.bam} {input.ref} && mv {params.wd}/variants.vcf {params.wd}/GM24385.vcf 2>{log}" 
 
 rule svim_call_10X_ngmlr:
     input:
@@ -92,7 +92,7 @@ rule svim_call_10X_ngmlr:
     params:
         wd=f"{RESULTDIR}/ngmlr/svim/10X"
     shell:
-        "mkdir -p {params.wd} && svim alignment --min_sv_size 50 --sample GM24385 {params.wd} {input.bam} {input.ref} && mv {params.wd}/varants.vcf {params.wd}/GM24385.vcf 2>{log}"
+        "mkdir -p {params.wd} && svim alignment --min_sv_size 50 --sample GM24385 {params.wd} {input.bam} {input.ref} && mv {params.wd}/variants.vcf {params.wd}/GM24385.vcf 2>{log}"
 
 rule svim_call_15X_minimap2:
     input:
@@ -108,7 +108,7 @@ rule svim_call_15X_minimap2:
     params:
         wd=f"{RESULTDIR}/minimap2/svim/15X"
     shell:
-        "mkdir -p {params.wd} && svim alignment --min_sv_size 50 --sample GM24385 {params.wd} {input.bam} {input.ref} && mv {params.wd}/varants.vcf {params.wd}/GM24385.vcf 2>{log}" 
+        "mkdir -p {params.wd} && svim alignment --min_sv_size 50 --sample GM24385 {params.wd} {input.bam} {input.ref} && mv {params.wd}/variants.vcf {params.wd}/GM24385.vcf 2>{log}" 
 
 rule svim_call_15X_ngmlr:
     input:
@@ -124,7 +124,7 @@ rule svim_call_15X_ngmlr:
     params:
         wd=f"{RESULTDIR}/ngmlr/svim/15X"
     shell:
-        "mkdir -p {params.wd} && svim alignment --min_sv_size 50 --sample GM24385 {params.wd} {input.bam} {input.ref} && mv {params.wd}/varants.vcf {params.wd}/GM24385.vcf 2>{log}"
+        "mkdir -p {params.wd} && svim alignment --min_sv_size 50 --sample GM24385 {params.wd} {input.bam} {input.ref} && mv {params.wd}/variants.vcf {params.wd}/GM24385.vcf 2>{log}"
 
 rule svim_call_20X_minimap2:
     input:
@@ -140,7 +140,7 @@ rule svim_call_20X_minimap2:
     params:
         wd=f"{RESULTDIR}/minimap2/svim/20X"
     shell:
-        "mkdir -p {params.wd} && svim alignment --min_sv_size 50 --sample GM24385 {params.wd} {input.bam} {input.ref} && mv {params.wd}/varants.vcf {params.wd}/GM24385.vcf 2>{log}" 
+        "mkdir -p {params.wd} && svim alignment --min_sv_size 50 --sample GM24385 {params.wd} {input.bam} {input.ref} && mv {params.wd}/variants.vcf {params.wd}/GM24385.vcf 2>{log}" 
 
 rule svim_call_20X_ngmlr:
     input:
@@ -156,7 +156,7 @@ rule svim_call_20X_ngmlr:
     params:
         wd=f"{RESULTDIR}/ngmlr/svim/20X"
     shell:
-        "mkdir -p {params.wd} && svim alignment --min_sv_size 50 --sample GM24385 {params.wd} {input.bam} {input.ref} && mv {params.wd}/varants.vcf {params.wd}/GM24385.vcf 2>{log}"
+        "mkdir -p {params.wd} && svim alignment --min_sv_size 50 --sample GM24385 {params.wd} {input.bam} {input.ref} && mv {params.wd}/variants.vcf {params.wd}/GM24385.vcf 2>{log}"
 
 
 rule svim_call_25X_minimap2:
@@ -173,7 +173,7 @@ rule svim_call_25X_minimap2:
     params:
         wd=f"{RESULTDIR}/minimap2/svim/25X"
     shell:
-        "mkdir -p {params.wd} && svim alignment --min_sv_size 50 --sample GM24385 {params.wd} {input.bam} {input.ref} && mv {params.wd}/varants.vcf {params.wd}/GM24385.vcf 2>{log}" 
+        "mkdir -p {params.wd} && svim alignment --min_sv_size 50 --sample GM24385 {params.wd} {input.bam} {input.ref} && mv {params.wd}/variants.vcf {params.wd}/GM24385.vcf 2>{log}" 
 
 rule svim_call_25X_ngmlr:
     input:
@@ -189,7 +189,7 @@ rule svim_call_25X_ngmlr:
     params:
         wd=f"{RESULTDIR}/ngmlr/svim/25X"
     shell:
-        "mkdir -p {params.wd} && svim alignment --min_sv_size 50 --sample GM24385 {params.wd} {input.bam} {input.ref} && mv {params.wd}/varants.vcf {params.wd}/GM24385.vcf 2>{log}"
+        "mkdir -p {params.wd} && svim alignment --min_sv_size 50 --sample GM24385 {params.wd} {input.bam} {input.ref} && mv {params.wd}/variants.vcf {params.wd}/GM24385.vcf 2>{log}"
 
 
 rule svim_call_35X_minimap2:
@@ -206,7 +206,7 @@ rule svim_call_35X_minimap2:
     params:
         wd=f"{RESULTDIR}/minimap2/svim/35X"
     shell:
-        "mkdir -p {params.wd} && svim alignment --min_sv_size 50 --sample GM24385 {params.wd} {input.bam} {input.ref} && mv {params.wd}/varants.vcf {params.wd}/GM24385.vcf 2>{log}" 
+        "mkdir -p {params.wd} && svim alignment --min_sv_size 50 --sample GM24385 {params.wd} {input.bam} {input.ref} && mv {params.wd}/variants.vcf {params.wd}/GM24385.vcf 2>{log}" 
 
 rule svim_call_35X_ngmlr:
     input:
@@ -222,4 +222,4 @@ rule svim_call_35X_ngmlr:
     params:
         wd=f"{RESULTDIR}/ngmlr/svim/35X"
     shell:
-        "mkdir -p {params.wd} && svim alignment --min_sv_size 50 --sample GM24385 {params.wd} {input.bam} {input.ref} && mv {params.wd}/varants.vcf {params.wd}/GM24385.vcf 2>{log}"
+        "mkdir -p {params.wd} && svim alignment --min_sv_size 50 --sample GM24385 {params.wd} {input.bam} {input.ref} && mv {params.wd}/variants.vcf {params.wd}/GM24385.vcf 2>{log}"
