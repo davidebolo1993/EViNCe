@@ -26,6 +26,22 @@ rule ngmlr_align:
     shell:
         "zcat {input.fq} | ngmlr -r {input.ref} -x ont -t {threads} --rg-id nanopore --rg-sm GM24385  | samtools sort -@ {threads} -o {output} - 2>{log}"
 
+rule pbmm2_align_index:
+    input:
+       config["genome"],
+       config["fofn"]
+    output:
+        bam=f"{ALIGNDIR}/GM24385.pbmm2.srt.bam",
+        bai=f"{ALIGNDIR}/GM24385.pbmm2.srt.bam.bai"
+    threads: 20
+    log:
+        f"{LOGDIR}/alignments/pbmm2_alignment.log"
+    conda: "../envs/pbmm2.yaml"
+    params:
+        rg=r"'@RG\tID:nanopore\tSM:GM24385'"
+    shell:
+        "pbmm2 align --preset subread --sort --bam-index BAI --rg {params.rg} -j {threads} {input} {output.bam} 2>{log}"
+        
 rule samtools_index_minimap2:
     input:
         f"{ALIGNDIR}/GM24385.minimap2.srt.bam"
@@ -45,4 +61,3 @@ rule samtools_index_ngmlr:
     threads: 10
     shell:
         "samtools index -@ {threads} {input}"
-

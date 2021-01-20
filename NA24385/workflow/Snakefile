@@ -22,23 +22,23 @@ rule na24385:
 
 rule align:
     input:
-        #expand(f"{ALIGNDIR}/GM24385.{{aligner}}.srt.bam",aligner=["minimap2","ngmlr"]),
-        expand(f"{ALIGNDIR}/GM24385.{{aligner}}.srt.bam.bai",aligner=["minimap2","ngmlr"])
+        #expand(f"{ALIGNDIR}/GM24385.{{aligner}}.srt.bam",aligner=["minimap2","pbmm2","ngmlr"]),
+        expand(f"{ALIGNDIR}/GM24385.{{aligner}}.srt.bam.bai",aligner=["minimap2","pbmm2","ngmlr"])
 
 rule depth:
     input:
-        #expand(f"{ALIGNDIR}/GM24385.{{aligner}}.mosdepth.global.dist.txt",aligner=["minimap2","ngmlr"]),
-        #expand(f"{ALIGNDIR}/GM24385.{{aligner}}.mosdepth.summary.txt",aligner=["minimap2","ngmlr"]),
-        #expand(f"{ALIGNDIR}/GM24385.{{aligner}}.mosdepth.region.dist.txt",aligner=["minimap2","ngmlr"]),
-        #expand(f"{ALIGNDIR}/GM24385.{{aligner}}.regions.bed.gz",aligner=["minimap2","ngmlr"]),
-        #expand(f"{ALIGNDIR}/GM24385.{{aligner}}.regions.bed.gz.csi",aligner=["minimap2","ngmlr"]),
-        expand(f"{ALIGNDIR}/GM24385.{{aligner}}.coverage_per_chromosome.png", aligner=['minimap2','ngmlr']),
+        #expand(f"{ALIGNDIR}/GM24385.{{aligner}}.mosdepth.global.dist.txt",aligner=["minimap2","pbmm2","ngmlr"]),
+        #expand(f"{ALIGNDIR}/GM24385.{{aligner}}.mosdepth.summary.txt",aligner=["minimap2","pbmm2","ngmlr"]),
+        #expand(f"{ALIGNDIR}/GM24385.{{aligner}}.mosdepth.region.dist.txt",aligner=["minimap2","pbmm2","ngmlr"]),
+        #expand(f"{ALIGNDIR}/GM24385.{{aligner}}.regions.bed.gz",aligner=["minimap2","pbmm2","ngmlr"]),
+        #expand(f"{ALIGNDIR}/GM24385.{{aligner}}.regions.bed.gz.csi",aligner=["minimap2","pbmm2","ngmlr"]),
+        expand(f"{ALIGNDIR}/GM24385.{{aligner}}.coverage_per_chromosome.png", aligner=["minimap2","pbmm2","ngmlr"]),
         f"{ALIGNDIR}/GM24385.fraction_of_bases_per_depth.png"
 
 rule subsample:
     input:
-        #expand(f"{ALIGNDIR}/{{coverage}}/GM24385.{{aligner}}.srt.bam", coverage=["5X", "10X", "15X", "20X", "25X", "35X"], aligner=["minimap2","ngmlr"]),
-        expand(f"{ALIGNDIR}/{{coverage}}/GM24385.{{aligner}}.srt.bam.bai", coverage=["5X", "10X", "15X", "20X", "25X", "35X"], aligner=["minimap2","ngmlr"])
+        #expand(f"{ALIGNDIR}/{{coverage}}/GM24385.{{aligner}}.srt.bam", coverage=["5X", "10X", "15X", "20X", "25X", "35X"], aligner=["minimap2","pbmm2","ngmlr"]),
+        expand(f"{ALIGNDIR}/{{coverage}}/GM24385.{{aligner}}.srt.bam.bai", coverage=["5X", "10X", "15X", "20X", "25X", "35X"], aligner=["minimap2","pbmm2","ngmlr"])
 
 #second part: call variants
 

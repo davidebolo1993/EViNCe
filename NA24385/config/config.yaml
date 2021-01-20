@@ -9,6 +9,10 @@ samples:
     sample2: data/GM24385_2.fastq.gz
     sample3: data/GM24385_3.fastq.gz
 
+fofn:
+
+    data/input.fofn
+
 genome:
 
     data/hs37d5.fa

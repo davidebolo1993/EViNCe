@@ -5,3 +5,4 @@ NA24385/.snakemake
 NA24385/results/
 NA24385/logs
 NA24385/nohup.out
+NA24385/*.bam

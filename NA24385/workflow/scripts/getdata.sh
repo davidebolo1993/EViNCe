@@ -51,4 +51,8 @@ done
 
 gunzip -c hs37d5.fa.gz > hs37d5.fa
 
+#also create .fofn with fastq input for pbmmi aligner
+
+find "$(pwd)" -name "*.fastq.gz" > input.fofn
+
 cd -
