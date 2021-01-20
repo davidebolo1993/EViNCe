@@ -36,8 +36,7 @@ for (i in 1:length(wanted)) {
   if (wanted[i] %in% forxlab) {
     xlab_<-"Genomic coordinate"
   }
-  minimap2plots[[wanted[i]]]<-ggplot(downsampled, aes(x=V2, y=V4, color=V4)) + geom_point(size=.2, show.legend = FALSE) + scale_color_viridis("Depth", option = "plasma") + theme_bw() + 
-xlab(xlab_) + ylab(ylab_) + geom_hline(yintercept=mediand, linetype="dashed", color = "black") + ggtitle(paste0("Chromosome ", wanted[i])) + theme(plot.title = element_text(hjust = 0.5))
+  minimap2plots[[wanted[i]]]<-ggplot(downsampled, aes(x=V2, y=V4, color=V4)) + geom_point(size=.2, show.legend = FALSE) + scale_color_viridis("Depth", option = "plasma") + theme_bw() + xlab(xlab_) + ylab(ylab_) + geom_hline(yintercept=mediand, linetype="dashed", color = "black") + ggtitle(paste0("Chromosome ", wanted[i])) + theme(plot.title = element_text(hjust = 0.5))
 }
   
 n <- length(minimap2plots)
@@ -66,8 +65,7 @@ for (i in 1:length(wanted)) {
   if (wanted[i] %in% forxlab) {
     xlab_<-"Genomic coordinate"
   }
-  ngmlrplots[[wanted[i]]]<-ggplot(downsampled, aes(x=V2, y=V4, color=V4)) + geom_point(size=.2, show.legend = FALSE) + scale_color_viridis("Depth", option = "plasma") + theme_bw() + xlab(xlab_) + 
-ylab(ylab_) + geom_hline(yintercept=mediand, linetype="dashed", color = "black") + ggtitle(paste0("Chromosome ", wanted[i])) + theme(plot.title = element_text(hjust = 0.5))
+  ngmlrplots[[wanted[i]]]<-ggplot(downsampled, aes(x=V2, y=V4, color=V4)) + geom_point(size=.2, show.legend = FALSE) + scale_color_viridis("Depth", option = "plasma") + theme_bw() + xlab(xlab_) + ylab(ylab_) + geom_hline(yintercept=mediand, linetype="dashed", color = "black") + ggtitle(paste0("Chromosome ", wanted[i])) + theme(plot.title = element_text(hjust = 0.5))
 }
 
 n <- length(ngmlrplots)
@@ -95,8 +93,7 @@ for (i in 1:length(wanted)) {
   if (wanted[i] %in% forxlab) {
     xlab_<-"Genomic coordinate"
   }
-  pbmm2plots[[wanted[i]]]<-ggplot(downsampled, aes(x=V2, y=V4, color=V4)) + geom_point(size=.2, show.legend = FALSE) + scale_color_viridis("Depth", option = "plasma") + theme_bw() + xlab(xlab_) + 
-ylab(ylab_) + geom_hline(yintercept=mediand, linetype="dashed", color = "black") + ggtitle(paste0("Chromosome ", wanted[i])) + theme(plot.title = element_text(hjust = 0.5))
+  pbmm2plots[[wanted[i]]]<-ggplot(downsampled, aes(x=V2, y=V4, color=V4)) + geom_point(size=.2, show.legend = FALSE) + scale_color_viridis("Depth", option = "plasma") + theme_bw() + xlab(xlab_) + ylab(ylab_) + geom_hline(yintercept=mediand, linetype="dashed", color = "black") + ggtitle(paste0("Chromosome ", wanted[i])) + theme(plot.title = element_text(hjust = 0.5))
 }
 
 n <- length(pbmm2plots)
@@ -108,8 +105,7 @@ ggsave(file.path(args[1], "GM24385.pbmm2.coverage_per_chromosome.png"), global, 
 #minimap2,ngmlr and pbmm2 plot, fraction of bases per depth treshold
 message("Plotting proportions of genome at coverage")
 
-files<-c(file.path(args[1], "GM24385.minimap2.mosdepth.global.dist.txt"), file.path(args[1], "GM24385.ngmlr.mosdepth.global.dist.txt"), file.path(args[1], 
-"GM24385.pbmm2.mosdepth.global.dist.txt"))
+files<-c(file.path(args[1], "GM24385.minimap2.mosdepth.global.dist.txt"), file.path(args[1], "GM24385.ngmlr.mosdepth.global.dist.txt"), file.path(args[1],"GM24385.pbmm2.mosdepth.global.dist.txt"))
 
 png(file.path(args[1], "GM24385.fraction_of_bases_per_depth.png"), height=1000, width=1000)
 plot(c(1:200), c(1:200), type='n', xlab="Depth", ylab="Fraction of bases \u2265 depth", ylim=c(0,1.0), font.main = 1, main="Proportion of genome at coverage")
