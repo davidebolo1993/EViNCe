@@ -190,3 +190,98 @@ rule subsample_ngmlr_35X:
     shell:
         "samtools view -s {params.fraction} -@ {threads} -o {output.bam} {input.bam} && samtools index -@ {threads} {output.bam} 2>> {log}"
 
+rule subsample_pbmm2_5X:
+    input:
+        bam=f"{ALIGNDIR}/GM24385.pbmm2.srt.bam",
+        bai=f"{ALIGNDIR}/GM24385.pbmm2.srt.bam.bai"
+    output:
+        bam=f"{ALIGNDIR}/5X/GM24385.pbmm2.srt.bam",
+        bai=f"{ALIGNDIR}/5X/GM24385.pbmm2.srt.bam.bai"
+    log:
+        f"{LOGDIR}/alignments/pbmm2_samtools_subsample.log"
+    conda: "../envs/pbmm2.yaml"
+    threads: 10
+    params:
+        fraction="0.1190476" #considering 42X coverage as from mosdepth depth
+    shell:
+        "samtools view -s {params.fraction} -@ {threads} -o {output.bam} {input.bam} && samtools index -@ {threads} {output.bam} 2>> {log}"
+
+rule subsample_pbmm2_10X:
+    input:
+        bam=f"{ALIGNDIR}/GM24385.pbmm2.srt.bam",
+        bai=f"{ALIGNDIR}/GM24385.pbmm2.srt.bam.bai"
+    output:
+        bam=f"{ALIGNDIR}/10X/GM24385.pbmm2.srt.bam",
+        bai=f"{ALIGNDIR}/10X/GM24385.pbmm2.srt.bam.bai"
+    log:
+        f"{LOGDIR}/alignments/pbmm2_samtools_subsample.log"
+    conda: "../envs/pbmm2.yaml"
+    threads: 10
+    params:
+        fraction="0.2380952" #considering 42X coverage as from mosdepth depth
+    shell:
+        "samtools view -s {params.fraction} -@ {threads} -o {output.bam} {input.bam} && samtools index -@ {threads} {output.bam} 2>> {log}"
+
+rule subsample_pbmm2_15X:
+    input:
+        bam=f"{ALIGNDIR}/GM24385.pbmm2.srt.bam",
+        bai=f"{ALIGNDIR}/GM24385.pbmm2.srt.bam.bai"
+    output:
+        bam=f"{ALIGNDIR}/15X/GM24385.pbmm2.srt.bam",
+        bai=f"{ALIGNDIR}/15X/GM24385.pbmm2.srt.bam.bai"
+    log:
+        f"{LOGDIR}/alignments/pbmm2_samtools_subsample.log"
+    conda: "../envs/pbmm2.yaml"
+    threads: 10
+    params:
+        fraction="0.3571429" #considering 42X coverage as from mosdepth depth
+    shell:
+        "samtools view -s {params.fraction} -@ {threads} -o {output.bam} {input.bam} && samtools index -@ {threads} {output.bam} 2>> {log}"
+
+rule subsample_pbmm2_20X:
+    input:
+        bam=f"{ALIGNDIR}/GM24385.pbmm2.srt.bam",
+        bai=f"{ALIGNDIR}/GM24385.pbmm2.srt.bam.bai"
+    output:
+        bam=f"{ALIGNDIR}/20X/GM24385.pbmm2.srt.bam",
+        bai=f"{ALIGNDIR}/20X/GM24385.pbmm2.srt.bam.bai"
+    log:
+        f"{LOGDIR}/alignments/pbmm2_samtools_subsample.log"
+    conda: "../envs/pbmm2.yaml"
+    threads: 10
+    params:
+        fraction="0.4761905" #considering 42X coverage as from mosdepth depth
+    shell:
+        "samtools view -s {params.fraction} -@ {threads} -o {output.bam} {input.bam} && samtools index -@ {threads} {output.bam} 2>> {log}"
+
+rule subsample_pbmm2_25X:
+    input:
+        bam=f"{ALIGNDIR}/GM24385.pbmm2.srt.bam",
+        bai=f"{ALIGNDIR}/GM24385.pbmm2.srt.bam.bai"
+    output:
+        bam=f"{ALIGNDIR}/25X/GM24385.pbmm2.srt.bam",
+        bai=f"{ALIGNDIR}/25X/GM24385.pbmm2.srt.bam.bai"
+    log:
+        f"{LOGDIR}/alignments/pbmm2_samtools_subsample.log"
+    conda: "../envs/pbmm2.yaml"
+    threads: 10
+    params:
+        fraction="0.5952381" #considering 42X coverage as from mosdepth depth
+    shell:
+        "samtools view -s {params.fraction} -@ {threads} -o {output.bam} {input.bam} && samtools index -@ {threads} {output.bam} 2>> {log}"
+
+rule subsample_pbmm2_35X:
+    input:
+        bam=f"{ALIGNDIR}/GM24385.pbmm2.srt.bam",
+        bai=f"{ALIGNDIR}/GM24385.pbmm2.srt.bam.bai"
+    output:
+        bam=f"{ALIGNDIR}/35X/GM24385.pbmm2.srt.bam",
+        bai=f"{ALIGNDIR}/35X/GM24385.pbmm2.srt.bam.bai"
+    log:
+        f"{LOGDIR}/alignments/pbmm2_samtools_subsample.log"
+    conda: "../envs/pbmm2.yaml"
+    threads: 10
+    params:
+        fraction="0.8333333" #considering 42X coverage as from mosdepth depth
+    shell:
+        "samtools view -s {params.fraction} -@ {threads} -o {output.bam} {input.bam} && samtools index -@ {threads} {output.bam} 2>> {log}"
