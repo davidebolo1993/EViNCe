@@ -19,7 +19,7 @@ Other tools used:
 - [minimap2](https://github.com/lh3/minimap2) (2.17)
 - [ngmlr](https://github.com/philres/ngmlr) (0.2.7)
 - [pbmm2](https://github.com/PacificBiosciences/pbmm2) (1.3.0) 
-- ~~[samtools](https://github.com/samtools/samtools) (1.11), using [htslib](https://github.com/samtools/htslib) (1.11)~~ , due to "incomplete aux fields" errors occuring when sorting alignments from $
+- ~~[samtools](https://github.com/samtools/samtools) (1.11), using [htslib](https://github.com/samtools/htslib) (1.11)~~ , due to "incomplete aux fields" errors occuring when sorting alignments from ngmlr
 - [samtools](https://github.com/samtools/samtools) (1.9), using [htslib](https://github.com/samtools/htslib) (1.9)
 - ~~[bcftools](https://github.com/samtools/bcftools) (1.11), using [htslib](https://github.com/samtools/htslib) (1.11)~~
 - [bcftools](https://github.com/samtools/bcftools) (1.9), using [htslib](https://github.com/samtools/htslib) (1.9)
