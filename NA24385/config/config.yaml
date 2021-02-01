@@ -13,6 +13,10 @@ fofn:
 
     data/input.fofn
 
+nanosvbed:
+
+    data/nanosv.hg19.bed
+
 genome:
 
     data/hs37d5.fa
