@@ -47,3 +47,9 @@ snakemake sniffles --cores 20
 snakemake svim --cores 20
 ```
 
+## Call INVs with npinv
+
+``` bash
+snakemake npinv --cores 20
+```
+
