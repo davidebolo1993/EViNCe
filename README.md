@@ -24,6 +24,7 @@ Other tools used:
 - ~~[bcftools](https://github.com/samtools/bcftools) (1.11), using [htslib](https://github.com/samtools/htslib) (1.11)~~
 - [bcftools](https://github.com/samtools/bcftools) (1.9), using [htslib](https://github.com/samtools/htslib) (1.9)
 - [truvari](https://github.com/spiralgenetics/truvari) (2.0.0-dev)
+- [SURVIVOR](https://github.com/fritzsedlazeck/SURVIVOR.git) (1.0.7)
 - [VISOR](https://github.com/davidebolo1993/VISOR) (1.1)
 
 Pipelines are built using [Snakemake](https://snakemake.readthedocs.io/en/stable) to improve readability/reproducibility of the results. This also allows to install the tools required for each command on-the-fly, using the --use-conda flag. 
