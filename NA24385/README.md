@@ -52,10 +52,3 @@ snakemake svim --cores 20
 ``` bash
 snakemake npinv --cores 20
 ```
-
-## Call SVs with nanosv
-
-``` bash
-snakemake nanosv --cores 20
-```
-

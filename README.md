@@ -11,7 +11,7 @@ To date, the following methods (versions) are tested. Maybe others will be added
 - [sniffles](https://github.com/fritzsedlazeck/Sniffles) (1.0.12)
 - [pbsv](https://github.com/PacificBiosciences/pbsv) (2.4.0)
 - [cuteSV](https://github.com/tjiangHIT/cuteSV) (1.0.10)
-- [nanoSV](https://github.com/mroosmalen/nanosv) (1.2.4)
+- ~~[nanoSV](https://github.com/mroosmalen/nanosv) (1.2.4)~~, too slow
 - [npInv](https://github.com/haojingshao/npInv) (1.24)
 
 Other tools used:

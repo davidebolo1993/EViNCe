@@ -1,4 +1,0 @@
-channels:
- - bioconda
-dependencies:
- - nanosv=1.2.4
