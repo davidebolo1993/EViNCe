@@ -59,9 +59,4 @@ find "$(pwd)" -name "*.fastq.gz" > input.fofn
 
 tabix HG002_SVs_Tier1_v0.6.vcf.gz
 
-#get nanosv BED
-
-wget https://raw.githubusercontent.com/mroosmalen/nanosv/master/nanosv/bedfiles/human_hg19.bed
-mv human_hg19.bed nanosv.hg19.bed
-
 cd -
