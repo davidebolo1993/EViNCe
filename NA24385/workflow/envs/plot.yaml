@@ -10,3 +10,4 @@ dependencies:
  - r-dplyr
  - r-viridis
  - r-r.utils
+ - r-upsetr

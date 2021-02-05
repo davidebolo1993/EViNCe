@@ -26,6 +26,7 @@ rule ngmlr_align:
     shell:
         "zcat {input.fq} | ngmlr -r {input.ref} -x ont -t {threads} --rg-id nanopore --rg-sm GM24385  | samtools sort -@ {threads} -o {output} - 2>{log}"
 
+
 rule pbmm2_align_index:
     input:
        config["genome"],
@@ -61,3 +62,4 @@ rule samtools_index_ngmlr:
     threads: 10
     shell:
         "samtools index -@ {threads} {input}"
+

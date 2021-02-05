@@ -52,3 +52,9 @@ snakemake svim --cores 20
 ``` bash
 snakemake npinv --cores 20
 ```
+
+## Create upset plot (complete coverage, variants with more of 10 supporting reads)
+
+``` bash
+snakemake upset --cores 10
+```

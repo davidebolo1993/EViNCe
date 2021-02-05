@@ -1,9 +1,14 @@
+import os
+
 configfile: "config/config.yaml"
 
 RESULTDIR = config["outdir"]
 ALIGNDIR = config["aligndir"]
 LOGDIR = config["logdir"]
 SCRIPTDIR = config["scriptdir"]
+VCFTRUTH=config["vcf"]
+VCFDIR=os.path.dirname(VCFTRUTH)
+
 
 include: "rules/align.smk"
 include: "rules/depth.smk"
@@ -13,6 +18,7 @@ include: "rules/sniffles.smk"
 include: "rules/svim.smk"
 include: "rules/pbsv.smk"
 include: "rules/npinv.smk"
+include: "rules/upset.smk"
 
 rule na24385:
     input:
@@ -20,7 +26,8 @@ rule na24385:
         expand(f"{RESULTDIR}/{{aligner}}/sniffles/{{coverage}}/GM24385.vcf", aligner=["minimap2","ngmlr"], coverage=["5X", "10X", "15X", "20X", "25X", "35X", "total"]),
         expand(f"{RESULTDIR}/{{aligner}}/svim/{{coverage}}/GM24385.vcf", aligner=["minimap2","ngmlr"], coverage=["5X", "10X", "15X", "20X", "25X", "35X", "total"]),
         expand(f"{RESULTDIR}/pbmm2/pbsv/{{coverage}}/GM24385.vcf",coverage=["5X", "10X", "15X", "20X", "25X", "35X", "total"]),
-        expand(f"{RESULTDIR}/{{aligner}}/npinv/{{coverage}}/GM24385.vcf", aligner=["minimap2","ngmlr"], coverage=["5X", "10X", "15X", "20X", "25X", "35X", "total"])
+        expand(f"{RESULTDIR}/{{aligner}}/npinv/{{coverage}}/GM24385.vcf", aligner=["minimap2","ngmlr"], coverage=["5X", "10X", "15X", "20X", "25X", "35X", "total"]),
+        expand(f"{RESULTDIR}/GM24385.{{aligner}}.upset.pdf", aligner=["minimap2", "ngmlr"])
 
 #first part: map reads to reference and perform kind of QC (coverage)
 
@@ -65,3 +72,12 @@ rule pbsv:
 rule npinv:
     input:
         expand(f"{RESULTDIR}/{{aligner}}/npinv/{{coverage}}/GM24385.vcf", aligner=["minimap2","ngmlr"], coverage=["5X", "10X", "15X", "20X", "25X", "35X", "total"])
+
+rule upset:
+    input:
+        #expand(f"{RESULTDIR}/{{aligner}}/{{tools}}/total/GM24385.clean.vcf", aligner=["minimap2","ngmlr"], tools=["cutesv", "sniffles", "svim", "npinv"]),
+        #f"{RESULTDIR}/pbmm2/pbsv/total/GM24385.clean.vcf",
+        #f"{VCFDIR}/GM24385.clean.vcf",
+        #expand(f"{RESULTDIR}/GM24385.{{aligner}}.merged.vcf", aligner=["minimap2", "ngmlr"]),
+        #expand(f"{RESULTDIR}/GM24385.{{aligner}}.upset.tsv", aligner=["minimap2", "ngmlr"]),
+        expand(f"{RESULTDIR}/GM24385.{{aligner}}.upset.pdf", aligner=["minimap2", "ngmlr"])

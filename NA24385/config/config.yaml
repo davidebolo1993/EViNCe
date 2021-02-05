@@ -13,9 +13,9 @@ fofn:
 
     data/input.fofn
 
-nanosvbed:
+excludebed:
 
-    data/nanosv.hg19.bed
+    data/excludechroms.txt
 
 genome:
 

@@ -59,4 +59,8 @@ find "$(pwd)" -name "*.fastq.gz" > input.fofn
 
 tabix HG002_SVs_Tier1_v0.6.vcf.gz
 
+#get chromosomes that we need to exclude later
+
+cut -f1 hs37d5.fa.fai | tail -n +25 > excludechroms.txt
+
 cd -
