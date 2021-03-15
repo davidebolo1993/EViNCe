@@ -13,6 +13,7 @@ To date, the following methods (versions) are tested. Maybe others will be added
 - [cuteSV](https://github.com/tjiangHIT/cuteSV) (1.0.10)
 - ~~[nanoSV](https://github.com/mroosmalen/nanosv) (1.2.4)~~, too slow
 - [npInv](https://github.com/haojingshao/npInv) (1.24)
+- [nanomonsv](https://github.com/friend1ws/nanomonsv) (0.4.0b2)
 
 Other tools used:
 
