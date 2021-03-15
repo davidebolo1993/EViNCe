@@ -49,7 +49,7 @@ snakemake svim --cores 20
 
 ## Call SVs with nanomonsv
 
-````bash
+``` bash
 snakemake nanomonsv --cores 20
 ```
 
