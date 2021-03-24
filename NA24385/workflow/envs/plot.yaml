@@ -1,6 +1,7 @@
 channels:
  - conda-forge
  - r
+ - bioconda
 dependencies:
  - r-base
  - r-ggplot2
@@ -11,3 +12,6 @@ dependencies:
  - r-viridis
  - r-r.utils
  - r-upsetr
+ - r-circlize
+ - bioconductor-genomicranges
+ - bioconductor-bsgenome.hsapiens.ucsc.hg19

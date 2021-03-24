@@ -59,8 +59,8 @@ snakemake nanomonsv --cores 20
 snakemake npinv --cores 20
 ```
 
-## Create upset plot (complete coverage, variants with more of 10 supporting reads)
+## Create upset plots and plot variants per chromosome
 
 ``` bash
-snakemake upset --cores 10
+snakemake sumsvs --cores 3
 ```

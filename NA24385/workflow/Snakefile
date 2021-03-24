@@ -18,8 +18,8 @@ include: "rules/sniffles.smk"
 include: "rules/svim.smk"
 include: "rules/pbsv.smk"
 include: "rules/npinv.smk"
-include: "rules/upset.smk"
 include: "rules/nanomonsv.smk"
+include: "rules/sumsvs.smk"
 
 rule na24385:
     input:
@@ -79,11 +79,13 @@ rule nanomonsv:
     input:
         expand(f"{RESULTDIR}/{{aligner}}/nanomonsv/{{coverage}}/GM24385.vcf", aligner=["minimap2","ngmlr"], coverage=["5X", "10X", "15X", "20X", "25X", "35X", "total"])
 
-rule upset:
+rule sumsvs:
     input:
         #expand(f"{RESULTDIR}/{{aligner}}/{{tools}}/total/GM24385.clean.vcf", aligner=["minimap2","ngmlr"], tools=["cutesv", "sniffles", "svim", "npinv"]),
         #f"{RESULTDIR}/pbmm2/pbsv/total/GM24385.clean.vcf",
         #f"{VCFDIR}/GM24385.clean.vcf",
         #expand(f"{RESULTDIR}/GM24385.{{aligner}}.merged.vcf", aligner=["minimap2", "ngmlr"]),
         #expand(f"{RESULTDIR}/GM24385.{{aligner}}.upset.tsv", aligner=["minimap2", "ngmlr"]),
-        expand(f"{RESULTDIR}/GM24385.{{aligner}}.upset.pdf", aligner=["minimap2", "ngmlr"])
+        expand(f"{RESULTDIR}/GM24385.{{aligner}}.upset.pdf", aligner=["minimap2", "ngmlr"]),
+        expand(f"{RESULTDIR}/GM24385.{{set}}.svs.pdf", set=["cutesv", "sniffles", "svim", "pbsv", "truth"])
+	

@@ -3,3 +3,4 @@ channels:
 dependencies:
  - bcftools
  - survivor
+ - bedtools

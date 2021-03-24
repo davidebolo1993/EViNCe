@@ -63,4 +63,13 @@ tabix HG002_SVs_Tier1_v0.6.vcf.gz
 
 cut -f1 hs37d5.fa.fai | tail -n +25 > excludechroms.txt
 
+#get regions we do not want to include in final calls (telomeres/centromeres/lowcomplexity/pericentromeres/subtelomeres)
+
+wget https://raw.githubusercontent.com/dellytools/delly/master/excludeTemplates/human.hg19.excl.tsv && head -144 human.hg19.excl.tsv | grep -v "^chr" > excluderegions.txt
+wget https://raw.githubusercontent.com/shenlab-sinai/diffreps/master/lib/PJ/Database/hg19/hg19.pericentromeres.bed && awk 'OFS=FS="\t"''{print $0, "pericentromere"}' hg19.pericentromeres.bed | sed  's/^chr//g' >> excluderegions.txt
+wget https://raw.githubusercontent.com/shenlab-sinai/diffreps/master/lib/PJ/Database/hg19/hg19.subtelomeres.bed && awk 'OFS=FS="\t"''{print $0, "subtelomeres"}' hg19.subtelomeres.bed | sed  's/^chr//g' >> excluderegions.txt
+sort -k1,1 -k2,2n excluderegions.txt > excluderegions.srt.bed
+rm human.hg19.excl.tsv hg19.pericentromeres.bed hg19.subtelomeres.bed excluderegions.txt
+
+
 cd -

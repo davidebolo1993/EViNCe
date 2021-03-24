@@ -17,6 +17,10 @@ excludebed:
 
     data/excludechroms.txt
 
+excluderegions:
+
+    data/excluderegions.srt.bed
+
 genome:
 
     data/hs37d5.fa
