@@ -3,7 +3,7 @@
 Oxford Nanopore PromethION ultra long reads of the Ashkenazim son [HG002/NA24385](https://ftp.ncbi.nlm.nih.gov/giab/ftp/data/AshkenazimTrio/HG002_NA24385_son/UCSC_Ultralong_OxfordNanopore_Promethion/). GIAB variant calls for the same individual are also [available](https://ftp-trace.ncbi.nlm.nih.gov/giab/ftp/data/AshkenazimTrio/analysis/NIST_SVs_Integration_v0.6/) and can be used as ground truth.
 
 
-## Download Data
+### Download Data
 
 ``` bash
 cd workflow/scripts
@@ -11,56 +11,56 @@ bash getdata.sh
 cd -
 ```
 
-## Align FASTQ to hs37d5
+### Align FASTQ to hs37d5
 
 ``` bash
 snakemake align --cores 20 
 ```
 
-## Calculate/plot coverage statistics
+### Calculate/plot coverage statistics
 
 ``` bash
 snakemake depth --cores 20
 ```
 
-## Subsample original alignments
+### Subsample original alignments
 
 ``` bash
 snakemake subsample --cores 20
 ```
 
-## Call SVs with cuteSV
+### Call SVs with cuteSV
 
 ``` bash
 snakemake cutesv --cores 20
 ```
 
-## Call SVs with sniffles
+### Call SVs with sniffles
 
 ``` bash
 snakemake sniffles --cores 20
 ```
 
-## Call SVs with svim
+### Call SVs with svim
 
 ``` bash
 snakemake svim --cores 20
 ```
 
-## Call SVs with nanomonsv
+### Call SVs with nanomonsv
 
 ``` bash
 snakemake nanomonsv --cores 20
 ```
 
-## Call INVs with npinv
+### Call INVs with npinv
 
 ``` bash
 snakemake npinv --cores 20
 ```
 
-## Create upset plots and plot variants per chromosome
+### Create upset plots and plot variants per chromosome
 
 ``` bash
-snakemake sumsvs --cores 3
+snakemake sumsvs --cores 2
 ```

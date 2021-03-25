@@ -252,39 +252,58 @@ rule clean_minimap2_npinv:
     input:
         f"{RESULTDIR}/minimap2/npinv/total/GM24385.vcf"
     output:
-        f"{RESULTDIR}/minimap2/npinv/total/GM24385.clean.vcf"
+        vcf=f"{RESULTDIR}/minimap2/npinv/total/GM24385.clean.vcf",
+        bed=f"{RESULTDIR}/minimap2/npinv/total/GM24385.nobnd.bed"
     log:
         f"{LOGDIR}/results/npinv_minimap2_filter.log"
     conda: "../envs/sumsvs.yaml"
     threads: 1
     params:
         exclude = config["excludebed"],
+        complex = config["excluderegions"],
         tmpfile=f"{RESULTDIR}/minimap2/npinv/total/tmp.txt",
         tmpvcf=f"{RESULTDIR}/minimap2/npinv/total/tmp.vcf",
         tmpbed=f"{RESULTDIR}/minimap2/npinv/total/tmp.bed"
     shell:
         """
-        echo Sample NPINV > {params.tmpfile} && grep -v -f {params.exclude} {input} | bcftools view -f PASS -i 'DV>=10' | bcftools view -e 'GT[*]="RR"' | bcftools sort > {params.tmpvcf} && bcftools query -f '%CHROM\t%POS\t%INFO/END\t%CHROM\t%POS\t%INFO/END\t%ID\t,\t+\t+\tINV\n' {params.tmpvcf} > {params.tmpbed} && rm {params.tmpvcf} && SURVIVOR bedtovcf {params.tmpbed} INV {params.tmpvcf} && rm {params.tmpbed} && bcftools reheader -s {params.tmpfile} {params.tmpvcf} > {output} && rm {params.tmpfile} && rm {params.tmpvcf} 2> {log}
+        echo Sample NPINV > {params.tmpfile} && grep -v -f {params.exclude} {input} | bcftools view -f PASS -i 'DV>=10' | bcftools view -e 'GT[*]="RR"' | bcftools sort > {params.tmpvcf} && bcftools query -f '%CHROM\t%POS\t%INFO/END\t%CHROM\t%POS\t%INFO/END\t%ID\t,\t+\t+\tINV\n' {params.tmpvcf} > {params.tmpbed} && rm {params.tmpvcf} && SURVIVOR bedtovcf {params.tmpbed} INV {params.tmpvcf} && rm {params.tmpbed} && bcftools reheader -s {params.tmpfile} {params.tmpvcf} > {output.vcf} && rm {params.tmpfile} && rm {params.tmpvcf} && bcftools query -f '%CHROM\t%POS\t%END\t%SVTYPE\n' {output.vcf} | sortBed | intersectBed -a stdin -b {params.complex} -v -wa | mergeBed -c 4 -o distinct > {output.bed} 2> {log}
         """
 
 rule clean_ngmlr_npinv:
     input:
         f"{RESULTDIR}/ngmlr/npinv/total/GM24385.vcf"
     output:
-        f"{RESULTDIR}/ngmlr/npinv/total/GM24385.clean.vcf"
+        vcf=f"{RESULTDIR}/ngmlr/npinv/total/GM24385.clean.vcf",
+        bed=f"{RESULTDIR}/ngmlr/npinv/total/GM24385.nobnd.bed"
     log:
         f"{LOGDIR}/results/npinv_ngmlr_filter.log"
     conda: "../envs/sumsvs.yaml"
     threads: 1
     params:
         exclude = config["excludebed"],
+        complex = config["excluderegions"],
         tmpfile=f"{RESULTDIR}/ngmlr/npinv/total/tmp.txt",
         tmpvcf=f"{RESULTDIR}/ngmlr/npinv/total/tmp.vcf",
         tmpbed=f"{RESULTDIR}/ngmlr/npinv/total/tmp.bed"
     shell:
        """
-       echo Sample NPINV > {params.tmpfile} && grep -v -f {params.exclude} {input} | bcftools view -f PASS -i 'DV>=10' | bcftools view -e 'GT[*]="RR"' | bcftools sort > {params.tmpvcf} && bcftools query -f '%CHROM\t%POS\t%INFO/END\t%CHROM\t%POS\t%INFO/END\t%ID\t,\t+\t+\tINV\n' {params.tmpvcf} > {params.tmpbed} && rm {params.tmpvcf} && SURVIVOR bedtovcf {params.tmpbed} INV {params.tmpvcf} && rm {params.tmpbed} && bcftools reheader -s {params.tmpfile} {params.tmpvcf} > {output} && rm {params.tmpfile} && rm {params.tmpvcf} 2> {log}
+         echo Sample NPINV > {params.tmpfile} && grep -v -f {params.exclude} {input} | bcftools view -f PASS -i 'DV>=10' | bcftools view -e 'GT[*]="RR"' | bcftools sort > {params.tmpvcf} && bcftools query -f '%CHROM\t%POS\t%INFO/END\t%CHROM\t%POS\t%INFO/END\t%ID\t,\t+\t+\tINV\n' {params.tmpvcf} > {params.tmpbed} && rm {params.tmpvcf} && SURVIVOR bedtovcf {params.tmpbed} INV {params.tmpvcf} && rm {params.tmpbed} && bcftools reheader -s {params.tmpfile} {params.tmpvcf} > {output.vcf} && rm {params.tmpfile} && rm {params.tmpvcf} && bcftools query -f '%CHROM\t%POS\t%END\t%SVTYPE\n' {output.vcf} | sortBed | intersectBed -a stdin -b {params.complex} -v -wa | mergeBed -c 4 -o distinct > {output.bed} 2> {log}
        """
+
+rule npinv_svs_plot:
+    input:
+        expand(f"{RESULTDIR}/{{aligner}}/npinv/total/GM24385.nobnd.bed", aligner=['minimap2', 'ngmlr'])
+    output:
+        f"{RESULTDIR}/GM24385.npinv.svs.pdf"
+    log:
+        f"{LOGDIR}/results/GM24385.npinv_svs_plot.log"
+    conda: "../envs/plot.yaml"
+    threads: 1
+    params:
+        minimap2dir = f"{RESULTDIR}/minimap2/npinv/total",
+        ngmlrdir = f"{RESULTDIR}/ngmlr/npinv/total"
+    shell:
+        "Rscript {SCRIPTDIR}/circosplot.R {params.minimap2dir} {params.ngmlrdir} npinv {RESULTDIR} 2> {log}"
 
 rule survivor_merge_minimap2:
     input:
@@ -340,4 +359,5 @@ rule upset_plot:
     conda: "../envs/plot.yaml"
     shell:
         "Rscript {SCRIPTDIR}/upsetplot.R {RESULTDIR} 2> {log}"
+
 
