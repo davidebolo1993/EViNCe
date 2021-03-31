@@ -47,12 +47,6 @@ snakemake sniffles --cores 20
 snakemake svim --cores 20
 ```
 
-### Call SVs with nanomonsv
-
-``` bash
-snakemake nanomonsv --cores 20
-```
-
 ### Call INVs with npinv
 
 ``` bash

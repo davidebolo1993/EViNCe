@@ -18,8 +18,8 @@ include: "rules/sniffles.smk"
 include: "rules/svim.smk"
 include: "rules/pbsv.smk"
 include: "rules/npinv.smk"
-include: "rules/nanomonsv.smk"
 include: "rules/sumsvs.smk"
+include: "rules/prf1.smk"
 
 rule na24385:
     input:
@@ -76,10 +76,6 @@ rule npinv:
     input:
         expand(f"{RESULTDIR}/{{aligner}}/npinv/{{coverage}}/GM24385.vcf", aligner=["minimap2","ngmlr"], coverage=["5X", "10X", "15X", "20X", "25X", "35X", "total"])
 
-rule nanomonsv:
-    input:
-        expand(f"{RESULTDIR}/{{aligner}}/nanomonsv/{{coverage}}/GM24385.vcf", aligner=["minimap2","ngmlr"], coverage=["5X", "10X", "15X", "20X", "25X", "35X", "total"])
-
 rule sumsvs:
     input:
         #expand(f"{RESULTDIR}/{{aligner}}/{{tools}}/total/GM24385.clean.vcf", aligner=["minimap2","ngmlr"], tools=["cutesv", "sniffles", "svim", "npinv"]),
@@ -90,3 +86,13 @@ rule sumsvs:
         expand(f"{RESULTDIR}/GM24385.{{aligner}}.upset.pdf", aligner=["minimap2", "ngmlr"]),
         expand(f"{RESULTDIR}/GM24385.{{set}}.svs.pdf", set=["cutesv", "sniffles", "svim", "pbsv", "npinv","truth"])
 	
+rule prf1:
+    input:
+        #expand(f"{RESULTDIR}/{{aligner}}/{{tool}}/total/{{tool}}.{{aligner}}.bysupport.tsv", tool=["cutesv", "svim", "sniffles"], aligner=["minimap2", "ngmlr"]),
+        #f"{RESULTDIR}/pbmm2/pbsv/total/pbsv.pbmm2.bysupport.tsv",
+        #f"{RESULTDIR}/prf1.bysupport.tsv",
+        f"{RESULTDIR}/prf1.bysupport.pdf",
+        #expand(f"{RESULTDIR}/{{aligner}}/{{tool}}/{{tool}}.{{aligner}}.bycoverage.tsv", tool=["cutesv", "svim", "sniffles"], aligner=["minimap2","ngmlr"]),
+        #f"{RESULTDIR}/pbmm2/pbsv/pbsv.pbmm2.bycoverage.tsv",
+	#f"{RESULTDIR}/prf1.bycoverage.tsv",
+        f"{RESULTDIR}/prf1.bycoverage.pdf"
