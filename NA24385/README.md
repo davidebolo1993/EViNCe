@@ -53,8 +53,15 @@ snakemake svim --cores 20
 snakemake npinv --cores 20
 ```
 
-### Create upset plots and plot variants per chromosome
+### Compute/plot upset plots and plot variants per chromosome
 
 ``` bash
-snakemake sumsvs --cores 2
+snakemake sumsvs --cores 20
 ```
+
+### Calculate/plot precision/recall/f1 scores by coverage and number reads supporting the variants
+
+``` bash
+snakemake prf1 --cores 20
+```
+
