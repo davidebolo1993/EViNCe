@@ -1,3 +1,0 @@
-WorkflowError in line 3 of /data2-new/EViNCe/NA24385/workflow/Snakefile:
-Config file config/config.yaml not found.
-  File "/data2-new/EViNCe/NA24385/workflow/Snakefile", line 3, in <module>
