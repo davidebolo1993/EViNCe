@@ -25,8 +25,14 @@ forylab<-c("1","5","9","13","17","21")
 forxlab<-c("21", "22", "X", "Y")
 for (i in 1:length(wanted)) {
   #proceed by chromosome
-  subsubtab<-data.frame(subset(tab, (V1 == wanted[i] & V4 < 200)), stringsAsFactors = FALSE)
-  mediand<-median(subsubtab$V4)
+  subtab<-data.frame(subset(tab, (V1 == wanted[i])), stringsAsFactors = FALSE)
+  m<-mean(subtab$V4)
+  d<-sd(subtab$V4)
+  subtab$V5<-(subtab$V4-m)/d
+  zlimit<-1.5
+  subsubtab<-data.frame(subset(subtab, (V5 <= zlimit)), stringsAsFactors = FALSE)
+  excluded<-data.frame(subset(subtab, (V5 > zlimit)), stringsAsFactors = FALSE)
+  meand<-mean(subsubtab$V4)
   downsampled<-subsubtab %>% sample_frac(.5) #plot a subsample o
   ylab_<-""
   xlab_<-""
@@ -36,7 +42,8 @@ for (i in 1:length(wanted)) {
   if (wanted[i] %in% forxlab) {
     xlab_<-"Genomic coordinate"
   }
-  minimap2plots[[wanted[i]]]<-ggplot(downsampled, aes(x=V2, y=V4, color=V4)) + geom_point(size=.2, show.legend = FALSE) + scale_color_viridis("Depth", option = "plasma") + theme_bw() + xlab(xlab_) + ylab(ylab_) + geom_hline(yintercept=mediand, linetype="dashed", color = "black") + ggtitle(paste0("Chromosome ", wanted[i])) + theme(plot.title = element_text(hjust = 0.5))
+  minimap2plots[[wanted[i]]]<-ggplot(downsampled, aes(x=V2, y=V4, color=V4)) + geom_point(size=.2, show.legend = FALSE) + scale_color_viridis("Depth", option = "plasma") + theme_bw() + xlab(xlab_) + ylab(ylab_) + scale_y_continuous(limits=c(0, max(downsampled$V4)+20)) + geom_hline(yintercept=meand, linetype="dashed", color = "black") + ggtitle(paste0("Chromosome ", wanted[i])) + theme(plot.title = element_text(hjust = 0.5))
+  fwrite(excluded, file=file.path(args[2], "GM24385.minimap2.exclude.tsv"), sep="\t",quote=FALSE, col.names=FALSE, row.names = FALSE, append=TRUE)
 }
   
 n <- length(minimap2plots)
@@ -54,8 +61,14 @@ tab<-fread(file.path(args[1], "GM24385.ngmlr.regions.bed.gz"), sep="\t")
 #remove unwanted chromosomes and exclude biggest outlyers
 for (i in 1:length(wanted)) {
   #proceed by chromosome
-  subsubtab<-data.frame(subset(tab, (V1 == wanted[i] & V4 < 200)), stringsAsFactors = FALSE)
-  mediand<-median(subsubtab$V4)
+  subtab<-data.frame(subset(tab, (V1 == wanted[i])), stringsAsFactors = FALSE)
+  m<-mean(subtab$V4)
+  d<-sd(subtab$V4)
+  subtab$V5<-(subtab$V4-m)/d
+  zlimit<-1.5
+  subsubtab<-data.frame(subset(subtab, (V5 <= zlimit)), stringsAsFactors = FALSE)
+  excluded<-data.frame(subset(subtab, (V5 > zlimit)), stringsAsFactors = FALSE)
+  meand<-mean(subsubtab$V4)
   downsampled<-subsubtab %>% sample_frac(.5)
   ylab_<-""
   xlab_<-""
@@ -65,7 +78,8 @@ for (i in 1:length(wanted)) {
   if (wanted[i] %in% forxlab) {
     xlab_<-"Genomic coordinate"
   }
-  ngmlrplots[[wanted[i]]]<-ggplot(downsampled, aes(x=V2, y=V4, color=V4)) + geom_point(size=.2, show.legend = FALSE) + scale_color_viridis("Depth", option = "plasma") + theme_bw() + xlab(xlab_) + ylab(ylab_) + geom_hline(yintercept=mediand, linetype="dashed", color = "black") + ggtitle(paste0("Chromosome ", wanted[i])) + theme(plot.title = element_text(hjust = 0.5))
+  ngmlrplots[[wanted[i]]]<-ggplot(downsampled, aes(x=V2, y=V4, color=V4)) + geom_point(size=.2, show.legend = FALSE) + scale_color_viridis("Depth", option = "plasma") + theme_bw() + xlab(xlab_) + ylab(ylab_) + scale_y_continuous(limits=c(0, max(downsampled$V4)+20)) + geom_hline(yintercept=meand, linetype="dashed", color = "black") + ggtitle(paste0("Chromosome ", wanted[i])) + theme(plot.title = element_text(hjust = 0.5))
+  fwrite(excluded, file=file.path(args[2], "GM24385.ngmlr.exclude.tsv"), sep="\t",quote=FALSE, col.names=FALSE, row.names = FALSE, append=TRUE)
 }
 
 n <- length(ngmlrplots)
@@ -82,8 +96,14 @@ tab<-fread(file.path(args[1], "GM24385.pbmm2.regions.bed.gz"), sep="\t")
 #remove unwanted chromosomes and exclude biggest outlyers
 for (i in 1:length(wanted)) {
   #proceed by chromosome
-  subsubtab<-data.frame(subset(tab, (V1 == wanted[i] & V4 < 200)), stringsAsFactors = FALSE)
-  mediand<-median(subsubtab$V4)
+  subtab<-data.frame(subset(tab, (V1 == wanted[i])), stringsAsFactors = FALSE)
+  m<-mean(subtab$V4)
+  d<-sd(subtab$V4)
+  subtab$V5<-(subtab$V4-m)/d
+  zlimit<-1.5
+  subsubtab<-data.frame(subset(subtab, (V5 <= zlimit)), stringsAsFactors = FALSE)
+  excluded<-data.frame(subset(subtab, (V5 > zlimit)), stringsAsFactors = FALSE)
+  meand<-mean(subsubtab$V4)
   downsampled<-subsubtab %>% sample_frac(.5)
   ylab_<-""
   xlab_<-""
@@ -93,14 +113,14 @@ for (i in 1:length(wanted)) {
   if (wanted[i] %in% forxlab) {
     xlab_<-"Genomic coordinate"
   }
-  pbmm2plots[[wanted[i]]]<-ggplot(downsampled, aes(x=V2, y=V4, color=V4)) + geom_point(size=.2, show.legend = FALSE) + scale_color_viridis("Depth", option = "plasma") + theme_bw() + xlab(xlab_) + ylab(ylab_) + geom_hline(yintercept=mediand, linetype="dashed", color = "black") + ggtitle(paste0("Chromosome ", wanted[i])) + theme(plot.title = element_text(hjust = 0.5))
+  pbmm2plots[[wanted[i]]]<-ggplot(downsampled, aes(x=V2, y=V4, color=V4)) + geom_point(size=.2, show.legend = FALSE) + scale_color_viridis("Depth", option = "plasma") + theme_bw() + xlab(xlab_) + ylab(ylab_) + scale_y_continuous(limits=c(0, max(downsampled$V4)+20)) + geom_hline(yintercept=meand, linetype="dashed", color = "black") + ggtitle(paste0("Chromosome ", wanted[i])) + theme(plot.title = element_text(hjust = 0.5))
+  fwrite(excluded, file=file.path(args[2], "GM24385.pbmm2.exclude.tsv"), sep="\t",quote=FALSE, col.names=FALSE, row.names = FALSE, append=TRUE)
 }
 
 n <- length(pbmm2plots)
 ncols <- floor(sqrt(n))
 global<-do.call("grid.arrange", c(pbmm2plots, ncol=ncols))
 ggsave(file.path(args[1], "GM24385.pbmm2.coverage_per_chromosome.png"), global, width=20, height = 10)
-
 
 #minimap2,ngmlr and pbmm2 plot, fraction of bases per depth treshold
 message("Plotting proportions of genome at coverage")
@@ -140,4 +160,5 @@ if (file.exists("Rplots.pdf")) {
 
     file.remove("Rplots.pdf")
 }
+
 

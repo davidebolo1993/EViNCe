@@ -9,7 +9,6 @@ SCRIPTDIR = config["scriptdir"]
 VCFTRUTH=config["vcf"]
 VCFDIR=os.path.dirname(VCFTRUTH)
 
-
 include: "rules/align.smk"
 include: "rules/depth.smk"
 include: "rules/subsample.smk"
@@ -28,9 +27,10 @@ rule na24385:
         expand(f"{RESULTDIR}/{{aligner}}/svim/{{coverage}}/GM24385.vcf", aligner=["minimap2","ngmlr"], coverage=["5X", "10X", "15X", "20X", "25X", "35X", "total"]),
         expand(f"{RESULTDIR}/pbmm2/pbsv/{{coverage}}/GM24385.vcf",coverage=["5X", "10X", "15X", "20X", "25X", "35X", "total"]),
         expand(f"{RESULTDIR}/{{aligner}}/npinv/{{coverage}}/GM24385.vcf", aligner=["minimap2","ngmlr"], coverage=["5X", "10X", "15X", "20X", "25X", "35X", "total"]),
-	expand(f"{RESULTDIR}/{{aligner}}/nanomonsv/{{coverage}}/GM24385.vcf", aligner=["minimap2","ngmlr"], coverage=["5X", "10X", "15X", "20X", "25X", "35X", "total"]),
         expand(f"{RESULTDIR}/GM24385.{{aligner}}.upset.pdf", aligner=["minimap2", "ngmlr"]),
-	expand(f"{RESULTDIR}/GM24385.{{set}}.svs.pdf", set=["cutesv", "sniffles", "svim", "pbsv", "npinv","truth"])
+	expand(f"{RESULTDIR}/GM24385.{{set}}.svs.pdf", set=["cutesv", "sniffles", "svim", "pbsv", "npinv","truth"]),
+        f"{RESULTDIR}/GM24385.prf1.bysupport.pdf",
+        
 
 #first part: map reads to reference and perform kind of QC (coverage)
 
@@ -47,7 +47,9 @@ rule depth:
         #expand(f"{ALIGNDIR}/GM24385.{{aligner}}.regions.bed.gz",aligner=["minimap2","pbmm2","ngmlr"]),
         #expand(f"{ALIGNDIR}/GM24385.{{aligner}}.regions.bed.gz.csi",aligner=["minimap2","pbmm2","ngmlr"]),
         expand(f"{ALIGNDIR}/GM24385.{{aligner}}.coverage_per_chromosome.png", aligner=["minimap2","pbmm2","ngmlr"]),
-        f"{ALIGNDIR}/GM24385.fraction_of_bases_per_depth.png"
+        expand(f"{VCFDIR}/GM24385.{{aligner}}.exclude.tsv", aligner=["minimap2","pbmm2","ngmlr"]),
+        f"{ALIGNDIR}/GM24385.fraction_of_bases_per_depth.png",
+        f"{RESULTDIR}/GM24385.prf1.bycoverage.pdf"
 
 rule subsample:
     input:
@@ -84,15 +86,18 @@ rule sumsvs:
         #expand(f"{RESULTDIR}/GM24385.{{aligner}}.merged.vcf", aligner=["minimap2", "ngmlr"]),
         #expand(f"{RESULTDIR}/GM24385.{{aligner}}.upset.tsv", aligner=["minimap2", "ngmlr"]),
         expand(f"{RESULTDIR}/GM24385.{{aligner}}.upset.pdf", aligner=["minimap2", "ngmlr"]),
-        expand(f"{RESULTDIR}/GM24385.{{set}}.svs.pdf", set=["cutesv", "sniffles", "svim", "pbsv", "npinv","truth"])
+        expand(f"{RESULTDIR}/GM24385.{{set}}.svs.pdf", set=["cutesv", "sniffles", "svim", "pbsv", "npinv","truth"]),
+        f"{RESULTDIR}/GM24385.consensus.vcf.gz",
+        f"{RESULTDIR}/GM24385.consensus.svs.pdf"
 	
 rule prf1:
     input:
         #expand(f"{RESULTDIR}/{{aligner}}/{{tool}}/total/{{tool}}.{{aligner}}.bysupport.tsv", tool=["cutesv", "svim", "sniffles"], aligner=["minimap2", "ngmlr"]),
         #f"{RESULTDIR}/pbmm2/pbsv/total/pbsv.pbmm2.bysupport.tsv",
-        #f"{RESULTDIR}/prf1.bysupport.tsv",
-        f"{RESULTDIR}/prf1.bysupport.pdf",
+        #f"{RESULTDIR}/GM24385.prf1.bysupport.tsv",
+        f"{RESULTDIR}/GM24385.prf1.bysupport.pdf",
         #expand(f"{RESULTDIR}/{{aligner}}/{{tool}}/{{tool}}.{{aligner}}.bycoverage.tsv", tool=["cutesv", "svim", "sniffles"], aligner=["minimap2","ngmlr"]),
         #f"{RESULTDIR}/pbmm2/pbsv/pbsv.pbmm2.bycoverage.tsv",
-	#f"{RESULTDIR}/prf1.bycoverage.tsv",
-        f"{RESULTDIR}/prf1.bycoverage.pdf"
+	#f"{RESULTDIR}/GM24385.prf1.bycoverage.tsv",
+        f"{RESULTDIR}/GM24385.prf1.bycoverage.pdf",
+        f"{RESULTDIR}/GM24385.prf1.consensus.tsv"

@@ -61,11 +61,12 @@ rule plot_cov:
         expand(f"{ALIGNDIR}/GM24385.{{aligner}}.regions.bed.gz", aligner=['minimap2','pbmm2','ngmlr'])
     output:
         expand(f"{ALIGNDIR}/GM24385.{{aligner}}.coverage_per_chromosome.png", aligner=['minimap2','pbmm2','ngmlr']),
+	expand(f"{VCFDIR}/GM24385.{{aligner}}.exclude.tsv", aligner=['minimap2','pbmm2','ngmlr']),
         f"{ALIGNDIR}/GM24385.fraction_of_bases_per_depth.png"
     log:
         f"{LOGDIR}/alignments/plot_depth.log"
     conda:
         "../envs/plot.yaml"
     shell:
-        "Rscript {SCRIPTDIR}/coveragestats.R {ALIGNDIR} 2> {log}" 
+        "Rscript {SCRIPTDIR}/coveragestats.R {ALIGNDIR} {VCFDIR} 2> {log}"
 

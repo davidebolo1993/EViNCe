@@ -16,8 +16,8 @@ rule clean_minimap2_cutesv:
     shell:
         """
         echo GM24385 CUTESV > {params.tmp} && bcftools reheader -s {params.tmp} {input} | grep -v -f {params.exclude} | bcftools view -f PASS -i 'DV>=10'| bcftools view -e 'GT[*]="RR"' | bcftools sort > {output.vcf} && rm {params.tmp} && \
-        bcftools query -f '%CHROM\t%POS\t%END\t%SVTYPE\t%SVLEN\n' {output.vcf} | grep -v "BND" | awk '{{FS=OFS="\t"}}{{if ($4 == "DEL" || $4 == "DUP") print $1,$2,$3,$4; else print $1,$2,$3+$5,$4}}' | sort -k4 -k1,1 -k2,2n  > {params.tmp} && cut -f 4 {params.tmp} | uniq | while read sv; do awk -v var=${{sv}} '{{FS=OFS="\t"}}{{if($4==var) print $1,$2,$3,$4}}' {params.tmp} | sortBed | intersectBed -a stdin -b {params.complex} -v -wa | mergeBed -c 4 -o distinct >> {output.bed}; done && rm {params.tmp} && \
-        bcftools query -f '%CHROM\t%POS\t%ALT\t%SVTYPE\n' {output.vcf} | grep "BND" | awk -F"[][]" '{{OFS="\t"}}$1=$1' | awk '{{OFS="\t"}}{{if($3=="N") print $1,$2,$4,"BND"; else print $1,$2,$3,"BND"}}' | awk -F":" '{{OFS="\t"}}$1=$1' | awk '{{FS=OFS="\t"}}{{print $1,$2,$2+1,$3,$4,$4+1,"BND", 0, "+", "+"}}' | pairToBed -a stdin -b {params.complex} -type neither > {output.bedpe} 2> {log}
+        bcftools query -f '%CHROM\t%POS\t%END\t%SVTYPE\t%SVLEN\n' {output.vcf} | grep -v "BND" | awk '{{FS=OFS="\t"}}{{if ($4 == "DEL" || $4 == "DUP") print $1,$2,$3,$4; else print $1,$2,$3+$5,$4}}' | sort -k4 -k1,1 -k2,2n  > {params.tmp} && cut -f 4 {params.tmp} | uniq | while read sv; do awk -v var=${{sv}} '{{FS=OFS="\t"}}{{if($4==var) print $1,$2,$3,$4}}' {params.tmp} | sortBed | intersectBed -a stdin -b <(cat {params.complex} {VCFDIR}/GM24385.minimap2.exclude.tsv | cut -f1-3 | sortBed | mergeBed) -v -wa | mergeBed -c 4 -o distinct >> {output.bed}; done && rm {params.tmp} && \
+        bcftools query -f '%CHROM\t%POS\t%ALT\t%SVTYPE\n' {output.vcf} | grep "BND" | awk -F"[][]" '{{OFS="\t"}}$1=$1' | awk '{{OFS="\t"}}{{if($3=="N") print $1,$2,$4,"BND"; else print $1,$2,$3,"BND"}}' | awk -F":" '{{OFS="\t"}}$1=$1' | awk '{{FS=OFS="\t"}}{{print $1,$2,$2+1,$3,$4,$4+1,"BND", 0, "+", "+"}}' | pairToBed -a stdin -b <(cat {params.complex} {VCFDIR}/GM24385.minimap2.exclude.tsv | sortBed | mergeBed) -type neither > {output.bedpe} 2> {log}
         """
 
 rule clean_ngmlr_cutesv:
@@ -38,8 +38,8 @@ rule clean_ngmlr_cutesv:
     shell:
         """
         echo GM24385 CUTESV > {params.tmp} && bcftools reheader -s {params.tmp} {input} | grep -v -f {params.exclude} | bcftools view -f PASS -i 'DV>=10'| bcftools view -e 'GT[*]="RR"' | bcftools sort > {output.vcf} && rm {params.tmp} && \
-        bcftools query -f '%CHROM\t%POS\t%END\t%SVTYPE\t%SVLEN\n' {output.vcf} | grep -v "BND" | awk '{{FS=OFS="\t"}}{{if ($4 == "DEL" || $4 == "DUP") print $1,$2,$3,$4; else print $1,$2,$3+$5,$4}}' | sort -k4 -k1,1 -k2,2n  > {params.tmp} && cut -f 4 {params.tmp} | uniq | while read sv; do awk -v var=${{sv}} '{{FS=OFS="\t"}}{{if($4==var) print $1,$2,$3,$4}}' {params.tmp} | sortBed | intersectBed -a stdin -b {params.complex} -v -wa | mergeBed -c 4 -o distinct >> {output.bed}; done && rm {params.tmp} && \
-        bcftools query -f '%CHROM\t%POS\t%ALT\t%SVTYPE\n' {output.vcf} | grep "BND" | awk -F"[][]" '{{OFS="\t"}}$1=$1' | awk '{{OFS="\t"}}{{if($3=="N") print $1,$2,$4,"BND"; else print $1,$2,$3,"BND"}}' | awk -F":" '{{OFS="\t"}}$1=$1' | awk '{{FS=OFS="\t"}}{{print $1,$2,$2+1,$3,$4,$4+1,"BND", 0, "+", "+"}}' | pairToBed -a stdin -b {params.complex} -type neither > {output.bedpe} 2> {log}
+        bcftools query -f '%CHROM\t%POS\t%END\t%SVTYPE\t%SVLEN\n' {output.vcf} | grep -v "BND" | awk '{{FS=OFS="\t"}}{{if ($4 == "DEL" || $4 == "DUP") print $1,$2,$3,$4; else print $1,$2,$3+$5,$4}}' | sort -k4 -k1,1 -k2,2n  > {params.tmp} && cut -f 4 {params.tmp} | uniq | while read sv; do awk -v var=${{sv}} '{{FS=OFS="\t"}}{{if($4==var) print $1,$2,$3,$4}}' {params.tmp} | sortBed | intersectBed -a stdin -b <(cat {params.complex} {VCFDIR}/GM24385.ngmlr.exclude.tsv | cut -f1-3 | sortBed | mergeBed) -v -wa | mergeBed -c 4 -o distinct >> {output.bed}; done && rm {params.tmp} && \
+        bcftools query -f '%CHROM\t%POS\t%ALT\t%SVTYPE\n' {output.vcf} | grep "BND" | awk -F"[][]" '{{OFS="\t"}}$1=$1' | awk '{{OFS="\t"}}{{if($3=="N") print $1,$2,$4,"BND"; else print $1,$2,$3,"BND"}}' | awk -F":" '{{OFS="\t"}}$1=$1' | awk '{{FS=OFS="\t"}}{{print $1,$2,$2+1,$3,$4,$4+1,"BND", 0, "+", "+"}}' | pairToBed -a stdin -b <(cat {params.complex} {VCFDIR}/GM24385.ngmlr.exclude.tsv | sortBed | mergeBed) -type neither > {output.bedpe} 2> {log}
         """
 
 rule cutesv_svs_plot:
@@ -76,8 +76,8 @@ rule clean_minimap2_sniffles:
     shell:
         """
         echo alignments/GM24385.minimap2.srt.bam SNIFFLES > {params.tmp} && bcftools reheader -s {params.tmp} {input} | grep -v -f {params.exclude} | bcftools view -f PASS -i 'DV>=10' |  bcftools view -e 'GT[*]="RR"' | bcftools sort > {output.vcf} && rm {params.tmp}  && \
-        bcftools query -f '%CHROM\t%POS\t%END\t%SVTYPE\t%SVLEN\n' {output.vcf} | grep -v -E "BND|DEL/INV|DUP/INS" | awk '{{FS=OFS="\t"}}{{if ($4 == "DEL" || $4 == "DUP") print $1,$2,$3,$4; else print $1,$2,$3+$5,$4}}' | sort -k4 -k1,1 -k2,2n  > {params.tmp} && cut -f 4 {params.tmp} | uniq | while read sv; do awk -v var=${{sv}} '{{FS=OFS="\t"}}{{if($4==var) print $1,$2,$3,$4}}' {params.tmp} | sortBed | intersectBed -a stdin -b {params.complex} -v -wa | mergeBed -c 4 -o distinct >> {output.bed}; done && rm {params.tmp} && \
-        bcftools query -f '%CHROM\t%POS\t%ALT\t%SVTYPE\n' {output.vcf} | grep "BND" | awk -F"[][]" '{{OFS="\t"}}$1=$1' | awk '{{OFS="\t"}}{{if($3=="N") print $1,$2,$4,"BND"; else print $1,$2,$3,"BND"}}' | awk -F":" '{{OFS="\t"}}$1=$1' | awk '{{FS=OFS="\t"}}{{print $1,$2,$2+1,$3,$4,$4+1,"BND", 0, "+", "+"}}' | pairToBed -a stdin -b {params.complex} -type neither > {output.bedpe} 2> {log}
+        bcftools query -f '%CHROM\t%POS\t%END\t%SVTYPE\t%SVLEN\n' {output.vcf} | grep -v -E "BND|DEL/INV|DUP/INS" | awk '{{FS=OFS="\t"}}{{if ($4 == "DEL" || $4 == "DUP") print $1,$2,$3,$4; else print $1,$2,$3+$5,$4}}' | sort -k4 -k1,1 -k2,2n  > {params.tmp} && cut -f 4 {params.tmp} | uniq | while read sv; do awk -v var=${{sv}} '{{FS=OFS="\t"}}{{if($4==var) print $1,$2,$3,$4}}' {params.tmp} | sortBed | intersectBed -a stdin -b <(cat {params.complex} {VCFDIR}/GM24385.minimap2.exclude.tsv | cut -f1-3 | sortBed | mergeBed) -v -wa | mergeBed -c 4 -o distinct >> {output.bed}; done && rm {params.tmp} && \
+        bcftools query -f '%CHROM\t%POS\t%ALT\t%SVTYPE\n' {output.vcf} | grep "BND" | awk -F"[][]" '{{OFS="\t"}}$1=$1' | awk '{{OFS="\t"}}{{if($3=="N") print $1,$2,$4,"BND"; else print $1,$2,$3,"BND"}}' | awk -F":" '{{OFS="\t"}}$1=$1' | awk '{{FS=OFS="\t"}}{{print $1,$2,$2+1,$3,$4,$4+1,"BND", 0, "+", "+"}}' | pairToBed -a stdin -b <(cat {params.complex} {VCFDIR}/GM24385.minimap2.exclude.tsv | sortBed | mergeBed) -type neither > {output.bedpe} 2> {log}
         """
 
 rule clean_ngmlr_sniffles:
@@ -98,8 +98,8 @@ rule clean_ngmlr_sniffles:
     shell:
         """
         echo alignments/GM24385.ngmlr.srt.bam SNIFFLES > {params.tmp} && bcftools reheader -s {params.tmp} {input} | grep -v -f {params.exclude} | bcftools view -f PASS -i 'DV>=10' | bcftools view -e 'GT[*]="RR"' | bcftools sort > {output.vcf} && rm {params.tmp}  && \
-        bcftools query -f '%CHROM\t%POS\t%END\t%SVTYPE\t%SVLEN\n' {output.vcf} | grep -v -E "BND|DEL/INV|DUP/INS" | awk '{{FS=OFS="\t"}}{{if ($4 == "DEL" || $4 == "DUP") print $1,$2,$3,$4; else print $1,$2,$3+$5,$4}}' | sort -k4 -k1,1 -k2,2n  > {params.tmp} && cut -f 4 {params.tmp} | uniq | while read sv; do awk -v var=${{sv}} '{{FS=OFS="\t"}}{{if($4==var) print $1,$2,$3,$4}}' {params.tmp} | sortBed | intersectBed -a stdin -b {params.complex} -v -wa | mergeBed -c 4 -o distinct >> {output.bed}; done && rm {params.tmp} && \
-        bcftools query -f '%CHROM\t%POS\t%ALT\t%SVTYPE\n' {output.vcf} | grep "BND" | awk -F"[][]" '{{OFS="\t"}}$1=$1' | awk '{{OFS="\t"}}{{if($3=="N") print $1,$2,$4,"BND"; else print $1,$2,$3,"BND"}}' | awk -F":" '{{OFS="\t"}}$1=$1' | awk '{{FS=OFS="\t"}}{{print $1,$2,$2+1,$3,$4,$4+1,"BND", 0, "+", "+"}}' | pairToBed -a stdin -b {params.complex} -type neither > {output.bedpe} 2> {log}
+        bcftools query -f '%CHROM\t%POS\t%END\t%SVTYPE\t%SVLEN\n' {output.vcf} | grep -v -E "BND|DEL/INV|DUP/INS" | awk '{{FS=OFS="\t"}}{{if ($4 == "DEL" || $4 == "DUP") print $1,$2,$3,$4; else print $1,$2,$3+$5,$4}}' | sort -k4 -k1,1 -k2,2n  > {params.tmp} && cut -f 4 {params.tmp} | uniq | while read sv; do awk -v var=${{sv}} '{{FS=OFS="\t"}}{{if($4==var) print $1,$2,$3,$4}}' {params.tmp} | sortBed | intersectBed -a stdin -b <(cat {params.complex} {VCFDIR}/GM24385.ngmlr.exclude.tsv | cut -f1-3 | sortBed | mergeBed) -v -wa | mergeBed -c 4 -o distinct >> {output.bed}; done && rm {params.tmp} && \
+        bcftools query -f '%CHROM\t%POS\t%ALT\t%SVTYPE\n' {output.vcf} | grep "BND" | awk -F"[][]" '{{OFS="\t"}}$1=$1' | awk '{{OFS="\t"}}{{if($3=="N") print $1,$2,$4,"BND"; else print $1,$2,$3,"BND"}}' | awk -F":" '{{OFS="\t"}}$1=$1' | awk '{{FS=OFS="\t"}}{{print $1,$2,$2+1,$3,$4,$4+1,"BND", 0, "+", "+"}}' | pairToBed -a stdin -b <(cat {params.complex} {VCFDIR}/GM24385.ngmlr.exclude.tsv | sortBed | mergeBed) -type neither > {output.bedpe} 2> {log}
         """
 
 rule sniffles_svs_plot:
@@ -136,8 +136,8 @@ rule clean_minimap2_svim:
     shell:
         """
         echo GM24385 SVIM > {params.tmp} && bcftools reheader -s {params.tmp} {input} | grep -v -f {params.exclude} | bcftools view -f PASS -i 'SUPPORT>=10' | bcftools view -e 'GT[*]="RR"' | bcftools sort > {output.vcf} && rm {params.tmp}  && \
-        bcftools query -f '%CHROM\t%POS\t%END\t%SVTYPE\t%SVLEN\n' {output.vcf} |  grep -v -E "BND|DUP:INT" | sed 's/DUP:TANDEM/DUP/g' | awk '{{FS=OFS="\t"}}{{if ($4 == "DEL" || $4 == "DUP") print $1,$2,$3,$4; else print $1,$2,$3+$5,$4}}' | sort -k4 -k1,1 -k2,2n  > {params.tmp} && cut -f 4 {params.tmp} | uniq | while read sv; do awk -v var=${{sv}} '{{FS=OFS="\t"}}{{if($4==var) print $1,$2,$3,$4}}' {params.tmp} | sortBed | intersectBed -a stdin -b {params.complex} -v -wa | mergeBed -c 4 -o distinct >> {output.bed}; done && rm {params.tmp} && \
-        bcftools query -f '%CHROM\t%POS\t%ALT\t%SVTYPE\n' {output.vcf} | grep "BND" | awk -F"[][]" '{{OFS="\t"}}$1=$1' | awk '{{OFS="\t"}}{{if($3=="N") print $1,$2,$4; else print $1,$2,$3}}'| awk -F":" '{{OFS="\t"}}$1=$1' | awk '{{OFS=FS="\t"}}{{if($1!=$3) print $1"-"$2, $3"-"$4}}' | awk '{{OFS="\t"}}!seen[$1>$2 ? $1 OFS $2 : $2 OFS $1]++' | awk -F"-" '{{OFS="\t"}}$1=$1'  | awk '{{FS=OFS="\t"}}{{print $1,$2,$2+1,$3,$4,$4+1,"BND", 0, "+", "+"}}' | pairToBed -a stdin -b {params.complex} -type neither > {output.bedpe} 2> {log}
+        bcftools query -f '%CHROM\t%POS\t%END\t%SVTYPE\t%SVLEN\n' {output.vcf} |  grep -v -E "BND" | sed 's/DUP:TANDEM/DUP/g' | sed 's/DUP:INT/DUP/g' | awk '{{FS=OFS="\t"}}{{if ($4 == "DEL" || $4 == "DUP") print $1,$2,$3,$4; else print $1,$2,$3+$5,$4}}' | sort -k4 -k1,1 -k2,2n  > {params.tmp} && cut -f 4 {params.tmp} | uniq | while read sv; do awk -v var=${{sv}} '{{FS=OFS="\t"}}{{if($4==var) print $1,$2,$3,$4}}' {params.tmp} | sortBed | intersectBed -a stdin -b <(cat {params.complex} {VCFDIR}/GM24385.minimap2.exclude.tsv | cut -f1-3 | sortBed | mergeBed) -v -wa | mergeBed -c 4 -o distinct >> {output.bed}; done && rm {params.tmp} && \
+        bcftools query -f '%CHROM\t%POS\t%ALT\t%SVTYPE\n' {output.vcf} | grep "BND" | awk -F"[][]" '{{OFS="\t"}}$1=$1' | awk '{{OFS="\t"}}{{if($3=="N") print $1,$2,$4; else print $1,$2,$3}}'| awk -F":" '{{OFS="\t"}}$1=$1' | awk '{{OFS=FS="\t"}}{{if($1!=$3) print $1"-"$2, $3"-"$4}}' | awk '{{OFS="\t"}}!seen[$1>$2 ? $1 OFS $2 : $2 OFS $1]++' | awk -F"-" '{{OFS="\t"}}$1=$1'  | awk '{{FS=OFS="\t"}}{{print $1,$2,$2+1,$3,$4,$4+1,"BND", 0, "+", "+"}}' | pairToBed -a stdin -b <(cat {params.complex} {VCFDIR}/GM24385.minimap2.exclude.tsv | sortBed | mergeBed) -type neither > {output.bedpe} 2> {log}
         """
 
 rule clean_ngmlr_svim:
@@ -158,8 +158,8 @@ rule clean_ngmlr_svim:
     shell:
         """
         echo GM24385 SVIM > {params.tmp} && bcftools reheader -s {params.tmp} {input} | grep -v -f {params.exclude} | bcftools view -f PASS -i 'SUPPORT>=10' | bcftools view -e 'GT[*]="RR"' | bcftools sort > {output.vcf} && rm {params.tmp}  && \
-        bcftools query -f '%CHROM\t%POS\t%END\t%SVTYPE\t%SVLEN\n' {output.vcf} | grep -v -E "BND|DUP:INT" | sed 's/DUP:TANDEM/DUP/g' | sed 's/DUP:INT/DUP/g' | awk '{{FS=OFS="\t"}}{{if ($4 == "DEL" || $4 == "DUP") print $1,$2,$3,$4; else print $1,$2,$3+$5,$4}}' | sort -k4 -k1,1 -k2,2n  > {params.tmp} && cut -f 4 {params.tmp} | uniq | while read sv; do awk -v var=${{sv}} '{{FS=OFS="\t"}}{{if($4==var) print $1,$2,$3,$4}}' {params.tmp} | sortBed | intersectBed -a stdin -b {params.complex} -v -wa | mergeBed -c 4 -o distinct >> {output.bed}; done && rm {params.tmp} && \
-        bcftools query -f '%CHROM\t%POS\t%ALT\t%SVTYPE\n' {output.vcf} | grep "BND" | awk -F"[][]" '{{OFS="\t"}}$1=$1' | awk '{{OFS="\t"}}{{if($3=="N") print $1,$2,$4; else print $1,$2,$3}}'| awk -F":" '{{OFS="\t"}}$1=$1' | awk '{{OFS=FS="\t"}}{{if($1!=$3) print $1"-"$2, $3"-"$4}}' | awk '{{OFS="\t"}}!seen[$1>$2 ? $1 OFS $2 : $2 OFS $1]++' | awk -F"-" '{{OFS="\t"}}$1=$1'  | awk '{{FS=OFS="\t"}}{{print $1,$2,$2+1,$3,$4,$4+1,"BND", 0, "+", "+"}}' | pairToBed -a stdin -b {params.complex} -type neither > {output.bedpe} 2> {log}
+        bcftools query -f '%CHROM\t%POS\t%END\t%SVTYPE\t%SVLEN\n' {output.vcf} | grep -v -E "BND" | sed 's/DUP:TANDEM/DUP/g' | sed 's/DUP:INT/DUP/g' | awk '{{FS=OFS="\t"}}{{if ($4 == "DEL" || $4 == "DUP") print $1,$2,$3,$4; else print $1,$2,$3+$5,$4}}' | sort -k4 -k1,1 -k2,2n  > {params.tmp} && cut -f 4 {params.tmp} | uniq | while read sv; do awk -v var=${{sv}} '{{FS=OFS="\t"}}{{if($4==var) print $1,$2,$3,$4}}' {params.tmp} | sortBed | intersectBed -a stdin -b <(cat {params.complex} {VCFDIR}/GM24385.ngmlr.exclude.tsv | cut -f1-3 | sortBed | mergeBed) -v -wa | mergeBed -c 4 -o distinct >> {output.bed}; done && rm {params.tmp} && \
+        bcftools query -f '%CHROM\t%POS\t%ALT\t%SVTYPE\n' {output.vcf} | grep "BND" | awk -F"[][]" '{{OFS="\t"}}$1=$1' | awk '{{OFS="\t"}}{{if($3=="N") print $1,$2,$4; else print $1,$2,$3}}'| awk -F":" '{{OFS="\t"}}$1=$1' | awk '{{OFS=FS="\t"}}{{if($1!=$3) print $1"-"$2, $3"-"$4}}' | awk '{{OFS="\t"}}!seen[$1>$2 ? $1 OFS $2 : $2 OFS $1]++' | awk -F"-" '{{OFS="\t"}}$1=$1'  | awk '{{FS=OFS="\t"}}{{print $1,$2,$2+1,$3,$4,$4+1,"BND", 0, "+", "+"}}' | pairToBed -a stdin -b <(cat {params.complex} {VCFDIR}/GM24385.ngmlr.exclude.tsv | sortBed | mergeBed) -type neither > {output.bedpe} 2> {log}
         """
 
 
@@ -197,8 +197,8 @@ rule clean_pbmm2_pbsv:
     shell:
         """
         echo GM24385 PBSV > {params.tmp} && bcftools reheader -s {params.tmp} {input} | grep -v -f {params.exclude} | bcftools view -f PASS -i 'AD[:1]>=10' | bcftools view -e 'GT[*]="RR"' | bcftools sort > {output.vcf} && rm {params.tmp} && \
-        bcftools query -f '%CHROM\t%POS\t%END\t%SVTYPE\t%SVLEN\n' {output.vcf} | grep -v "BND" | awk '{{FS=OFS="\t"}}{{if ($4 == "DEL" || $4 == "DUP") print $1,$2,$3,$4; else print $1,$2,$3+$5,$4}}' | sort -k4 -k1,1 -k2,2n  > {params.tmp} && cut -f 4 {params.tmp} | uniq | while read sv; do awk -v var=${{sv}} '{{FS=OFS="\t"}}{{if($4==var) print $1,$2,$3,$4}}' {params.tmp} | sortBed | intersectBed -a stdin -b {params.complex} -v -wa | mergeBed -c 4 -o distinct >> {output.bed}; done && rm {params.tmp} && \
-        bcftools query -f '%CHROM\t%POS\t%ALT\t%SVTYPE\n' {output.vcf} | grep "BND" | awk -F"[][]" '{{OFS="\t"}}$1=$1' | awk '{{OFS="\t"}}{{if($3=="A"||$3=="C"||$3=="G"||$3=="T") print $1,$2,$4; else print $1,$2,$3}}'| awk -F":" '{{OFS="\t"}}$1=$1' | awk '{{OFS=FS="\t"}}{{if($1!=$3) print $1"-"$2, $3"-"$4}}' | awk '{{OFS="\t"}}!seen[$1>$2 ? $1 OFS $2 : $2 OFS $1]++' | awk -F"-" '{{OFS="\t"}}$1=$1'  | awk '{{FS=OFS="\t"}}{{print $1,$2,$2+1,$3,$4,$4+1,"BND", 0, "+", "+"}}' | pairToBed -a stdin -b {params.complex} -type neither > {output.bedpe} 2> {log}
+        bcftools query -f '%CHROM\t%POS\t%END\t%SVTYPE\t%SVLEN\n' {output.vcf} | grep -v "BND" | awk '{{FS=OFS="\t"}}{{if ($4 == "DEL" || $4 == "DUP") print $1,$2,$3,$4; else print $1,$2,$3+$5,$4}}' | sort -k4 -k1,1 -k2,2n  > {params.tmp} && cut -f 4 {params.tmp} | uniq | while read sv; do awk -v var=${{sv}} '{{FS=OFS="\t"}}{{if($4==var) print $1,$2,$3,$4}}' {params.tmp} | sortBed | intersectBed -a stdin -b <(cat {params.complex} {VCFDIR}/GM24385.pbmm2.exclude.tsv | cut -f1-3 | sortBed | mergeBed) -v -wa | mergeBed -c 4 -o distinct >> {output.bed}; done && rm {params.tmp} && \
+        bcftools query -f '%CHROM\t%POS\t%ALT\t%SVTYPE\n' {output.vcf} | grep "BND" | awk -F"[][]" '{{OFS="\t"}}$1=$1' | awk '{{OFS="\t"}}{{if($3=="A"||$3=="C"||$3=="G"||$3=="T") print $1,$2,$4; else print $1,$2,$3}}'| awk -F":" '{{OFS="\t"}}$1=$1' | awk '{{OFS=FS="\t"}}{{if($1!=$3) print $1"-"$2, $3"-"$4}}' | awk '{{OFS="\t"}}!seen[$1>$2 ? $1 OFS $2 : $2 OFS $1]++' | awk -F"-" '{{OFS="\t"}}$1=$1'  | awk '{{FS=OFS="\t"}}{{print $1,$2,$2+1,$3,$4,$4+1,"BND", 0, "+", "+"}}' | pairToBed -a stdin -b <(cat {params.complex} {VCFDIR}/GM24385.pbmm2.exclude.tsv | sortBed | mergeBed) -type neither > {output.bedpe} 2> {log}
         """
 
 rule pbsv_svs_plot:
@@ -324,7 +324,7 @@ rule survivor_merge_minimap2:
         ls {input} > {params.tmp} && \
         SURVIVOR merge {params.tmp} 1000 1 1 1 0 50 {params.mergedvcf} && rm {params.tmp}  && \
         bcftools view -h {params.mergedvcf} | tail -1 | awk '{{OFS=FS="\t"}}{{print $3,$10,$11,$12,$13,$14,$15,$5,$1}}' > {output}  && \
-        bcftools query -f '%CHROM\t%SVTYPE[\t%GT:%PSV:%LN:%DR:%ST:%QV:%TY:%ID:%RAL:%AAL:%CO]\n' {params.mergedvcf}  | awk '{{FS=OFS="\t"}}{{print "var"NR,$3,$4,$5,$6,$7,$8,$2,$1}}' | awk '{{FS=OFS="\t"}}{{if ($2 == "./.:NaN:0:0,0:--:NaN:NaN:NaN:NAN:NAN:NAN") $2="0"; else $2="1"; if ($3 == "./.:NaN:0:0,0:--:NaN:NaN:NaN:NAN:NAN:NAN") $3="0"; else $3="1"; if ($4 == "./.:NaN:0:0,0:--:NaN:NaN:NaN:NAN:NAN:NAN") $4="0"; else $4="1"; if ($5 == "./.:NaN:0:0,0:--:NaN:NaN:NaN:NAN:NAN:NAN") $5="0"; else $5="1";if ($6 == "./.:NaN:0:0,0:--:NaN:NaN:NaN:NAN:NAN:NAN") $6="0"; else $6="1"; if ($7 == "./.:NaN:0:0,0:--:NaN:NaN:NaN:NAN:NAN:NAN") $7="0"; else $7="1"}}1' >> {output} 2>{log}
+            PE[\t%GT:%PSV:%LN:%DR:%ST:%QV:%TY:%ID:%RAL:%AAL:%CO]\n' {params.mergedvcf}  | awk '{{FS=OFS="\t"}}{{print "var"NR,$3,$4,$5,$6,$7,$8,$2,$1}}' | awk '{{FS=OFS="\t"}}{{if ($2 == "./.:NaN:0:0,0:--:NaN:NaN:NaN:NAN:NAN:NAN") $2="0"; else $2="1"; if ($3 == "./.:NaN:0:0,0:--:NaN:NaN:NaN:NAN:NAN:NAN") $3="0"; else $3="1"; if ($4 == "./.:NaN:0:0,0:--:NaN:NaN:NaN:NAN:NAN:NAN") $4="0"; else $4="1"; if ($5 == "./.:NaN:0:0,0:--:NaN:NaN:NaN:NAN:NAN:NAN") $5="0"; else $5="1";if ($6 == "./.:NaN:0:0,0:--:NaN:NaN:NaN:NAN:NAN:NAN") $6="0"; else $6="1"; if ($7 == "./.:NaN:0:0,0:--:NaN:NaN:NaN:NAN:NAN:NAN") $7="0"; else $7="1"}}1' >> {output} 2>{log}
         """
 
 rule survivor_merge_ngmlr:
@@ -348,6 +348,75 @@ rule survivor_merge_ngmlr:
         bcftools query -f '%CHROM\t%SVTYPE[\t%GT:%PSV:%LN:%DR:%ST:%QV:%TY:%ID:%RAL:%AAL:%CO]\n' {params.mergedvcf} | awk '{{FS=OFS="\t"}}{{print "var"NR,$3,$4,$5,$6,$7,$2,$1}}' | awk '{{FS=OFS="\t"}}{{if ($2 == "./.:NaN:0:0,0:--:NaN:NaN:NaN:NAN:NAN:NAN") $2="0"; else $2="1"; if ($3 == "./.:NaN:0:0,0:--:NaN:NaN:NaN:NAN:NAN:NAN") $3="0"; else $3="1"; if ($4 == "./.:NaN:0:0,0:--:NaN:NaN:NaN:NAN:NAN:NAN") $4="0"; else $4="1"; if ($5 == "./.:NaN:0:0,0:--:NaN:NaN:NaN:NAN:NAN:NAN") $5="0"; else $5="1";if ($6 == "./.:NaN:0:0,0:--:NaN:NaN:NaN:NAN:NAN:NAN") $6="0"; else $6="1"}}1' >> {output} 2>{log}
         """
 
+rule survivor_merge_minimap2_consensus_simple:
+    input:
+        expand(f"{RESULTDIR}/minimap2/{{tools}}/total/GM24385.clean.vcf", tools=["cutesv", "sniffles", "svim", "npinv"]),
+        f"{RESULTDIR}/pbmm2/pbsv/total/GM24385.clean.vcf"
+    output:
+        f"{RESULTDIR}/GM24385.minimap2.consensus.vcf"
+    log:
+        f"{LOGDIR}/results/minimap2_survivor_consensus_simple.log"
+    threads: 1
+    conda: "../envs/sumsvs.yaml"
+    params:
+        tmp=f"{RESULTDIR}/tmpminimap2.txt",
+    shell:
+        """
+        ls {input} > {params.tmp} && \
+        SURVIVOR merge {params.tmp} 1000 3 1 1 0 50 {output} && rm {params.tmp} 2>{log}
+        """
+
+rule survivor_merge_ngmlr_consensus_simple:
+    input:
+        expand(f"{RESULTDIR}/ngmlr/{{tools}}/total/GM24385.clean.vcf", tools=["cutesv", "sniffles", "svim", "npinv"])
+    output:
+        f"{RESULTDIR}/GM24385.ngmlr.consensus.vcf"
+    log:
+        f"{LOGDIR}/results/ngmlr_survivor_consensus_simple.log"
+    threads: 1
+    conda: "../envs/sumsvs.yaml"
+    params:
+        tmp=f"{RESULTDIR}/tmpngmlr.txt",
+    shell:
+        """
+        ls {input} > {params.tmp} && \
+        SURVIVOR merge {params.tmp} 1000 2 1 1 0 50 {output} && rm {params.tmp} 2>{log}
+        """
+
+rule survivor_merge_consensus_simple:
+    input:
+        expand(f"{RESULTDIR}/GM24385.{{aligner}}.consensus.vcf", aligner=["minimap2", "ngmlr"])
+    output:
+        vcf=f"{RESULTDIR}/GM24385.consensus.vcf.gz",
+        bed=f"{RESULTDIR}/GM24385.consensus.nobnd.bed"
+    log:
+        f"{LOGDIR}/results/survivor_consensus_simple.log"
+    threads: 1
+    conda: "../envs/sumsvs.yaml"
+    params:
+        tmp=f"{RESULTDIR}/tmp.txt",
+        tmpvcf=f"{RESULTDIR}/tmp.vcf",
+        complex = config["excluderegions"]
+    shell:
+        """
+        ls {input} > {params.tmp} && \
+        SURVIVOR merge {params.tmp} 1000 2 1 1 0 50 {params.tmpvcf} && rm {params.tmp} && \
+        bcftools sort -O z -o {output.vcf} {params.tmpvcf} && rm {params.tmpvcf} && bcftools index -t {output.vcf} && \
+        bcftools query -f '%CHROM\t%POS\t%END\t%SVTYPE\t%SVLEN\n' {output.vcf} | awk '{{FS=OFS="\t"}}{{if ($4 == "DEL" || $4 == "DUP") print $1,$2,$3,$4; else print $1,$2,$3+$5,$4}}' | sort -k4 -k1,1 -k2,2n  > {params.tmp} && cut -f 4 {params.tmp} | uniq | while read sv; do awk -v var=${{sv}} '{{FS=OFS="\t"}}{{if($4==var) print $1,$2,$3,$4}}' {params.tmp} | sortBed | intersectBed -a stdin -b <(cat {params.complex} {VCFDIR}/GM24385.minimap2.exclude.tsv {VCFDIR}/GM24385.ngmlr.exclude.tsv {VCFDIR}/GM24385.pbmm2.exclude.tsv | cut -f1-3 | sortBed | mergeBed) -v -wa | mergeBed -c 4 -o distinct >> {output.bed}; done && rm {params.tmp} 2>{log}
+        """
+
+rule consensus_svs_plot:
+    input:
+        f"{RESULTDIR}/GM24385.consensus.nobnd.bed"
+    output:
+        f"{RESULTDIR}/GM24385.consensus.svs.pdf"
+    log:
+        f"{LOGDIR}/results/consensus_svs_plot.log"
+    conda: "../envs/plot.yaml"
+    threads: 1
+    shell:
+        "Rscript {SCRIPTDIR}/circosplot.R {RESULTDIR} consensus {RESULTDIR} 2> {log}"
+
 rule upset_plot:
     input:
         expand(f"{RESULTDIR}/GM24385.{{aligner}}.upset.tsv", aligner=["minimap2", "ngmlr"])
@@ -359,5 +428,6 @@ rule upset_plot:
     conda: "../envs/plot.yaml"
     shell:
         "Rscript {SCRIPTDIR}/upsetplot.R {RESULTDIR} 2> {log}"
+
 
 

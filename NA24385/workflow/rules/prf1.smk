@@ -178,7 +178,7 @@ rule combine_results_bysupport:
         expand(f"{RESULTDIR}/{{aligner}}/{{tool}}/total/{{tool}}.{{aligner}}.bysupport.tsv", tool=["cutesv", "svim", "sniffles"], aligner=["minimap2", "ngmlr"]),
         f"{RESULTDIR}/pbmm2/pbsv/total/pbsv.pbmm2.bysupport.tsv"
     output:
-        f"{RESULTDIR}/prf1.bysupport.tsv"
+        f"{RESULTDIR}/GM24385.prf1.bysupport.tsv"
     threads: 1
     log:
         f"{LOGDIR}/results/combine_prf1bysupport.log"
@@ -189,9 +189,9 @@ rule combine_results_bysupport:
 
 rule plot_results_bysupport:
     input:
-        f"{RESULTDIR}/prf1.bysupport.tsv"
+        f"{RESULTDIR}/GM24385.prf1.bysupport.tsv"
     output:
-        f"{RESULTDIR}/prf1.bysupport.pdf"
+        f"{RESULTDIR}/GM24385.prf1.bysupport.pdf"
     threads: 1
     conda: "../envs/plot.yaml"    
     log:
@@ -383,7 +383,7 @@ rule combine_results_bycoverage:
         expand(f"{RESULTDIR}/{{aligner}}/{{tool}}/{{tool}}.{{aligner}}.bycoverage.tsv", tool=["cutesv", "svim", "sniffles"], aligner=["minimap2", "ngmlr"]),
         f"{RESULTDIR}/pbmm2/pbsv/pbsv.pbmm2.bycoverage.tsv"
     output:
-        f"{RESULTDIR}/prf1.bycoverage.tsv"
+        f"{RESULTDIR}/GM24385.prf1.bycoverage.tsv"
     threads: 1
     log:
         f"{LOGDIR}/results/combine_prf1bycoverage.log"
@@ -394,9 +394,9 @@ rule combine_results_bycoverage:
 
 rule plot_results_bycoverage:
     input:
-        f"{RESULTDIR}/prf1.bycoverage.tsv"
+        f"{RESULTDIR}/GM24385.prf1.bycoverage.tsv"
     output:
-        f"{RESULTDIR}/prf1.bycoverage.pdf"
+        f"{RESULTDIR}/GM24385.prf1.bycoverage.pdf"
     threads: 1
     conda: "../envs/plot.yaml"    
     log:
@@ -404,4 +404,23 @@ rule plot_results_bycoverage:
     shell:
         "Rscript {SCRIPTDIR}/prf1bycoverage.R {RESULTDIR} 2> {log}"
 
+
+rule consensus_vs_single_prf1:
+    input:
+        bysupport=f"{RESULTDIR}/GM24385.prf1.bysupport.tsv",
+        vcf=f"{RESULTDIR}/GM24385.consensus.vcf.gz"
+    output:
+        f"{RESULTDIR}/GM24385.prf1.consensus.tsv"
+    threads: 1
+    conda: "../envs/sumsvs.yaml"
+    params:
+        truthvcf=f"{VCFDIR}/HG002_SVs_Tier1_v0.6.vcf.gz",
+        truthbed=f"{VCFDIR}/HG002_SVs_Tier1_v0.6.bed",
+        ref=config["genome"]
+    log:
+        f"{LOGDIR}/results/plot_consensusprf1.log"
+    shell:
+        """
+        head -1 {input.bysupport} > {output} && tail -n+2 {input.bysupport} | awk '{{OFS=FS="\t"}}{{if($7 == "10") print}}' >> {output} && truvari bench -f {params.ref} -b {params.truthvcf} --includebed {params.truthbed} --passonly --giabreport -p 0 -c {input.vcf} -o {RESULTDIR}/truvari_consensus && cat {RESULTDIR}/truvari_consensus/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk '{{OFS=FS="\t"}}{{print $0,10,"CONSENSUS","CONSENSUS"}}' >> {output}
+        """
 

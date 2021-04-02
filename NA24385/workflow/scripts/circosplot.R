@@ -15,13 +15,26 @@ if (length(args) == 3) { #then, we must plot as a single plot
 
   if (tool != "truth") {
   
-    bedpe<-file.path(args[1], "GM24385.bnd.bedpe")
-    BNDs<-fread(bedpe, sep="\t", header=FALSE)
-    BNDs$V1<-paste0("chr", BNDs$V1)
-    BNDs$V4<-paste0("chr", BNDs$V4)
-    colnames(BNDs)<-c("chr", "pos1", "end1", "chr2", "pos2", "end2", "type", "num", "s1", "s2")
+    if (tool != "consensus") {
+
+      bedpe<-file.path(args[1], "GM24385.bnd.bedpe")
+      BNDs<-fread(bedpe, sep="\t", header=FALSE)
+      BNDs$V1<-paste0("chr", BNDs$V1)
+      BNDs$V4<-paste0("chr", BNDs$V4)
+      colnames(BNDs)<-c("chr", "pos1", "end1", "chr2", "pos2", "end2", "type", "num", "s1", "s2")
     
-    bed<-file.path(args[1], "GM24385.nobnd.bed")
+    }
+
+    if (tool == "consensus") {
+
+      bed <- file.path(args[1], "GM24385.consensus.nobnd.bed")
+
+    } else {
+
+      bed<-file.path(args[1], "GM24385.nobnd.bed")
+
+    }
+
     NOBNDs<-fread(bed, sep="\t", header=FALSE)
     NOBNDs$V1<-paste0("chr", NOBNDs$V1)
     colnames(NOBNDs)<-c("chr", "pos", "end", "type")
@@ -154,17 +167,27 @@ if (length(args) == 3) { #then, we must plot as a single plot
       
     }
     
-    #ADD BNDs
+    #ADD BNDs if not consensus
+
+    if (tool != "consensus") {
     
-    for (i in 1:nrow(BNDs)) {
-      circos.link(BNDs[i,]$chr,as.numeric(BNDs[i,]$pos1),BNDs[i,]$chr2,as.numeric(BNDs[i,]$pos2))
+      for (i in 1:nrow(BNDs)) {
+        circos.link(BNDs[i,]$chr,as.numeric(BNDs[i,]$pos1),BNDs[i,]$chr2,as.numeric(BNDs[i,]$pos2))
+      }
+      
+      circos.clear()
+      
+      title(main=paste0("SVs - ", tool))
+      legend(1.2,0.5, names(NONBNSs_colors),col=as.character(sapply(NONBNSs_colors, function(x) x[1])),pch=c(16,16,16,16),cex=0.75,title="SVTYPE",bty='n')
+      legend(1.2,0.3,legend="TRA",col="black",lty=1,cex=0.75,lwd=1.2,bty='n')
+
+    } else {
+
+      circos.clear()
+      title(main=paste0("SVs - ", tool))
+      legend(1.2,0.5, names(NONBNSs_colors),col=as.character(sapply(NONBNSs_colors, function(x) x[1])),pch=c(16,16,16,16),cex=0.75,title="SVTYPE",bty='n')
+
     }
-    
-    circos.clear()
-    
-    title(main=paste0("SVs - ", tool))
-    legend(1.2,0.5, names(NONBNSs_colors),col=as.character(sapply(NONBNSs_colors, function(x) x[1])),pch=c(16,16,16,16),cex=0.75,title="SVTYPE",bty='n')
-    legend(1.2,0.3,legend="TRA",col="black",lty=1,cex=0.75,lwd=1.2,bty='n')
 
   } else {
 
@@ -581,3 +604,4 @@ if (file.exists("Rplots.pdf")) {
   file.remove("Rplots.pdf")
 
 }
+
