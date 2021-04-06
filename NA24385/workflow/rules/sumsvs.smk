@@ -324,7 +324,7 @@ rule survivor_merge_minimap2:
         ls {input} > {params.tmp} && \
         SURVIVOR merge {params.tmp} 1000 1 1 1 0 50 {params.mergedvcf} && rm {params.tmp}  && \
         bcftools view -h {params.mergedvcf} | tail -1 | awk '{{OFS=FS="\t"}}{{print $3,$10,$11,$12,$13,$14,$15,$5,$1}}' > {output}  && \
-            PE[\t%GT:%PSV:%LN:%DR:%ST:%QV:%TY:%ID:%RAL:%AAL:%CO]\n' {params.mergedvcf}  | awk '{{FS=OFS="\t"}}{{print "var"NR,$3,$4,$5,$6,$7,$8,$2,$1}}' | awk '{{FS=OFS="\t"}}{{if ($2 == "./.:NaN:0:0,0:--:NaN:NaN:NaN:NAN:NAN:NAN") $2="0"; else $2="1"; if ($3 == "./.:NaN:0:0,0:--:NaN:NaN:NaN:NAN:NAN:NAN") $3="0"; else $3="1"; if ($4 == "./.:NaN:0:0,0:--:NaN:NaN:NaN:NAN:NAN:NAN") $4="0"; else $4="1"; if ($5 == "./.:NaN:0:0,0:--:NaN:NaN:NaN:NAN:NAN:NAN") $5="0"; else $5="1";if ($6 == "./.:NaN:0:0,0:--:NaN:NaN:NaN:NAN:NAN:NAN") $6="0"; else $6="1"; if ($7 == "./.:NaN:0:0,0:--:NaN:NaN:NaN:NAN:NAN:NAN") $7="0"; else $7="1"}}1' >> {output} 2>{log}
+        bcftools query -f '%CHROM\t%SVTYPE[\t%GT:%PSV:%LN:%DR:%ST:%QV:%TY:%ID:%RAL:%AAL:%CO]\n' {params.mergedvcf}  | awk '{{FS=OFS="\t"}}{{print "var"NR,$3,$4,$5,$6,$7,$8,$2,$1}}' | awk '{{FS=OFS="\t"}}{{if ($2 == "./.:NaN:0:0,0:--:NaN:NaN:NaN:NAN:NAN:NAN") $2="0"; else $2="1"; if ($3 == "./.:NaN:0:0,0:--:NaN:NaN:NaN:NAN:NAN:NAN") $3="0"; else $3="1"; if ($4 == "./.:NaN:0:0,0:--:NaN:NaN:NaN:NAN:NAN:NAN") $4="0"; else $4="1"; if ($5 == "./.:NaN:0:0,0:--:NaN:NaN:NaN:NAN:NAN:NAN") $5="0"; else $5="1";if ($6 == "./.:NaN:0:0,0:--:NaN:NaN:NaN:NAN:NAN:NAN") $6="0"; else $6="1"; if ($7 == "./.:NaN:0:0,0:--:NaN:NaN:NaN:NAN:NAN:NAN") $7="0"; else $7="1"}}1' >> {output} 2>{log}
         """
 
 rule survivor_merge_ngmlr:
@@ -347,87 +347,6 @@ rule survivor_merge_ngmlr:
         bcftools view -h {params.mergedvcf} | tail -1 |  awk '{{OFS=FS="\t"}}{{print $3,$10,$11,$12,$13,$14,$5,$1}}' > {output}  && \
         bcftools query -f '%CHROM\t%SVTYPE[\t%GT:%PSV:%LN:%DR:%ST:%QV:%TY:%ID:%RAL:%AAL:%CO]\n' {params.mergedvcf} | awk '{{FS=OFS="\t"}}{{print "var"NR,$3,$4,$5,$6,$7,$2,$1}}' | awk '{{FS=OFS="\t"}}{{if ($2 == "./.:NaN:0:0,0:--:NaN:NaN:NaN:NAN:NAN:NAN") $2="0"; else $2="1"; if ($3 == "./.:NaN:0:0,0:--:NaN:NaN:NaN:NAN:NAN:NAN") $3="0"; else $3="1"; if ($4 == "./.:NaN:0:0,0:--:NaN:NaN:NaN:NAN:NAN:NAN") $4="0"; else $4="1"; if ($5 == "./.:NaN:0:0,0:--:NaN:NaN:NaN:NAN:NAN:NAN") $5="0"; else $5="1";if ($6 == "./.:NaN:0:0,0:--:NaN:NaN:NaN:NAN:NAN:NAN") $6="0"; else $6="1"}}1' >> {output} 2>{log}
         """
-
-rule survivor_merge_minimap2_consensus_simple:
-    input:
-        expand(f"{RESULTDIR}/minimap2/{{tools}}/total/GM24385.clean.vcf", tools=["cutesv", "sniffles", "svim", "npinv"]),
-        f"{RESULTDIR}/pbmm2/pbsv/total/GM24385.clean.vcf"
-    output:
-        f"{RESULTDIR}/GM24385.minimap2.consensus.vcf"
-    log:
-        f"{LOGDIR}/results/minimap2_survivor_consensus_simple.log"
-    threads: 1
-    conda: "../envs/sumsvs.yaml"
-    params:
-        tmp=f"{RESULTDIR}/tmpminimap2.txt",
-    shell:
-        """
-        ls {input} > {params.tmp} && \
-        SURVIVOR merge {params.tmp} 1000 3 1 1 0 50 {output} && rm {params.tmp} 2>{log}
-        """
-
-rule survivor_merge_ngmlr_consensus_simple:
-    input:
-        expand(f"{RESULTDIR}/ngmlr/{{tools}}/total/GM24385.clean.vcf", tools=["cutesv", "sniffles", "svim", "npinv"])
-    output:
-        f"{RESULTDIR}/GM24385.ngmlr.consensus.vcf"
-    log:
-        f"{LOGDIR}/results/ngmlr_survivor_consensus_simple.log"
-    threads: 1
-    conda: "../envs/sumsvs.yaml"
-    params:
-        tmp=f"{RESULTDIR}/tmpngmlr.txt",
-    shell:
-        """
-        ls {input} > {params.tmp} && \
-        SURVIVOR merge {params.tmp} 1000 2 1 1 0 50 {output} && rm {params.tmp} 2>{log}
-        """
-
-rule survivor_merge_consensus_simple:
-    input:
-        expand(f"{RESULTDIR}/GM24385.{{aligner}}.consensus.vcf", aligner=["minimap2", "ngmlr"])
-    output:
-        vcf=f"{RESULTDIR}/GM24385.consensus.vcf.gz",
-        bed=f"{RESULTDIR}/GM24385.consensus.nobnd.bed"
-    log:
-        f"{LOGDIR}/results/survivor_consensus_simple.log"
-    threads: 1
-    conda: "../envs/sumsvs.yaml"
-    params:
-        tmp=f"{RESULTDIR}/tmp.txt",
-        tmpvcf=f"{RESULTDIR}/tmp.vcf",
-        complex = config["excluderegions"]
-    shell:
-        """
-        ls {input} > {params.tmp} && \
-        SURVIVOR merge {params.tmp} 1000 2 1 1 0 50 {params.tmpvcf} && rm {params.tmp} && \
-        bcftools sort -O z -o {output.vcf} {params.tmpvcf} && rm {params.tmpvcf} && bcftools index -t {output.vcf} && \
-        bcftools query -f '%CHROM\t%POS\t%END\t%SVTYPE\t%SVLEN\n' {output.vcf} | awk '{{FS=OFS="\t"}}{{if ($4 == "DEL" || $4 == "DUP") print $1,$2,$3,$4; else print $1,$2,$3+$5,$4}}' | sort -k4 -k1,1 -k2,2n  > {params.tmp} && cut -f 4 {params.tmp} | uniq | while read sv; do awk -v var=${{sv}} '{{FS=OFS="\t"}}{{if($4==var) print $1,$2,$3,$4}}' {params.tmp} | sortBed | intersectBed -a stdin -b <(cat {params.complex} {VCFDIR}/GM24385.minimap2.exclude.tsv {VCFDIR}/GM24385.ngmlr.exclude.tsv {VCFDIR}/GM24385.pbmm2.exclude.tsv | cut -f1-3 | sortBed | mergeBed) -v -wa | mergeBed -c 4 -o distinct >> {output.bed}; done && rm {params.tmp} 2>{log}
-        """
-
-rule consensus_svs_plot:
-    input:
-        f"{RESULTDIR}/GM24385.consensus.nobnd.bed"
-    output:
-        f"{RESULTDIR}/GM24385.consensus.svs.pdf"
-    log:
-        f"{LOGDIR}/results/consensus_svs_plot.log"
-    conda: "../envs/plot.yaml"
-    threads: 1
-    shell:
-        "Rscript {SCRIPTDIR}/circosplot.R {RESULTDIR} consensus {RESULTDIR} 2> {log}"
-
-rule upset_plot:
-    input:
-        expand(f"{RESULTDIR}/GM24385.{{aligner}}.upset.tsv", aligner=["minimap2", "ngmlr"])
-    output:
-        expand(f"{RESULTDIR}/GM24385.{{aligner}}.upset.pdf", aligner=["minimap2", "ngmlr"])
-    log:
-        f"{LOGDIR}/results/upsetplot.log"
-    threads: 1
-    conda: "../envs/plot.yaml"
-    shell:
-        "Rscript {SCRIPTDIR}/upsetplot.R {RESULTDIR} 2> {log}"
 
 
 

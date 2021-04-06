@@ -405,22 +405,425 @@ rule plot_results_bycoverage:
         "Rscript {SCRIPTDIR}/prf1bycoverage.R {RESULTDIR} 2> {log}"
 
 
-rule consensus_vs_single_prf1:
+rule prf1_minimap2_cutesv_sniffles:    
     input:
-        bysupport=f"{RESULTDIR}/GM24385.prf1.bysupport.tsv",
-        vcf=f"{RESULTDIR}/GM24385.consensus.vcf.gz"
+        expand(f"{RESULTDIR}/minimap2/{{tools}}/total/GM24385.clean.vcf", tools=["cutesv", "sniffles"]),
     output:
-        f"{RESULTDIR}/GM24385.prf1.consensus.tsv"
+        f"{RESULTDIR}/calls_combined/minimap2_cutesv_sniffles.tsv"
     threads: 1
     conda: "../envs/sumsvs.yaml"
+    log:
+        f"{LOGDIR}/results/cutesv_sniffles.combined.log"
     params:
+        outdir=f"{RESULTDIR}/calls_combined",
+        tmp=f"{RESULTDIR}/calls_combined/tmpminimap2cutesvsniffles.txt",
+        mergedvcf=f"{RESULTDIR}/calls_combined/minimap2cutesvsniffles.vcf",
+        mergedvcfgz=f"{RESULTDIR}/calls_combined/minimap2_cutesv_sniffles.vcf.gz",
         truthvcf=f"{VCFDIR}/HG002_SVs_Tier1_v0.6.vcf.gz",
         truthbed=f"{VCFDIR}/HG002_SVs_Tier1_v0.6.bed",
         ref=config["genome"]
-    log:
-        f"{LOGDIR}/results/plot_consensusprf1.log"
     shell:
         """
-        head -1 {input.bysupport} > {output} && tail -n+2 {input.bysupport} | awk '{{OFS=FS="\t"}}{{if($7 == "10") print}}' >> {output} && truvari bench -f {params.ref} -b {params.truthvcf} --includebed {params.truthbed} --passonly --giabreport -p 0 -c {input.vcf} -o {RESULTDIR}/truvari_consensus && cat {RESULTDIR}/truvari_consensus/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk '{{OFS=FS="\t"}}{{print $0,10,"CONSENSUS","CONSENSUS"}}' >> {output}
+        ls {input} > {params.tmp} && mkdir -p {params.outdir} && echo -e "precision\trecall\tf1\tprecision_gt\trecall_gt\tf1_gt\tsupport\ttool\taligner" > {output} && \
+        SURVIVOR merge {params.tmp} 1000 2 1 1 0 50 {params.mergedvcf} && rm {params.tmp} && \
+        bcftools view -i 'SVTYPE=="DEL" || SVTYPE =="INS"' {params.mergedvcf} | bcftools sort -O z -o {params.mergedvcfgz} && bcftools index -t {params.mergedvcfgz} && rm {params.mergedvcf} && \
+        truvari bench -f {params.ref} -b {params.truthvcf} --includebed {params.truthbed} --passonly --giabreport -p 0 -c {params.mergedvcfgz} -o {params.outdir}/truvari_minimap2_cutesv_sniffles && cat {params.outdir}/truvari_minimap2_cutesv_sniffles/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk '{{OFS=FS="\t"}}{{print $0,10,"cutesv-sniffles","minimap2"}}' >> {output}
+        """ 
+
+rule prf1_minimap2_cutesv_svim:    
+    input:
+        expand(f"{RESULTDIR}/minimap2/{{tools}}/total/GM24385.clean.vcf", tools=["cutesv", "svim"]),
+    output:
+        f"{RESULTDIR}/calls_combined/minimap2_cutesv_svim.tsv"
+    threads: 1
+    conda: "../envs/sumsvs.yaml"
+    log:
+        f"{LOGDIR}/results/cutesv_svim.combined.log"
+    params:
+        outdir=f"{RESULTDIR}/calls_combined",
+        tmp=f"{RESULTDIR}/calls_combined/tmpminimap2cutesvsvim.txt",
+        mergedvcf=f"{RESULTDIR}/calls_combined/minimap2cutesvsvim.vcf",
+        mergedvcfgz=f"{RESULTDIR}/calls_combined/minimap2_cutesv_svim.vcf.gz",
+        truthvcf=f"{VCFDIR}/HG002_SVs_Tier1_v0.6.vcf.gz",
+        truthbed=f"{VCFDIR}/HG002_SVs_Tier1_v0.6.bed",
+        ref=config["genome"]
+    shell:
         """
+        ls {input} > {params.tmp} && mkdir -p {params.outdir} && echo -e "precision\trecall\tf1\tprecision_gt\trecall_gt\tf1_gt\tsupport\ttool\taligner" > {output} && \
+        SURVIVOR merge {params.tmp} 1000 2 1 1 0 50 {params.mergedvcf} && rm {params.tmp} && \
+        bcftools view -i 'SVTYPE=="DEL" || SVTYPE =="INS"' {params.mergedvcf} | bcftools sort -O z -o {params.mergedvcfgz} && bcftools index -t {params.mergedvcfgz} && rm {params.mergedvcf} && \
+        truvari bench -f {params.ref} -b {params.truthvcf} --includebed {params.truthbed} --passonly --giabreport -p 0 -c {params.mergedvcfgz} -o {params.outdir}/truvari_minimap2_cutesv_svim && cat {params.outdir}/truvari_minimap2_cutesv_svim/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk '{{OFS=FS="\t"}}{{print $0,10,"cutesv-svim","minimap2"}}' >> {output}
+        """ 
+
+
+rule prf1_minimap2_cutesv_pbsv:    
+    input:
+        f"{RESULTDIR}/minimap2/cutesv/total/GM24385.clean.vcf",
+        f"{RESULTDIR}/pbmm2/pbsv/total/GM24385.clean.vcf",
+    output:
+        f"{RESULTDIR}/calls_combined/minimap2_cutesv_pbsv.tsv"
+    threads: 1
+    conda: "../envs/sumsvs.yaml"
+    log:
+        f"{LOGDIR}/results/cutesv_pbsv.combined.log"
+    params:
+        outdir=f"{RESULTDIR}/calls_combined",
+        tmp=f"{RESULTDIR}/calls_combined/tmpminimap2cutesvpbsv.txt",
+        mergedvcf=f"{RESULTDIR}/calls_combined/minimap2cutesvpbsv.vcf",
+        mergedvcfgz=f"{RESULTDIR}/calls_combined/minimap2_cutesv_pbsv.vcf.gz",
+        truthvcf=f"{VCFDIR}/HG002_SVs_Tier1_v0.6.vcf.gz",
+        truthbed=f"{VCFDIR}/HG002_SVs_Tier1_v0.6.bed",
+        ref=config["genome"]
+    shell:
+        """
+        ls {input} > {params.tmp} && mkdir -p {params.outdir} && echo -e "precision\trecall\tf1\tprecision_gt\trecall_gt\tf1_gt\tsupport\ttool\taligner" > {output} && \
+        SURVIVOR merge {params.tmp} 1000 2 1 1 0 50 {params.mergedvcf} && rm {params.tmp} && \
+        bcftools view -i 'SVTYPE=="DEL" || SVTYPE =="INS"' {params.mergedvcf} | bcftools sort -O z -o {params.mergedvcfgz} && bcftools index -t {params.mergedvcfgz} && rm {params.mergedvcf} && \
+        truvari bench -f {params.ref} -b {params.truthvcf} --includebed {params.truthbed} --passonly --giabreport -p 0 -c {params.mergedvcfgz} -o {params.outdir}/truvari_minimap2_cutesv_pbsv && cat {params.outdir}/truvari_minimap2_cutesv_pbsv/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk '{{OFS=FS="\t"}}{{print $0,10,"cutesv-pbsv","minimap2"}}' >> {output}
+        """ 
+
+rule prf1_minimap2_sniffles_pbsv:    
+    input:
+        f"{RESULTDIR}/minimap2/sniffles/total/GM24385.clean.vcf",
+        f"{RESULTDIR}/pbmm2/pbsv/total/GM24385.clean.vcf",
+    output:
+        f"{RESULTDIR}/calls_combined/minimap2_sniffles_pbsv.tsv"
+    threads: 1
+    conda: "../envs/sumsvs.yaml"
+    log:
+        f"{LOGDIR}/results/sniffles_pbsv.combined.log"
+    params:
+        outdir=f"{RESULTDIR}/calls_combined",
+        tmp=f"{RESULTDIR}/calls_combined/tmpminimap2snifflespbsv.txt",
+        mergedvcf=f"{RESULTDIR}/calls_combined/minimap2snifflespbsv.vcf",
+        mergedvcfgz=f"{RESULTDIR}/calls_combined/minimap2_sniffles_pbsv.vcf.gz",
+        truthvcf=f"{VCFDIR}/HG002_SVs_Tier1_v0.6.vcf.gz",
+        truthbed=f"{VCFDIR}/HG002_SVs_Tier1_v0.6.bed",
+        ref=config["genome"]
+    shell:
+        """
+        ls {input} > {params.tmp} && mkdir -p {params.outdir} && echo -e "precision\trecall\tf1\tprecision_gt\trecall_gt\tf1_gt\tsupport\ttool\taligner" > {output} && \
+        SURVIVOR merge {params.tmp} 1000 2 1 1 0 50 {params.mergedvcf} && rm {params.tmp} && \
+        bcftools view -i 'SVTYPE=="DEL" || SVTYPE =="INS"' {params.mergedvcf} | bcftools sort -O z -o {params.mergedvcfgz} && bcftools index -t {params.mergedvcfgz} && rm {params.mergedvcf} && \
+        truvari bench -f {params.ref} -b {params.truthvcf} --includebed {params.truthbed} --passonly --giabreport -p 0 -c {params.mergedvcfgz} -o {params.outdir}/truvari_minimap2_sniffles_pbsv && cat {params.outdir}/truvari_minimap2_sniffles_pbsv/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk '{{OFS=FS="\t"}}{{print $0,10,"sniffles-pbsv","minimap2"}}' >> {output}
+        """ 
+
+rule prf1_minimap2_svim_pbsv:
+    input:
+        f"{RESULTDIR}/minimap2/svim/total/GM24385.clean.vcf",
+        f"{RESULTDIR}/pbmm2/pbsv/total/GM24385.clean.vcf",
+    output:
+        f"{RESULTDIR}/calls_combined/minimap2_svim_pbsv.tsv"
+    threads: 1
+    conda: "../envs/sumsvs.yaml"
+    log:
+        f"{LOGDIR}/results/svim_pbsv.combined.log"
+    params:
+        outdir=f"{RESULTDIR}/calls_combined",
+        tmp=f"{RESULTDIR}/calls_combined/tmpminimap2svimpbsv.txt",
+        mergedvcf=f"{RESULTDIR}/calls_combined/minimap2svimpbsv.vcf",
+        mergedvcfgz=f"{RESULTDIR}/calls_combined/minimap2_svim_pbsv.vcf.gz",
+        truthvcf=f"{VCFDIR}/HG002_SVs_Tier1_v0.6.vcf.gz",
+        truthbed=f"{VCFDIR}/HG002_SVs_Tier1_v0.6.bed",
+        ref=config["genome"]
+    shell:
+        """
+        ls {input} > {params.tmp} && mkdir -p {params.outdir} && echo -e "precision\trecall\tf1\tprecision_gt\trecall_gt\tf1_gt\tsupport\ttool\taligner" > {output} && \
+        SURVIVOR merge {params.tmp} 1000 2 1 1 0 50 {params.mergedvcf} && rm {params.tmp} && \
+        bcftools view -i 'SVTYPE=="DEL" || SVTYPE =="INS"' {params.mergedvcf} | bcftools sort -O z -o {params.mergedvcfgz} && bcftools index -t {params.mergedvcfgz} && rm {params.mergedvcf} && \
+        truvari bench -f {params.ref} -b {params.truthvcf} --includebed {params.truthbed} --passonly --giabreport -p 0 -c {params.mergedvcfgz} -o {params.outdir}/truvari_minimap2_svim_pbsv && cat {params.outdir}/truvari_minimap2_svim_pbsv/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk '{{OFS=FS="\t"}}{{print $0,10,"svim-pbsv","minimap2"}}' >> {output}
+        """ 
+
+rule prf1_minimap2_sniffles_svim:    
+    input:
+        expand(f"{RESULTDIR}/minimap2/{{tools}}/total/GM24385.clean.vcf", tools=["sniffles", "svim"]),
+    output:
+        f"{RESULTDIR}/calls_combined/minimap2_sniffles_svim.tsv"
+    threads: 1
+    conda: "../envs/sumsvs.yaml"
+    log:
+        f"{LOGDIR}/results/sniffles_svim.combined.log"
+    params:
+        outdir=f"{RESULTDIR}/calls_combined",
+        tmp=f"{RESULTDIR}/calls_combined/tmpminimap2snifflessvim.txt",
+        mergedvcf=f"{RESULTDIR}/calls_combined/minimap2snifflessvim.vcf",
+        mergedvcfgz=f"{RESULTDIR}/calls_combined/minimap2_sniffles_svim.vcf.gz",
+        truthvcf=f"{VCFDIR}/HG002_SVs_Tier1_v0.6.vcf.gz",
+        truthbed=f"{VCFDIR}/HG002_SVs_Tier1_v0.6.bed",
+        ref=config["genome"]
+    shell:
+        """
+        ls {input} > {params.tmp} && mkdir -p {params.outdir} && echo -e "precision\trecall\tf1\tprecision_gt\trecall_gt\tf1_gt\tsupport\ttool\taligner" > {output} && \
+        SURVIVOR merge {params.tmp} 1000 2 1 1 0 50 {params.mergedvcf} && rm {params.tmp} && \
+        bcftools view -i 'SVTYPE=="DEL" || SVTYPE =="INS"' {params.mergedvcf} | bcftools sort -O z -o {params.mergedvcfgz} && bcftools index -t {params.mergedvcfgz} && rm {params.mergedvcf} && \
+        truvari bench -f {params.ref} -b {params.truthvcf} --includebed {params.truthbed} --passonly --giabreport -p 0 -c {params.mergedvcfgz} -o {params.outdir}/truvari_minimap2_sniffles_svim && cat {params.outdir}/truvari_minimap2_sniffles_svim/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk '{{OFS=FS="\t"}}{{print $0,10,"sniffles-svim","minimap2"}}' >> {output}
+        """ 
+
+rule prf1_minimap2_cutesv_sniffles_svim:    
+    input:
+        expand(f"{RESULTDIR}/minimap2/{{tools}}/total/GM24385.clean.vcf", tools=["cutesv","sniffles", "svim"]),
+    output:
+        f"{RESULTDIR}/calls_combined/minimap2_cutesv_sniffles_svim.tsv"
+    threads: 1
+    conda: "../envs/sumsvs.yaml"
+    log:
+        f"{LOGDIR}/results/cutesv_sniffles_svim.combined.log"
+    params:
+        outdir=f"{RESULTDIR}/calls_combined",
+        tmp=f"{RESULTDIR}/calls_combined/tmpminimap2cutesvsnifflessvim.txt",
+        mergedvcf=f"{RESULTDIR}/calls_combined/minimap2cutesvsnifflessvim.vcf",
+        mergedvcfgz=f"{RESULTDIR}/calls_combined/minimap2_cutesv_sniffles_svim.vcf.gz",
+        truthvcf=f"{VCFDIR}/HG002_SVs_Tier1_v0.6.vcf.gz",
+        truthbed=f"{VCFDIR}/HG002_SVs_Tier1_v0.6.bed",
+        ref=config["genome"]
+    shell:
+        """
+        ls {input} > {params.tmp} && mkdir -p {params.outdir} && echo -e "precision\trecall\tf1\tprecision_gt\trecall_gt\tf1_gt\tsupport\ttool\taligner" > {output} && \
+        SURVIVOR merge {params.tmp} 1000 3 1 1 0 50 {params.mergedvcf} && rm {params.tmp} && \
+        bcftools view -i 'SVTYPE=="DEL" || SVTYPE =="INS"' {params.mergedvcf} | bcftools sort -O z -o {params.mergedvcfgz} && bcftools index -t {params.mergedvcfgz} && rm {params.mergedvcf} && \
+        truvari bench -f {params.ref} -b {params.truthvcf} --includebed {params.truthbed} --passonly --giabreport -p 0 -c {params.mergedvcfgz} -o {params.outdir}/truvari_minimap2_cutesv_sniffles_svim && cat {params.outdir}/truvari_minimap2_cutesv_sniffles_svim/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk '{{OFS=FS="\t"}}{{print $0,10,"cutesv-sniffles-svim","minimap2"}}' >> {output}
+        """ 
+
+rule prf1_minimap2_cutesv_sniffles_pbsv:    
+    input:
+        expand(f"{RESULTDIR}/minimap2/{{tools}}/total/GM24385.clean.vcf", tools=["cutesv","sniffles"]),
+        f"{RESULTDIR}/pbmm2/pbsv/total/GM24385.clean.vcf"
+    output:
+        f"{RESULTDIR}/calls_combined/minimap2_cutesv_sniffles_pbsv.tsv"
+    threads: 1
+    conda: "../envs/sumsvs.yaml"
+    log:
+        f"{LOGDIR}/results/cutesv_sniffles_pbsv.combined.log"
+    params:
+        outdir=f"{RESULTDIR}/calls_combined",
+        tmp=f"{RESULTDIR}/calls_combined/tmpminimap2cutesvsnifflespbsv.txt",
+        mergedvcf=f"{RESULTDIR}/calls_combined/minimap2cutesvsnifflespbsv.vcf",
+        mergedvcfgz=f"{RESULTDIR}/calls_combined/minimap2_cutesv_sniffles_pbsv.vcf.gz",
+        truthvcf=f"{VCFDIR}/HG002_SVs_Tier1_v0.6.vcf.gz",
+        truthbed=f"{VCFDIR}/HG002_SVs_Tier1_v0.6.bed",
+        ref=config["genome"]
+    shell:
+        """
+        ls {input} > {params.tmp} && mkdir -p {params.outdir} && echo -e "precision\trecall\tf1\tprecision_gt\trecall_gt\tf1_gt\tsupport\ttool\taligner" > {output} && \
+        SURVIVOR merge {params.tmp} 1000 3 1 1 0 50 {params.mergedvcf} && rm {params.tmp} && \
+        bcftools view -i 'SVTYPE=="DEL" || SVTYPE =="INS"' {params.mergedvcf} | bcftools sort -O z -o {params.mergedvcfgz} && bcftools index -t {params.mergedvcfgz} && rm {params.mergedvcf} && \
+        truvari bench -f {params.ref} -b {params.truthvcf} --includebed {params.truthbed} --passonly --giabreport -p 0 -c {params.mergedvcfgz} -o {params.outdir}/truvari_minimap2_cutesv_sniffles_pbsv && cat {params.outdir}/truvari_minimap2_cutesv_sniffles_pbsv/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk '{{OFS=FS="\t"}}{{print $0,10,"cutesv-sniffles-pbsv","minimap2"}}' >> {output}
+        """ 
+
+rule prf1_minimap2_cutesv_svim_pbsv:    
+    input:
+        expand(f"{RESULTDIR}/minimap2/{{tools}}/total/GM24385.clean.vcf", tools=["cutesv","svim"]),
+        f"{RESULTDIR}/pbmm2/pbsv/total/GM24385.clean.vcf"
+    output:
+        f"{RESULTDIR}/calls_combined/minimap2_cutesv_svim_pbsv.tsv"
+    threads: 1
+    conda: "../envs/sumsvs.yaml"
+    log:
+        f"{LOGDIR}/results/cutesv_svim_pbsv.combined.log"
+    params:
+        outdir=f"{RESULTDIR}/calls_combined",
+        tmp=f"{RESULTDIR}/calls_combined/tmpminimap2cutesvsvimpbsv.txt",
+        mergedvcf=f"{RESULTDIR}/calls_combined/minimap2cutesvsvimpbsv.vcf",
+        mergedvcfgz=f"{RESULTDIR}/calls_combined/minimap2_cutesv_svim_pbsv.vcf.gz",
+        truthvcf=f"{VCFDIR}/HG002_SVs_Tier1_v0.6.vcf.gz",
+        truthbed=f"{VCFDIR}/HG002_SVs_Tier1_v0.6.bed",
+        ref=config["genome"]
+    shell:
+        """
+        ls {input} > {params.tmp} && mkdir -p {params.outdir} && echo -e "precision\trecall\tf1\tprecision_gt\trecall_gt\tf1_gt\tsupport\ttool\taligner" > {output} && \
+        SURVIVOR merge {params.tmp} 1000 3 1 1 0 50 {params.mergedvcf} && rm {params.tmp} && \
+        bcftools view -i 'SVTYPE=="DEL" || SVTYPE =="INS"' {params.mergedvcf} | bcftools sort -O z -o {params.mergedvcfgz} && bcftools index -t {params.mergedvcfgz} && rm {params.mergedvcf} && \
+        truvari bench -f {params.ref} -b {params.truthvcf} --includebed {params.truthbed} --passonly --giabreport -p 0 -c {params.mergedvcfgz} -o {params.outdir}/truvari_minimap2_cutesv_svim_pbsv && cat {params.outdir}/truvari_minimap2_cutesv_svim_pbsv/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk '{{OFS=FS="\t"}}{{print $0,10,"cutesv-svim-pbsv","minimap2"}}' >> {output}
+        """ 
+
+
+rule prf1_minimap2_sniffles_svim_pbsv:    
+    input:
+        expand(f"{RESULTDIR}/minimap2/{{tools}}/total/GM24385.clean.vcf", tools=["sniffles","svim"]),
+        f"{RESULTDIR}/pbmm2/pbsv/total/GM24385.clean.vcf"
+    output:
+        f"{RESULTDIR}/calls_combined/minimap2_sniffles_svim_pbsv.tsv"
+    threads: 1
+    conda: "../envs/sumsvs.yaml"
+    log:
+        f"{LOGDIR}/results/sniffles_svim_pbsv.combined.log"
+    params:
+        outdir=f"{RESULTDIR}/calls_combined",
+        tmp=f"{RESULTDIR}/calls_combined/tmpminimap2snifflessvimpbsv.txt",
+        mergedvcf=f"{RESULTDIR}/calls_combined/minimap2snifflessvimpbsv.vcf",
+        mergedvcfgz=f"{RESULTDIR}/calls_combined/minimap2_sniffles_svim_pbsv.vcf.gz",
+        truthvcf=f"{VCFDIR}/HG002_SVs_Tier1_v0.6.vcf.gz",
+        truthbed=f"{VCFDIR}/HG002_SVs_Tier1_v0.6.bed",
+        ref=config["genome"]
+    shell:
+        """
+        ls {input} > {params.tmp} && mkdir -p {params.outdir} && echo -e "precision\trecall\tf1\tprecision_gt\trecall_gt\tf1_gt\tsupport\ttool\taligner" > {output} && \
+        SURVIVOR merge {params.tmp} 1000 3 1 1 0 50 {params.mergedvcf} && rm {params.tmp} && \
+        bcftools view -i 'SVTYPE=="DEL" || SVTYPE =="INS"' {params.mergedvcf} | bcftools sort -O z -o {params.mergedvcfgz} && bcftools index -t {params.mergedvcfgz} && rm {params.mergedvcf} && \
+        truvari bench -f {params.ref} -b {params.truthvcf} --includebed {params.truthbed} --passonly --giabreport -p 0 -c {params.mergedvcfgz} -o {params.outdir}/truvari_minimap2_sniffles_svim_pbsv && cat {params.outdir}/truvari_minimap2_sniffles_svim_pbsv/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk '{{OFS=FS="\t"}}{{print $0,10,"sniffles-svim-pbsv","minimap2"}}' >> {output}
+        """ 
+
+rule prf1_minimap2_cutesv_sniffles_svim_pbsv:    
+    input:
+        expand(f"{RESULTDIR}/minimap2/{{tools}}/total/GM24385.clean.vcf", tools=["cutesv","sniffles","svim"]),
+        f"{RESULTDIR}/pbmm2/pbsv/total/GM24385.clean.vcf"
+    output:
+        f"{RESULTDIR}/calls_combined/minimap2_cutesv_sniffles_svim_pbsv.tsv"
+    threads: 1
+    conda: "../envs/sumsvs.yaml"
+    log:
+        f"{LOGDIR}/results/cutesv_sniffles_svim_pbsv.combined.log"
+    params:
+        outdir=f"{RESULTDIR}/calls_combined",
+        tmp=f"{RESULTDIR}/calls_combined/tmpminimap2cutesvsnifflessvimpbsv.txt",
+        mergedvcf=f"{RESULTDIR}/calls_combined/minimap2cutesvsnifflessvimpbsv.vcf",
+        mergedvcfgz=f"{RESULTDIR}/calls_combined/minimap2_cutesv_sniffles_svim_pbsv.vcf.gz",
+        truthvcf=f"{VCFDIR}/HG002_SVs_Tier1_v0.6.vcf.gz",
+        truthbed=f"{VCFDIR}/HG002_SVs_Tier1_v0.6.bed",
+        ref=config["genome"]
+    shell:
+        """
+        ls {input} > {params.tmp} && mkdir -p {params.outdir} && echo -e "precision\trecall\tf1\tprecision_gt\trecall_gt\tf1_gt\tsupport\ttool\taligner" > {output} && \
+        SURVIVOR merge {params.tmp} 1000 4 1 1 0 50 {params.mergedvcf} && rm {params.tmp} && \
+        bcftools view -i 'SVTYPE=="DEL" || SVTYPE =="INS"' {params.mergedvcf} | bcftools sort -O z -o {params.mergedvcfgz} && bcftools index -t {params.mergedvcfgz} && rm {params.mergedvcf} && \
+        truvari bench -f {params.ref} -b {params.truthvcf} --includebed {params.truthbed} --passonly --giabreport -p 0 -c {params.mergedvcfgz} -o {params.outdir}/truvari_minimap2_cutesv_sniffles_svim_pbsv && cat {params.outdir}/truvari_minimap2_cutesv_sniffles_svim_pbsv/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk '{{OFS=FS="\t"}}{{print $0,10,"cutesv-sniffles-svim-pbsv","minimap2"}}' >> {output}
+        """ 
+
+
+rule prf1_ngmlr_cutesv_sniffles:    
+    input:
+        expand(f"{RESULTDIR}/ngmlr/{{tools}}/total/GM24385.clean.vcf", tools=["cutesv", "sniffles"]),
+    output:
+        f"{RESULTDIR}/calls_combined/ngmlr_cutesv_sniffles.tsv"
+    threads: 1
+    conda: "../envs/sumsvs.yaml"
+    log:
+        f"{LOGDIR}/results/cutesv_sniffles.combined.log"
+    params:
+        outdir=f"{RESULTDIR}/calls_combined",
+        tmp=f"{RESULTDIR}/calls_combined/tmpngmlrcutesvsniffles.txt",
+        mergedvcf=f"{RESULTDIR}/calls_combined/ngmlrcutesvsniffles.vcf",
+        mergedvcfgz=f"{RESULTDIR}/calls_combined/ngmlr_cutesv_sniffles.vcf.gz",
+        truthvcf=f"{VCFDIR}/HG002_SVs_Tier1_v0.6.vcf.gz",
+        truthbed=f"{VCFDIR}/HG002_SVs_Tier1_v0.6.bed",
+        ref=config["genome"]
+    shell:
+        """
+        ls {input} > {params.tmp} && mkdir -p {params.outdir} && echo -e "precision\trecall\tf1\tprecision_gt\trecall_gt\tf1_gt\tsupport\ttool\taligner" > {output} && \
+        SURVIVOR merge {params.tmp} 1000 2 1 1 0 50 {params.mergedvcf} && rm {params.tmp} && \
+        bcftools view -i 'SVTYPE=="DEL" || SVTYPE =="INS"' {params.mergedvcf} | bcftools sort -O z -o {params.mergedvcfgz} && bcftools index -t {params.mergedvcfgz} && rm {params.mergedvcf} && \
+        truvari bench -f {params.ref} -b {params.truthvcf} --includebed {params.truthbed} --passonly --giabreport -p 0 -c {params.mergedvcfgz} -o {params.outdir}/truvari_ngmlr_cutesv_sniffles && cat {params.outdir}/truvari_ngmlr_cutesv_sniffles/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk '{{OFS=FS="\t"}}{{print $0,10,"cutesv-sniffles","ngmlr"}}' >> {output}
+        """ 
+
+rule prf1_ngmlr_cutesv_svim:    
+    input:
+        expand(f"{RESULTDIR}/ngmlr/{{tools}}/total/GM24385.clean.vcf", tools=["cutesv", "svim"]),
+    output:
+        f"{RESULTDIR}/calls_combined/ngmlr_cutesv_svim.tsv"
+    threads: 1
+    conda: "../envs/sumsvs.yaml"
+    log:
+        f"{LOGDIR}/results/cutesv_svim.combined.log"
+    params:
+        outdir=f"{RESULTDIR}/calls_combined",
+        tmp=f"{RESULTDIR}/calls_combined/tmpngmlrcutesvsvim.txt",
+        mergedvcf=f"{RESULTDIR}/calls_combined/ngmlrcutesvsvim.vcf",
+        mergedvcfgz=f"{RESULTDIR}/calls_combined/ngmlr_cutesv_svim.vcf.gz",
+        truthvcf=f"{VCFDIR}/HG002_SVs_Tier1_v0.6.vcf.gz",
+        truthbed=f"{VCFDIR}/HG002_SVs_Tier1_v0.6.bed",
+        ref=config["genome"]
+    shell:
+        """
+        ls {input} > {params.tmp} && mkdir -p {params.outdir} && echo -e "precision\trecall\tf1\tprecision_gt\trecall_gt\tf1_gt\tsupport\ttool\taligner" > {output} && \
+        SURVIVOR merge {params.tmp} 1000 2 1 1 0 50 {params.mergedvcf} && rm {params.tmp} && \
+        bcftools view -i 'SVTYPE=="DEL" || SVTYPE =="INS"' {params.mergedvcf} | bcftools sort -O z -o {params.mergedvcfgz} && bcftools index -t {params.mergedvcfgz} && rm {params.mergedvcf} && \
+        truvari bench -f {params.ref} -b {params.truthvcf} --includebed {params.truthbed} --passonly --giabreport -p 0 -c {params.mergedvcfgz} -o {params.outdir}/truvari_ngmlr_cutesv_svim && cat {params.outdir}/truvari_ngmlr_cutesv_svim/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk '{{OFS=FS="\t"}}{{print $0,10,"cutesv-svim","ngmlr"}}' >> {output}
+        """ 
+
+rule prf1_ngmlr_sniffles_svim:    
+    input:
+        expand(f"{RESULTDIR}/ngmlr/{{tools}}/total/GM24385.clean.vcf", tools=["sniffles", "svim"]),
+    output:
+        f"{RESULTDIR}/calls_combined/ngmlr_sniffles_svim.tsv"
+    threads: 1
+    conda: "../envs/sumsvs.yaml"
+    log:
+        f"{LOGDIR}/results/sniffles_svim.combined.log"
+    params:
+        outdir=f"{RESULTDIR}/calls_combined",
+        tmp=f"{RESULTDIR}/calls_combined/tmpngmlrsnifflessvim.txt",
+        mergedvcf=f"{RESULTDIR}/calls_combined/ngmlrsnifflessvim.vcf",
+        mergedvcfgz=f"{RESULTDIR}/calls_combined/ngmlr_sniffles_svim.vcf.gz",
+        truthvcf=f"{VCFDIR}/HG002_SVs_Tier1_v0.6.vcf.gz",
+        truthbed=f"{VCFDIR}/HG002_SVs_Tier1_v0.6.bed",
+        ref=config["genome"]
+    shell:
+        """
+        ls {input} > {params.tmp} && mkdir -p {params.outdir} && echo -e "precision\trecall\tf1\tprecision_gt\trecall_gt\tf1_gt\tsupport\ttool\taligner" > {output} && \
+        SURVIVOR merge {params.tmp} 1000 2 1 1 0 50 {params.mergedvcf} && rm {params.tmp} && \
+        bcftools view -i 'SVTYPE=="DEL" || SVTYPE =="INS"' {params.mergedvcf} | bcftools sort -O z -o {params.mergedvcfgz} && bcftools index -t {params.mergedvcfgz} && rm {params.mergedvcf} && \
+        truvari bench -f {params.ref} -b {params.truthvcf} --includebed {params.truthbed} --passonly --giabreport -p 0 -c {params.mergedvcfgz} -o {params.outdir}/truvari_ngmlr_sniffles_svim && cat {params.outdir}/truvari_ngmlr_sniffles_svim/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk '{{OFS=FS="\t"}}{{print $0,10,"sniffles-svim","ngmlr"}}' >> {output}
+        """ 
+
+rule prf1_ngmlr_cutesv_sniffles_svim:    
+    input:
+        expand(f"{RESULTDIR}/ngmlr/{{tools}}/total/GM24385.clean.vcf", tools=["cutesv","sniffles", "svim"]),
+    output:
+        f"{RESULTDIR}/calls_combined/ngmlr_cutesv_sniffles_svim.tsv"
+    threads: 1
+    conda: "../envs/sumsvs.yaml"
+    log:
+        f"{LOGDIR}/results/cutesv_sniffles_svim.combined.log"
+    params:
+        outdir=f"{RESULTDIR}/calls_combined",
+        tmp=f"{RESULTDIR}/calls_combined/tmpngmlrcutesvsnifflessvim.txt",
+        mergedvcf=f"{RESULTDIR}/calls_combined/ngmlrcutesvsnifflessvim.vcf",
+        mergedvcfgz=f"{RESULTDIR}/calls_combined/ngmlr_cutesv_sniffles_svim.vcf.gz",
+        truthvcf=f"{VCFDIR}/HG002_SVs_Tier1_v0.6.vcf.gz",
+        truthbed=f"{VCFDIR}/HG002_SVs_Tier1_v0.6.bed",
+        ref=config["genome"]
+    shell:
+        """
+        ls {input} > {params.tmp} && mkdir -p {params.outdir} && echo -e "precision\trecall\tf1\tprecision_gt\trecall_gt\tf1_gt\tsupport\ttool\taligner" > {output} && \
+        SURVIVOR merge {params.tmp} 1000 3 1 1 0 50 {params.mergedvcf} && rm {params.tmp} && \
+        bcftools view -i 'SVTYPE=="DEL" || SVTYPE =="INS"' {params.mergedvcf} | bcftools sort -O z -o {params.mergedvcfgz} && bcftools index -t {params.mergedvcfgz} && rm {params.mergedvcf} && \
+        truvari bench -f {params.ref} -b {params.truthvcf} --includebed {params.truthbed} --passonly --giabreport -p 0 -c {params.mergedvcfgz} -o {params.outdir}/truvari_ngmlr_cutesv_sniffles_svim && cat {params.outdir}/truvari_ngmlr_cutesv_sniffles_svim/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk '{{OFS=FS="\t"}}{{print $0,10,"cutesv-sniffles-svim","ngmlr"}}' >> {output}
+        """ 
+
+rule combine_results_bycombo:
+    input:
+        expand(f"{RESULTDIR}/calls_combined/{{aligner}}_cutesv_sniffles.tsv", aligner=["minimap2","ngmlr"]),
+        expand(f"{RESULTDIR}/calls_combined/{{aligner}}_cutesv_svim.tsv", aligner=["minimap2","ngmlr"]),
+        f"{RESULTDIR}/calls_combined/minimap2_cutesv_pbsv.tsv",
+        f"{RESULTDIR}/calls_combined/minimap2_sniffles_pbsv.tsv",
+        f"{RESULTDIR}/calls_combined/minimap2_svim_pbsv.tsv",
+        expand(f"{RESULTDIR}/calls_combined/{{aligner}}_sniffles_svim.tsv",aligner=["minimap2","ngmlr"]),
+        expand(f"{RESULTDIR}/calls_combined/{{aligner}}_cutesv_sniffles_svim.tsv",aligner=["minimap2","ngmlr"]),
+        f"{RESULTDIR}/calls_combined/minimap2_cutesv_sniffles_pbsv.tsv",
+        f"{RESULTDIR}/calls_combined/minimap2_cutesv_svim_pbsv.tsv",
+        f"{RESULTDIR}/calls_combined/minimap2_sniffles_svim_pbsv.tsv",
+        f"{RESULTDIR}/calls_combined/minimap2_cutesv_sniffles_svim_pbsv.tsv"
+    output:
+        f"{RESULTDIR}/GM24385.prf1.bycombo.tsv"
+    threads: 1
+    log:
+        f"{LOGDIR}/results/combine_prf1bycombo.log"
+    shell:
+        """
+        awk "FNR>1 || NR==1" {input} > {output} 2>{log}
+        """
+
+rule plot_results_bycombo:
+    input:
+        f"{RESULTDIR}/GM24385.prf1.bycombo.tsv"
+    output:
+        f"{RESULTDIR}/GM24385.prf1.bycombo.pdf"
+    threads: 1
+    conda: "../envs/plot.yaml"    
+    log:
+        f"{LOGDIR}/results/plot_prf1bycombo.log"
+    shell:
+        "Rscript {SCRIPTDIR}/prf1bycombo.R {RESULTDIR} 2> {log}"
+
+
 

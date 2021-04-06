@@ -30,7 +30,7 @@ rule na24385:
         expand(f"{RESULTDIR}/GM24385.{{aligner}}.upset.pdf", aligner=["minimap2", "ngmlr"]),
 	expand(f"{RESULTDIR}/GM24385.{{set}}.svs.pdf", set=["cutesv", "sniffles", "svim", "pbsv", "npinv","truth"]),
         f"{RESULTDIR}/GM24385.prf1.bysupport.pdf",
-        
+        f"{RESULTDIR}/GM24385.prf1.bycoverage.pdf"        
 
 #first part: map reads to reference and perform kind of QC (coverage)
 
@@ -86,9 +86,7 @@ rule sumsvs:
         #expand(f"{RESULTDIR}/GM24385.{{aligner}}.merged.vcf", aligner=["minimap2", "ngmlr"]),
         #expand(f"{RESULTDIR}/GM24385.{{aligner}}.upset.tsv", aligner=["minimap2", "ngmlr"]),
         expand(f"{RESULTDIR}/GM24385.{{aligner}}.upset.pdf", aligner=["minimap2", "ngmlr"]),
-        expand(f"{RESULTDIR}/GM24385.{{set}}.svs.pdf", set=["cutesv", "sniffles", "svim", "pbsv", "npinv","truth"]),
-        f"{RESULTDIR}/GM24385.consensus.vcf.gz",
-        f"{RESULTDIR}/GM24385.consensus.svs.pdf"
+        expand(f"{RESULTDIR}/GM24385.{{set}}.svs.pdf", set=["cutesv", "sniffles", "svim", "pbsv", "npinv","truth"])
 	
 rule prf1:
     input:
@@ -100,4 +98,17 @@ rule prf1:
         #f"{RESULTDIR}/pbmm2/pbsv/pbsv.pbmm2.bycoverage.tsv",
 	#f"{RESULTDIR}/GM24385.prf1.bycoverage.tsv",
         f"{RESULTDIR}/GM24385.prf1.bycoverage.pdf",
-        f"{RESULTDIR}/GM24385.prf1.consensus.tsv"
+	#expand(f"{RESULTDIR}/calls_combined/{{aligner}}_cutesv_sniffles.tsv", aligner=["minimap2","ngmlr"]),
+        #expand(f"{RESULTDIR}/calls_combined/{{aligner}}_cutesv_svim.tsv", aligner=["minimap2","ngmlr"]),
+        #f"{RESULTDIR}/calls_combined/minimap2_cutesv_pbsv.tsv",
+        #f"{RESULTDIR}/calls_combined/minimap2_sniffles_pbsv.tsv",
+        #f"{RESULTDIR}/calls_combined/minimap2_svim_pbsv.tsv",
+        #expand(f"{RESULTDIR}/calls_combined/{{aligner}}_sniffles_svim.tsv",aligner=["minimap2","ngmlr"]),
+        #expand(f"{RESULTDIR}/calls_combined/{{aligner}}_cutesv_sniffles_svim.tsv",aligner=["minimap2","ngmlr"]),
+        #f"{RESULTDIR}/calls_combined/minimap2_cutesv_sniffles_pbsv.tsv",
+        #f"{RESULTDIR}/calls_combined/minimap2_cutesv_svim_pbsv.tsv",
+        #f"{RESULTDIR}/calls_combined/minimap2_sniffles_svim_pbsv.tsv",
+        #f"{RESULTDIR}/calls_combined/minimap2_cutesv_sniffles_svim_pbsv.tsv",
+        f"{RESULTDIR}/GM24385.prf1.bycombo.tsv",
+        f"{RESULTDIR}/GM24385.prf1.bycombo.pdf"
+                
