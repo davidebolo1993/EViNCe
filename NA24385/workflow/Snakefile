@@ -86,7 +86,9 @@ rule sumsvs:
         #expand(f"{RESULTDIR}/GM24385.{{aligner}}.merged.vcf", aligner=["minimap2", "ngmlr"]),
         #expand(f"{RESULTDIR}/GM24385.{{aligner}}.upset.tsv", aligner=["minimap2", "ngmlr"]),
         expand(f"{RESULTDIR}/GM24385.{{aligner}}.upset.pdf", aligner=["minimap2", "ngmlr"]),
-        expand(f"{RESULTDIR}/GM24385.{{set}}.svs.pdf", set=["cutesv", "sniffles", "svim", "pbsv", "npinv","truth"])
+        expand(f"{RESULTDIR}/GM24385.{{set}}.svs.pdf", set=["cutesv", "sniffles", "svim", "pbsv", "npinv","truth"]),
+        #expand(f"{RESULTDIR}/GM24385.{{aligner}}.consensus.vcf",aligner=["minimap2", "ngmlr"])
+	f"{RESULTDIR}/GM24385.consensus.svs.pdf"
 
 rule prf1:
     input:
