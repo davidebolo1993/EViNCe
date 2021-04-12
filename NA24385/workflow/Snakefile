@@ -28,9 +28,11 @@ rule na24385:
         expand(f"{RESULTDIR}/pbmm2/pbsv/{{coverage}}/GM24385.vcf",coverage=["5X", "10X", "15X", "20X", "25X", "35X", "total"]),
         expand(f"{RESULTDIR}/{{aligner}}/npinv/{{coverage}}/GM24385.vcf", aligner=["minimap2","ngmlr"], coverage=["5X", "10X", "15X", "20X", "25X", "35X", "total"]),
         expand(f"{RESULTDIR}/GM24385.{{aligner}}.upset.pdf", aligner=["minimap2", "ngmlr"]),
-        expand(f"{RESULTDIR}/GM24385.{{set}}.svs.pdf", set=["cutesv", "sniffles", "svim", "pbsv", "npinv","truth"]),
+        expand(f"{RESULTDIR}/GM24385.{{set}}.svs.pdf", set=["cutesv", "sniffles", "svim", "pbsv", "npinv","truth","consensus"]),
         f"{RESULTDIR}/GM24385.prf1.bysupport.pdf",
-        f"{RESULTDIR}/GM24385.prf1.bycoverage.pdf"        
+        f"{RESULTDIR}/GM24385.prf1.bycoverage.pdf",
+        f"{RESULTDIR}/GM24385.prf1.bycombo.pdf",
+        f"{RESULTDIR}/GM24385.tpfpfn.bylength.pdf"
 
 #first part: map reads to reference and perform kind of QC (coverage)
 
@@ -88,11 +90,12 @@ rule sumsvs:
         expand(f"{RESULTDIR}/GM24385.{{aligner}}.upset.pdf", aligner=["minimap2", "ngmlr"]),
         expand(f"{RESULTDIR}/GM24385.{{set}}.svs.pdf", set=["cutesv", "sniffles", "svim", "pbsv", "npinv","truth"]),
         #expand(f"{RESULTDIR}/GM24385.{{aligner}}.consensus.vcf",aligner=["minimap2", "ngmlr"])
-	f"{RESULTDIR}/GM24385.consensus.svs.pdf"
+	f"{RESULTDIR}/GM24385.consensus.svs.pdf",
+        f"{RESULTDIR}/GM24385.varstats.tsv"
 
 rule prf1:
     input:
-        #expand(f"{RESULTDIR}/{{aligner}}/{{tool}}/total/{{tool}}.{{aligner}}.bysupport.tsv", tool=["cutesv", "svim", "sniffles"], aligner=["minimap2", "ngmlr"]),
+        expand(f"{RESULTDIR}/{{aligner}}/{{tool}}/total/{{tool}}.{{aligner}}.bysupport.tsv", tool=["cutesv", "svim", "sniffles"], aligner=["minimap2", "ngmlr"]),
         #f"{RESULTDIR}/pbmm2/pbsv/total/pbsv.pbmm2.bysupport.tsv",
         #f"{RESULTDIR}/GM24385.prf1.bysupport.tsv",
         f"{RESULTDIR}/GM24385.prf1.bysupport.pdf",
@@ -111,7 +114,8 @@ rule prf1:
         #f"{RESULTDIR}/calls_combined/minimap2_cutesv_svim_pbsv.tsv",
         #f"{RESULTDIR}/calls_combined/minimap2_sniffles_svim_pbsv.tsv",
         #f"{RESULTDIR}/calls_combined/minimap2_cutesv_sniffles_svim_pbsv.tsv",
-        f"{RESULTDIR}/GM24385.prf1.bycombo.tsv",
-        f"{RESULTDIR}/GM24385.prf1.bycombo.pdf"
-                
+        #f"{RESULTDIR}/GM24385.prf1.bycombo.tsv",
+        f"{RESULTDIR}/GM24385.prf1.bycombo.pdf",
+        #f"{RESULTDIR}/GM24385.tpfpfn.bylength.tsv",
+        f"{RESULTDIR}/GM24385.tpfpfn.bylength.pdf"                
 

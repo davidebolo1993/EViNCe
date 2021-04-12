@@ -286,9 +286,9 @@ rule clean_ngmlr_npinv:
         tmpvcf=f"{RESULTDIR}/ngmlr/npinv/total/tmp.vcf",
         tmpbed=f"{RESULTDIR}/ngmlr/npinv/total/tmp.bed"
     shell:
-       """
-         echo Sample NPINV > {params.tmpfile} && grep -v -f {params.exclude} {input} | bcftools view -f PASS -i 'DV>=10' | bcftools view -e 'GT[*]="RR"' | bcftools sort > {params.tmpvcf} && bcftools query -f '%CHROM\t%POS\t%INFO/END\t%CHROM\t%POS\t%INFO/END\t%ID\t,\t+\t+\tINV\n' {params.tmpvcf} > {params.tmpbed} && rm {params.tmpvcf} && SURVIVOR bedtovcf {params.tmpbed} INV {params.tmpvcf} && rm {params.tmpbed} && bcftools reheader -s {params.tmpfile} {params.tmpvcf} > {output.vcf} && rm {params.tmpfile} && rm {params.tmpvcf} && bcftools query -f '%CHROM\t%POS\t%END\t%SVTYPE\n' {output.vcf} | sortBed | intersectBed -a stdin -b {params.complex} -v -wa | mergeBed -c 4 -o distinct > {output.bed} 2> {log}
-       """
+        """
+        echo Sample NPINV > {params.tmpfile} && grep -v -f {params.exclude} {input} | bcftools view -f PASS -i 'DV>=10' | bcftools view -e 'GT[*]="RR"' | bcftools sort > {params.tmpvcf} && bcftools query -f '%CHROM\t%POS\t%INFO/END\t%CHROM\t%POS\t%INFO/END\t%ID\t,\t+\t+\tINV\n' {params.tmpvcf} > {params.tmpbed} && rm {params.tmpvcf} && SURVIVOR bedtovcf {params.tmpbed} INV {params.tmpvcf} && rm {params.tmpbed} && bcftools reheader -s {params.tmpfile} {params.tmpvcf} > {output.vcf} && rm {params.tmpfile} && rm {params.tmpvcf} && bcftools query -f '%CHROM\t%POS\t%END\t%SVTYPE\n' {output.vcf} | sortBed | intersectBed -a stdin -b {params.complex} -v -wa | mergeBed -c 4 -o distinct > {output.bed} 2> {log}
+        """
 
 rule npinv_svs_plot:
     input:
@@ -414,4 +414,189 @@ rule consensus_svs_plot:
     threads: 1
     shell:
         "Rscript {SCRIPTDIR}/circosplot.R {RESULTDIR} consensus {RESULTDIR} 2> {log}"
+
+rule cutesv_minimap2_stats:
+    input:
+        f"{RESULTDIR}/minimap2/cutesv/total/GM24385.clean.vcf"
+    output:
+        f"{RESULTDIR}/minimap2/cutesv/total/svdist.tsv"
+    log:
+        f"{LOGDIR}/results/cutesv_minimap2_stats.log"
+    threads: 1
+    params:
+        outstats=f"{RESULTDIR}/minimap2/cutesv/total/stats.tsv"
+    shell:
+        """
+        truvari stats -o {params.outstats} {input} && echo -e "SIZE\tDEL\tINS\tDUP\tINV\tTRA\ttool\taligner" > {output} && \
+        cat {params.outstats} | grep -A 12 "# SVxSZ counts" | head -13 | tail -n +3 | sed 's/\[//g' | sed 's/)//g' | sed 's/,/-/g' | awk '{{OFS=FS="\t"}}{{print $1,$2,$3,$4,$5,$7, "CUTESV", "minimap2"}}' >> {output} 2>{log}
+        """
+
+rule cutesv_ngmlr_stats:
+    input:
+        f"{RESULTDIR}/ngmlr/cutesv/total/GM24385.clean.vcf"
+    output:
+        f"{RESULTDIR}/ngmlr/cutesv/total/svdist.tsv"
+    log:
+        f"{LOGDIR}/results/cutesv_ngmlr_stats.log"
+    params:
+        outstats=f"{RESULTDIR}/ngmlr/cutesv/total/stats.tsv"
+    threads: 1
+    shell:
+        """
+        truvari stats -o {params.outstats} {input} && echo -e "SIZE\tDEL\tINS\tDUP\tINV\tTRA\ttool\taligner" > {output} && \
+        cat {params.outstats} | grep -A 12 "# SVxSZ counts" | head -13 | tail -n +3 | sed 's/\[//g' | sed 's/)//g' | sed 's/,/-/g' | awk '{{OFS=FS="\t"}}{{print $1,$2,$3,$4,$5,$7, "CUTESV", "ngmlr"}}' >> {output} 2>{log}
+        """
+
+rule sniffles_minimap2_stats:
+    input:
+        f"{RESULTDIR}/minimap2/sniffles/total/GM24385.clean.vcf"
+    output:
+        f"{RESULTDIR}/minimap2/sniffles/total/svdist.tsv"
+    log:
+        f"{LOGDIR}/results/sniffles_minimap2_stats.log"
+    params:
+        outstats=f"{RESULTDIR}/minimap2/sniffles/total/stats.tsv",
+        tmp=f"{RESULTDIR}/minimap2/sniffles/total/tmp.vcf"
+    threads: 1
+    shell:
+        """
+        bcftools view -i 'SVTYPE=="DEL" || SVTYPE=="INS"  || SVTYPE=="DUP" || SVTYPE=="INV" | SVTYPE=="BND"' -o {params.tmp} {input} && \
+        truvari stats -o {params.outstats} {params.tmp} && echo -e "SIZE\tDEL\tINS\tDUP\tINV\tTRA\ttool\taligner" > {output} && rm {params.tmp} && \
+        cat {params.outstats} | grep -A 12 "# SVxSZ counts" | head -13 | tail -n +3 | sed 's/\[//g' | sed 's/)//g' | sed 's/,/-/g' | awk '{{OFS=FS="\t"}}{{print $1,$2,$3,$4,$5,$7, "SNIFFLES", "minimap2"}}' >> {output} 2>{log}
+        """
+
+rule sniffles_ngmlr_stats:
+    input:
+        f"{RESULTDIR}/ngmlr/sniffles/total/GM24385.clean.vcf"
+    output:
+        f"{RESULTDIR}/ngmlr/sniffles/total/svdist.tsv"
+    log:
+        f"{LOGDIR}/results/sniffles_ngmlr_stats.log"
+    params:
+        outstats=f"{RESULTDIR}/ngmlr/sniffles/total/stats.tsv",
+        tmp=f"{RESULTDIR}/ngmlr/sniffles/total/tmp.vcf"
+    threads: 1
+    shell:
+        """
+        bcftools view -i 'SVTYPE=="DEL" || SVTYPE=="INS"  || SVTYPE=="DUP" || SVTYPE=="INV" | SVTYPE=="BND"' -o {params.tmp} {input} && \
+        truvari stats -o {params.outstats} {params.tmp} && echo -e "SIZE\tDEL\tINS\tDUP\tINV\tTRA\ttool\taligner" > {output} && rm {params.tmp} && \
+        cat {params.outstats} | grep -A 12 "# SVxSZ counts" | head -13 | tail -n +3 | sed 's/\[//g' | sed 's/)//g' | sed 's/,/-/g' | awk '{{OFS=FS="\t"}}{{print $1,$2,$3,$4,$5,$7, "SNIFFLES", "ngmlr"}}' >> {output} 2>{log}
+        """
+
+rule pbsv_pbmm2_stats:
+    input:
+        f"{RESULTDIR}/pbmm2/pbsv/total/GM24385.clean.vcf"
+    output:
+        f"{RESULTDIR}/pbmm2/pbsv/total/svdist.tsv"
+    log:
+        f"{LOGDIR}/results/pbsv_pbmm2_stats.log"
+    params:
+        outstats=f"{RESULTDIR}/pbmm2/pbsv/total/stats.tsv"
+    threads: 1
+    shell:
+        """
+        truvari stats -o {params.outstats} {input} && echo -e "SIZE\tDEL\tINS\tDUP\tINV\tTRA\ttool\taligner" > {output} && \
+        cat {params.outstats} | grep -A 12 "# SVxSZ counts" | head -13 | tail -n +3 | sed 's/\[//g' | sed 's/)//g' | sed 's/,/-/g' | awk '{{OFS=FS="\t"}}{{print $1,$2,$3,$4,$5,$7, "PBSV", "minimap2"}}' >> {output} 2>{log}
+        """
+
+rule svim_minimap2_stats:
+    input:
+        f"{RESULTDIR}/minimap2/svim/total/GM24385.clean.vcf"
+    output:
+        f"{RESULTDIR}/minimap2/svim/total/svdist.tsv"
+    log:
+        f"{LOGDIR}/results/svim_minimap2_stats.log"
+    threads: 1
+    params:
+        outstats=f"{RESULTDIR}/minimap2/svim/total/stats.tsv",
+        tmp=f"{RESULTDIR}/minimap2/svim/total/tmp.vcf"
+    shell:
+        """
+        sed 's/DUP:TANDEM/DUP/g' {input} | grep -v "DUP:INT" > {params.tmp} && \
+        truvari stats -o {params.outstats} {params.tmp} && echo -e "SIZE\tDEL\tINS\tDUP\tINV\tTRA\ttool\taligner" > {output} && rm {params.tmp} &&\
+        cat {params.outstats} | grep -A 12 "# SVxSZ counts" | head -13 | tail -n +3 | sed 's/\[//g' | sed 's/)//g' | sed 's/,/-/g' | awk '{{OFS=FS="\t"}}{{print $1,$2,$3,$4,$5,$7, "SVIM", "minimap2"}}' >> {output} 2>{log}
+        """
+
+rule svim_ngmlr_stats:
+    input:
+        f"{RESULTDIR}/ngmlr/svim/total/GM24385.clean.vcf"
+    output:
+        f"{RESULTDIR}/ngmlr/svim/total/svdist.tsv"
+    log:
+        f"{LOGDIR}/results/svim_ngmlr_stats.log"
+    threads: 1
+    params:
+        outstats=f"{RESULTDIR}/ngmlr/svim/total/stats.tsv",
+        tmp=f"{RESULTDIR}/ngmlr/svim/total/tmp.vcf"
+    shell:
+        """
+        sed 's/DUP:TANDEM/DUP/g' {input} | grep -v "DUP:INT" > {params.tmp} && \
+        truvari stats -o {params.outstats} {params.tmp} && echo -e "SIZE\tDEL\tINS\tDUP\tINV\tTRA\ttool\taligner" > {output} && rm {params.tmp} && \
+        cat {params.outstats} | grep -A 12 "# SVxSZ counts" | head -13 | tail -n +3 | sed 's/\[//g' | sed 's/)//g' | sed 's/,/-/g' | awk '{{OFS=FS="\t"}}{{print $1,$2,$3,$4,$5,$7, "SVIM", "ngmlr"}}' >> {output} 2>{log}
+        """
+
+rule npinv_minimap2_stats:
+    input:
+        f"{RESULTDIR}/minimap2/npinv/total/GM24385.clean.vcf"
+    output:
+        f"{RESULTDIR}/minimap2/npinv/total/svdist.tsv"
+    log:
+        f"{LOGDIR}/results/npinv_minimap2_stats.log"
+    threads: 1
+    params:
+        outstats=f"{RESULTDIR}/minimap2/npinv/total/stats.tsv"
+    shell:
+        """
+        truvari stats -o {params.outstats} {input} && echo -e "SIZE\tDEL\tINS\tDUP\tINV\tTRA\ttool\taligner" > {output} && \
+        cat {params.outstats} | grep -A 12 "# SVxSZ counts" | head -13 | tail -n +3 | sed 's/\[//g' | sed 's/)//g' | sed 's/,/-/g' | awk '{{OFS=FS="\t"}}{{print $1,$2,$3,$4,$5,$7, "NPINV", "minimap2"}}' >> {output} 2>{log}
+        """
+
+rule npinv_ngmlr_stats:
+    input:
+        f"{RESULTDIR}/ngmlr/npinv/total/GM24385.clean.vcf"
+    output:
+        f"{RESULTDIR}/ngmlr/npinv/total/svdist.tsv"
+    log:
+        f"{LOGDIR}/results/npinv_ngmlr_stats.log"
+    threads: 1
+    params:
+        outstats=f"{RESULTDIR}/ngmlr/npinv/total/stats.tsv"
+    shell:
+        """
+        truvari stats -o {params.outstats} {input} && echo -e "SIZE\tDEL\tINS\tDUP\tINV\tTRA\ttool\taligner" > {output} && \
+        cat {params.outstats} | grep -A 12 "# SVxSZ counts" | head -13 | tail -n +3 | sed 's/\[//g' | sed 's/)//g' | sed 's/,/-/g' | awk '{{OFS=FS="\t"}}{{print $1,$2,$3,$4,$5,$7, "NPINV", "ngmlr"}}' >> {output} 2>{log}
+        """
+
+rule truth_stats:
+    input:
+        f"{VCFDIR}/GM24385.clean.vcf"
+    output:
+        f"{VCFDIR}/svdist.tsv"
+    log:
+        f"{LOGDIR}/results/truth_stats.log"
+    threads: 1
+    params:
+        outstats=f"{VCFDIR}/stats.tsv"
+    shell:
+        """
+        truvari stats -o {params.outstats} {input} && echo -e "SIZE\tDEL\tINS\tDUP\tINV\tTRA\ttool\taligner" > {output} && \
+        cat {params.outstats} | grep -A 12 "# SVxSZ counts" | head -13 | tail -n +3 | sed 's/\[//g' | sed 's/)//g' | sed 's/,/-/g' | awk '{{OFS=FS="\t"}}{{print $1,$2,$3,$4,$5,$7, "TRUTH", "TRUTH"}}' >> {output} 2>{log}
+        """
+
+rule combine_stats:
+    input:
+        expand(f"{RESULTDIR}/{{aligner}}/{{tool}}/total/svdist.tsv", aligner=["minimap2", "ngmlr"], tool=["cutesv", "sniffles", "svim", "npinv"]),
+        f"{RESULTDIR}/pbmm2/pbsv/total/svdist.tsv",
+        f"{VCFDIR}/svdist.tsv"
+    output:
+        f"{RESULTDIR}/GM24385.varstats.tsv"
+    log:
+        f"{LOGDIR}/results/combine_stats.log"
+    threads: 1
+    shell:
+        """
+        awk "FNR>1 || NR==1" {input} > {output} 2>{log}
+        """
+
+
 
