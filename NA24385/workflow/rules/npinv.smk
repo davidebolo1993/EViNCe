@@ -28,6 +28,21 @@ rule npinv_call_total_ngmlr:
     shell:
         "mkdir -p {params.wd} && npinv --output {output} --input {input.bam} --min 50 --threshold 2 2>{log}"
 
+rule npinv_call_total_lra:
+    input:
+        bam=f"{ALIGNDIR}/GM24385.lra.srt.bam",
+        bai=f"{ALIGNDIR}/GM24385.lra.srt.bam.bai"
+    output:
+        f"{RESULTDIR}/lra/npinv/total/GM24385.vcf"
+    log:
+        f"{LOGDIR}/results/lra_npinv_total_call.log"
+    conda: "../envs/npinv.yaml"
+    threads: 1
+    params:
+        wd=f"{RESULTDIR}/lra/npinv/total"
+    shell:
+        "mkdir -p {params.wd} && npinv --output {output} --input {input.bam} --min 50 --threshold 2 2>{log}"
+
 rule npinv_call_5X_minimap2:
     input:
         bam=f"{ALIGNDIR}/5X/GM24385.minimap2.srt.bam",
@@ -55,6 +70,21 @@ rule npinv_call_5X_ngmlr:
     threads: 1
     params:
         wd=f"{RESULTDIR}/ngmlr/npinv/5X"
+    shell:
+        "mkdir -p {params.wd} && npinv --output {output} --input {input.bam} --min 50 --threshold 2 2>{log}"
+
+rule npinv_call_5X_lra:
+    input:
+        bam=f"{ALIGNDIR}/5X/GM24385.lra.srt.bam",
+        bai=f"{ALIGNDIR}/5X/GM24385.lra.srt.bam.bai"
+    output:
+        f"{RESULTDIR}/lra/npinv/5X/GM24385.vcf"
+    log:
+        f"{LOGDIR}/results/lra_npinv_5X_call.log"
+    conda: "../envs/npinv.yaml"
+    threads: 1
+    params:
+        wd=f"{RESULTDIR}/lra/npinv/5X"
     shell:
         "mkdir -p {params.wd} && npinv --output {output} --input {input.bam} --min 50 --threshold 2 2>{log}"
 
@@ -88,6 +118,22 @@ rule npinv_call_10X_ngmlr:
     shell:
         "mkdir -p {params.wd} && npinv --output {output} --input {input.bam} --min 50 --threshold 2 2>{log}"
 
+rule npinv_call_10X_lra:
+    input:
+        bam=f"{ALIGNDIR}/10X/GM24385.lra.srt.bam",
+        bai=f"{ALIGNDIR}/10X/GM24385.lra.srt.bam.bai"
+    output:
+        f"{RESULTDIR}/lra/npinv/10X/GM24385.vcf"
+    log:
+        f"{LOGDIR}/results/lra_npinv_10X_call.log"
+    conda: "../envs/npinv.yaml"
+    threads: 1
+    params:
+        wd=f"{RESULTDIR}/lra/npinv/10X"
+    shell:
+        "mkdir -p {params.wd} && npinv --output {output} --input {input.bam} --min 50 --threshold 2 2>{log}"
+
+
 rule npinv_call_15X_minimap2:
     input:
         bam=f"{ALIGNDIR}/15X/GM24385.minimap2.srt.bam",
@@ -117,6 +163,22 @@ rule npinv_call_15X_ngmlr:
         wd=f"{RESULTDIR}/ngmlr/npinv/15X"
     shell:
         "mkdir -p {params.wd} && npinv --output {output} --input {input.bam} --min 50 --threshold 2 2>{log}"
+
+rule npinv_call_15X_lra:
+    input:
+        bam=f"{ALIGNDIR}/15X/GM24385.lra.srt.bam",
+        bai=f"{ALIGNDIR}/15X/GM24385.lra.srt.bam.bai"
+    output:
+        f"{RESULTDIR}/lra/npinv/15X/GM24385.vcf"
+    log:
+        f"{LOGDIR}/results/lra_npinv_15X_call.log"
+    conda: "../envs/npinv.yaml"
+    threads: 1
+    params:
+        wd=f"{RESULTDIR}/lra/npinv/15X"
+    shell:
+        "mkdir -p {params.wd} && npinv --output {output} --input {input.bam} --min 50 --threshold 2 2>{log}"
+
 
 rule npinv_call_20X_minimap2:
     input:
@@ -148,6 +210,20 @@ rule npinv_call_20X_ngmlr:
     shell:
         "mkdir -p {params.wd} && npinv --output {output} --input {input.bam} --min 50 --threshold 2 2>{log}"
 
+rule npinv_call_20X_lra:
+    input:
+        bam=f"{ALIGNDIR}/20X/GM24385.lra.srt.bam",
+        bai=f"{ALIGNDIR}/20X/GM24385.lra.srt.bam.bai"
+    output:
+        f"{RESULTDIR}/lra/npinv/20X/GM24385.vcf"
+    log:
+        f"{LOGDIR}/results/lra_npinv_20X_call.log"
+    conda: "../envs/npinv.yaml"
+    threads: 1
+    params:
+        wd=f"{RESULTDIR}/lra/npinv/20X"
+    shell:
+        "mkdir -p {params.wd} && npinv --output {output} --input {input.bam} --min 50 --threshold 2 2>{log}"
 
 rule npinv_call_25X_minimap2:
     input:
@@ -179,6 +255,20 @@ rule npinv_call_25X_ngmlr:
     shell:
         "mkdir -p {params.wd} && npinv --output {output} --input {input.bam} --min 50 --threshold 2 2>{log}"
 
+rule npinv_call_25X_lra:
+    input:
+        bam=f"{ALIGNDIR}/25X/GM24385.lra.srt.bam",
+        bai=f"{ALIGNDIR}/25X/GM24385.lra.srt.bam.bai"
+    output:
+        f"{RESULTDIR}/lra/npinv/25X/GM24385.vcf"
+    log:
+        f"{LOGDIR}/results/lra_npinv_25X_call.log"
+    conda: "../envs/npinv.yaml"
+    threads: 1
+    params:
+        wd=f"{RESULTDIR}/lra/npinv/25X"
+    shell:
+        "mkdir -p {params.wd} && npinv --output {output} --input {input.bam} --min 50 --threshold 2 2>{log}"
 
 rule npinv_call_35X_minimap2:
     input:
@@ -207,6 +297,21 @@ rule npinv_call_35X_ngmlr:
     threads: 1
     params:
         wd=f"{RESULTDIR}/ngmlr/npinv/35X"
+    shell:
+        "mkdir -p {params.wd} && npinv --output {output} --input {input.bam} --min 50 --threshold 2 2>{log}"
+
+rule npinv_call_35X_lra:
+    input:
+        bam=f"{ALIGNDIR}/35X/GM24385.lra.srt.bam",
+        bai=f"{ALIGNDIR}/35X/GM24385.lra.srt.bam.bai"
+    output:
+        f"{RESULTDIR}/lra/npinv/35X/GM24385.vcf"
+    log:
+        f"{LOGDIR}/results/lra_npinv_35X_call.log"
+    conda: "../envs/npinv.yaml"
+    threads: 1
+    params:
+        wd=f"{RESULTDIR}/lra/npinv/35X"
     shell:
         "mkdir -p {params.wd} && npinv --output {output} --input {input.bam} --min 50 --threshold 2 2>{log}"
 

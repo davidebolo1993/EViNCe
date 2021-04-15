@@ -26,6 +26,21 @@ rule ngmlr_align:
     shell:
         "zcat {input.fq} | ngmlr -r {input.ref} -x ont -t {threads} --rg-id nanopore --rg-sm GM24385  | samtools sort -@ {threads} -o {output} - 2>{log}"
 
+rule lra_align:
+    input:
+       ref=config["genome"],
+       fq=config["samples"].values()
+    output:
+        f"{ALIGNDIR}/GM24385.lra.srt.bam"
+    threads: 20
+    log:
+        f"{LOGDIR}/alignments/lra_samtools_alignment.log"
+    conda: "../envs/lra.yaml"
+    params:
+        rg=r"'@RG\tID:nanopore\tSM:GM24385'",
+        tmpbam=f"{ALIGNDIR}/GM24385.lra.srt.tmp.bam"
+    shell:
+        "lra index -ONT {input.ref} && zcat {input.fq} | lra align -ONT {input.ref} /dev/stdin -t {threads} -p s | samtools addreplacerg -@ {threads} -r {params.rg} - | samtools sort -@ {threads} -o {params.tmpbam} - && samtools calmd -@ {threads} -b {params.tmpbam} {input.ref} > {output} && rm {params.tmpbam} 2>{log}"
 
 rule pbmm2_align_index:
     input:
@@ -53,6 +68,16 @@ rule samtools_index_minimap2:
     shell:
         "samtools index -@ {threads} {input}"
 
+rule samtools_index_lra:
+    input:
+        f"{ALIGNDIR}/GM24385.lra.srt.bam"
+    output:
+        f"{ALIGNDIR}/GM24385.lra.srt.bam.bai"
+    conda: "../envs/lra.yaml"
+    threads: 10
+    shell:
+        "samtools index -@ {threads} {input}"
+
 rule samtools_index_ngmlr:
     input:
         f"{ALIGNDIR}/GM24385.ngmlr.srt.bam"
@@ -62,4 +87,5 @@ rule samtools_index_ngmlr:
     threads: 10
     shell:
         "samtools index -@ {threads} {input}"
+
 

@@ -22,12 +22,12 @@ include: "rules/prf1.smk"
 
 rule na24385:
     input:
-        expand(f"{RESULTDIR}/{{aligner}}/cutesv/{{coverage}}/GM24385.vcf", aligner=["minimap2","ngmlr"], coverage=["5X", "10X", "15X", "20X", "25X", "35X", "total"]),
-        expand(f"{RESULTDIR}/{{aligner}}/sniffles/{{coverage}}/GM24385.vcf", aligner=["minimap2","ngmlr"], coverage=["5X", "10X", "15X", "20X", "25X", "35X", "total"]),
-        expand(f"{RESULTDIR}/{{aligner}}/svim/{{coverage}}/GM24385.vcf", aligner=["minimap2","ngmlr"], coverage=["5X", "10X", "15X", "20X", "25X", "35X", "total"]),
+        expand(f"{RESULTDIR}/{{aligner}}/cutesv/{{coverage}}/GM24385.vcf", aligner=["minimap2","ngmlr","lra"], coverage=["5X", "10X", "15X", "20X", "25X", "35X", "total"]),
+        expand(f"{RESULTDIR}/{{aligner}}/sniffles/{{coverage}}/GM24385.vcf", aligner=["minimap2","ngmlr","lra"], coverage=["5X", "10X", "15X", "20X", "25X", "35X", "total"]),
+        expand(f"{RESULTDIR}/{{aligner}}/svim/{{coverage}}/GM24385.vcf", aligner=["minimap2","ngmlr","lra"], coverage=["5X", "10X", "15X", "20X", "25X", "35X", "total"]),
         expand(f"{RESULTDIR}/pbmm2/pbsv/{{coverage}}/GM24385.vcf",coverage=["5X", "10X", "15X", "20X", "25X", "35X", "total"]),
-        expand(f"{RESULTDIR}/{{aligner}}/npinv/{{coverage}}/GM24385.vcf", aligner=["minimap2","ngmlr"], coverage=["5X", "10X", "15X", "20X", "25X", "35X", "total"]),
-        expand(f"{RESULTDIR}/GM24385.{{aligner}}.upset.pdf", aligner=["minimap2", "ngmlr"]),
+        expand(f"{RESULTDIR}/{{aligner}}/npinv/{{coverage}}/GM24385.vcf", aligner=["minimap2","ngmlr","lra"], coverage=["5X", "10X", "15X", "20X", "25X", "35X", "total"]),
+        expand(f"{RESULTDIR}/GM24385.{{aligner}}.upset.pdf", aligner=["minimap2", "ngmlr","lra"]),
         expand(f"{RESULTDIR}/GM24385.{{set}}.svs.pdf", set=["cutesv", "sniffles", "svim", "pbsv", "npinv","truth","consensus"]),
         f"{RESULTDIR}/GM24385.prf1.bysupport.pdf",
         f"{RESULTDIR}/GM24385.prf1.bycoverage.pdf",
@@ -38,39 +38,33 @@ rule na24385:
 
 rule align:
     input:
-        #expand(f"{ALIGNDIR}/GM24385.{{aligner}}.srt.bam",aligner=["minimap2","pbmm2","ngmlr"]),
-        expand(f"{ALIGNDIR}/GM24385.{{aligner}}.srt.bam.bai",aligner=["minimap2","pbmm2","ngmlr"])
+        expand(f"{ALIGNDIR}/GM24385.{{aligner}}.srt.bam.bai",aligner=["minimap2","pbmm2","ngmlr","lra"])
 
 rule depth:
     input:
-        #expand(f"{ALIGNDIR}/GM24385.{{aligner}}.mosdepth.global.dist.txt",aligner=["minimap2","pbmm2","ngmlr"]),
-        #expand(f"{ALIGNDIR}/GM24385.{{aligner}}.mosdepth.summary.txt",aligner=["minimap2","pbmm2","ngmlr"]),
-        #expand(f"{ALIGNDIR}/GM24385.{{aligner}}.mosdepth.region.dist.txt",aligner=["minimap2","pbmm2","ngmlr"]),
-        #expand(f"{ALIGNDIR}/GM24385.{{aligner}}.regions.bed.gz",aligner=["minimap2","pbmm2","ngmlr"]),
-        #expand(f"{ALIGNDIR}/GM24385.{{aligner}}.regions.bed.gz.csi",aligner=["minimap2","pbmm2","ngmlr"]),
-        expand(f"{ALIGNDIR}/GM24385.{{aligner}}.coverage_per_chromosome.png", aligner=["minimap2","pbmm2","ngmlr"]),
-        expand(f"{VCFDIR}/GM24385.{{aligner}}.exclude.tsv", aligner=["minimap2","pbmm2","ngmlr"]),
+        expand(f"{ALIGNDIR}/GM24385.{{aligner}}.coverage_per_chromosome.png", aligner=["minimap2","pbmm2","ngmlr", "lra"]),
+        expand(f"{VCFDIR}/GM24385.{{aligner}}.exclude.tsv", aligner=["minimap2","pbmm2","ngmlr","lra"]),
         f"{ALIGNDIR}/GM24385.fraction_of_bases_per_depth.png",
         f"{RESULTDIR}/GM24385.prf1.bycoverage.pdf"
 
 rule subsample:
     input:
         #expand(f"{ALIGNDIR}/{{coverage}}/GM24385.{{aligner}}.srt.bam", coverage=["5X", "10X", "15X", "20X", "25X", "35X"], aligner=["minimap2","pbmm2","ngmlr"]),
-        expand(f"{ALIGNDIR}/{{coverage}}/GM24385.{{aligner}}.srt.bam.bai", coverage=["5X", "10X", "15X", "20X", "25X", "35X"], aligner=["minimap2","pbmm2","ngmlr"])
+        expand(f"{ALIGNDIR}/{{coverage}}/GM24385.{{aligner}}.srt.bam.bai", coverage=["5X", "10X", "15X", "20X", "25X", "35X"], aligner=["minimap2","pbmm2","ngmlr","lra"])
 
 #second part: call variants
 
 rule cutesv:
     input:
-        expand(f"{RESULTDIR}/{{aligner}}/cutesv/{{coverage}}/GM24385.vcf", aligner=["minimap2","ngmlr"], coverage=["5X", "10X", "15X", "20X", "25X", "35X", "total"])
+        expand(f"{RESULTDIR}/{{aligner}}/cutesv/{{coverage}}/GM24385.vcf", aligner=["minimap2","ngmlr", "lra"], coverage=["5X", "10X", "15X", "20X", "25X", "35X", "total"])
 
 rule sniffles:
     input:
-        expand(f"{RESULTDIR}/{{aligner}}/sniffles/{{coverage}}/GM24385.vcf", aligner=["minimap2","ngmlr"], coverage=["5X", "10X", "15X", "20X", "25X", "35X", "total"])
+        expand(f"{RESULTDIR}/{{aligner}}/sniffles/{{coverage}}/GM24385.vcf", aligner=["minimap2","ngmlr","lra"], coverage=["5X", "10X", "15X", "20X", "25X", "35X", "total"])
 
 rule svim:
     input:
-        expand(f"{RESULTDIR}/{{aligner}}/svim/{{coverage}}/GM24385.vcf", aligner=["minimap2","ngmlr"], coverage=["5X", "10X", "15X", "20X", "25X", "35X", "total"])
+        expand(f"{RESULTDIR}/{{aligner}}/svim/{{coverage}}/GM24385.vcf", aligner=["minimap2","ngmlr", "lra"], coverage=["5X", "10X", "15X", "20X", "25X", "35X", "total"])
 
 rule pbsv:
     input:
@@ -78,44 +72,23 @@ rule pbsv:
 
 rule npinv:
     input:
-        expand(f"{RESULTDIR}/{{aligner}}/npinv/{{coverage}}/GM24385.vcf", aligner=["minimap2","ngmlr"], coverage=["5X", "10X", "15X", "20X", "25X", "35X", "total"])
+        expand(f"{RESULTDIR}/{{aligner}}/npinv/{{coverage}}/GM24385.vcf", aligner=["minimap2","ngmlr","lra"], coverage=["5X", "10X", "15X", "20X", "25X", "35X", "total"])
+
+#third part: summarize SVs and calculate precision/recall/f1 score
 
 rule sumsvs:
     input:
-        #expand(f"{RESULTDIR}/{{aligner}}/{{tools}}/total/GM24385.clean.vcf", aligner=["minimap2","ngmlr"], tools=["cutesv", "sniffles", "svim", "npinv"]),
-        #f"{RESULTDIR}/pbmm2/pbsv/total/GM24385.clean.vcf",
-        #f"{VCFDIR}/GM24385.clean.vcf",
-        #expand(f"{RESULTDIR}/GM24385.{{aligner}}.merged.vcf", aligner=["minimap2", "ngmlr"]),
-        #expand(f"{RESULTDIR}/GM24385.{{aligner}}.upset.tsv", aligner=["minimap2", "ngmlr"]),
-        expand(f"{RESULTDIR}/GM24385.{{aligner}}.upset.pdf", aligner=["minimap2", "ngmlr"]),
+        expand(f"{RESULTDIR}/GM24385.{{aligner}}.upset.pdf", aligner=["minimap2", "ngmlr","lra"]),
         expand(f"{RESULTDIR}/GM24385.{{set}}.svs.pdf", set=["cutesv", "sniffles", "svim", "pbsv", "npinv","truth"]),
-        #expand(f"{RESULTDIR}/GM24385.{{aligner}}.consensus.vcf",aligner=["minimap2", "ngmlr"])
-	f"{RESULTDIR}/GM24385.consensus.svs.pdf",
+        f"{RESULTDIR}/GM24385.consensus.svs.pdf",
         f"{RESULTDIR}/GM24385.varstats.tsv"
 
 rule prf1:
     input:
-        expand(f"{RESULTDIR}/{{aligner}}/{{tool}}/total/{{tool}}.{{aligner}}.bysupport.tsv", tool=["cutesv", "svim", "sniffles"], aligner=["minimap2", "ngmlr"]),
-        #f"{RESULTDIR}/pbmm2/pbsv/total/pbsv.pbmm2.bysupport.tsv",
-        #f"{RESULTDIR}/GM24385.prf1.bysupport.tsv",
+        expand(f"{RESULTDIR}/{{aligner}}/{{tool}}/total/{{tool}}.{{aligner}}.bysupport.tsv", tool=["cutesv", "svim", "sniffles"], aligner=["minimap2", "ngmlr","lra"]),
         f"{RESULTDIR}/GM24385.prf1.bysupport.pdf",
-        #expand(f"{RESULTDIR}/{{aligner}}/{{tool}}/{{tool}}.{{aligner}}.bycoverage.tsv", tool=["cutesv", "svim", "sniffles"], aligner=["minimap2","ngmlr"]),
-        #f"{RESULTDIR}/pbmm2/pbsv/pbsv.pbmm2.bycoverage.tsv",
-        #f"{RESULTDIR}/GM24385.prf1.bycoverage.tsv",
         f"{RESULTDIR}/GM24385.prf1.bycoverage.pdf",
-        #expand(f"{RESULTDIR}/calls_combined/{{aligner}}_cutesv_sniffles.tsv", aligner=["minimap2","ngmlr"]),
-        #expand(f"{RESULTDIR}/calls_combined/{{aligner}}_cutesv_svim.tsv", aligner=["minimap2","ngmlr"]),
-        #f"{RESULTDIR}/calls_combined/minimap2_cutesv_pbsv.tsv",
-        #f"{RESULTDIR}/calls_combined/minimap2_sniffles_pbsv.tsv",
-        #f"{RESULTDIR}/calls_combined/minimap2_svim_pbsv.tsv",
-        #expand(f"{RESULTDIR}/calls_combined/{{aligner}}_sniffles_svim.tsv",aligner=["minimap2","ngmlr"]),
-        #expand(f"{RESULTDIR}/calls_combined/{{aligner}}_cutesv_sniffles_svim.tsv",aligner=["minimap2","ngmlr"]),
-        #f"{RESULTDIR}/calls_combined/minimap2_cutesv_sniffles_pbsv.tsv",
-        #f"{RESULTDIR}/calls_combined/minimap2_cutesv_svim_pbsv.tsv",
-        #f"{RESULTDIR}/calls_combined/minimap2_sniffles_svim_pbsv.tsv",
-        #f"{RESULTDIR}/calls_combined/minimap2_cutesv_sniffles_svim_pbsv.tsv",
-        #f"{RESULTDIR}/GM24385.prf1.bycombo.tsv",
         f"{RESULTDIR}/GM24385.prf1.bycombo.pdf",
-        #f"{RESULTDIR}/GM24385.tpfpfn.bylength.tsv",
         f"{RESULTDIR}/GM24385.tpfpfn.bylength.pdf"                
+
 
