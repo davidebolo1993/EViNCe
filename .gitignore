@@ -2,7 +2,13 @@ NA24385/data/
 NA24385/alignments/
 NA24385/results
 NA24385/.snakemake
-NA24385/results/
 NA24385/logs
 NA24385/nohup.out
-NA24385/*.bam
+
+SI00001/alignments/
+SI00001/results/
+SI00001/.snakemake
+SI00001/logs
+SI00001/nohup.out
+SI00001/data/GRCh38_full_analysis_set_plus_decoy_hla.fa*
+SI00001/data/exclude*

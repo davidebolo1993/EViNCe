@@ -1,0 +1,24 @@
+aligndir: alignments
+outdir: results
+logdir: logs
+scriptdir: workflow/scripts
+
+samples:
+
+
+
+excludebed:
+
+    data/excludechroms.txt
+
+excluderegions:
+
+    data/excluderegions.srt.bed
+
+genome:
+
+    data/GRCh38_full_analysis_set_plus_decoy_hla.fa
+
+vcf:
+
+    data/hack.vcf
