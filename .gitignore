@@ -12,3 +12,7 @@ SI00001/logs
 SI00001/nohup.out
 SI00001/data/GRCh38_full_analysis_set_plus_decoy_hla.fa*
 SI00001/data/exclude*
+SI00001/data/SI00001*
+SI00001/data/hack_out
+SI00001/data/laser*
+SI00001/data/input.fofn

@@ -1,0 +1,18 @@
+channels:
+ - conda-forge
+ - r
+ - bioconda
+dependencies:
+ - r-base
+ - r-ggplot2
+ - r-data.table
+ - r-rcolorbrewer
+ - r-gridextra
+ - r-dplyr
+ - r-viridis
+ - r-r.utils
+ - r-upsetr
+ - r-circlize
+ - bioconductor-genomicranges
+ - bioconductor-bsgenome.hsapiens.ucsc.hg19
+ - bioconductor-complexheatmap

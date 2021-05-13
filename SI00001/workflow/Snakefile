@@ -1,0 +1,30 @@
+import os
+
+configfile: "config/config.yaml"
+
+RESULTDIR = config["outdir"]
+ALIGNDIR = config["aligndir"]
+LOGDIR = config["logdir"]
+SCRIPTDIR = config["scriptdir"]
+VCFTRUTH=config["vcf"]
+VCFDIR=os.path.dirname(VCFTRUTH)
+
+include: "rules/align.smk"
+include: "rules/depth.smk"
+include: "rules/subsample.smk"
+
+rule align:
+    input:
+        expand(f"{ALIGNDIR}/SI00001.{{aligner}}.srt.bam.bai",aligner=["minimap2","pbmm2","ngmlr","lra"])
+
+rule depth:
+    input:
+        expand(f"{ALIGNDIR}/SI00001.{{aligner}}.coverage_per_chromosome.png", aligner=["minimap2","pbmm2","ngmlr", "lra"]),
+        expand(f"{VCFDIR}/SI00001.{{aligner}}.exclude.tsv", aligner=["minimap2","pbmm2","ngmlr","lra"]),
+        f"{ALIGNDIR}/SI00001.fraction_of_bases_per_depth.png"
+
+rule subsample:
+    input:
+        #expand(f"{ALIGNDIR}/{{coverage}}/SI00001.{{aligner}}.srt.bam", coverage=["5X", "10X", "15X", "20X", "25X", "35X"], aligner=["minimap2","pbmm2","ngmlr"]),
+        expand(f"{ALIGNDIR}/{{coverage}}/SI00001.{{aligner}}.srt.bam.bai", coverage=["5X", "10X", "15X", "20X", "25X", "35X"], aligner=["minimap2","pbmm2","ngmlr","lra"])
+

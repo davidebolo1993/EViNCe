@@ -5,7 +5,7 @@ scriptdir: workflow/scripts
 
 samples:
 
-
+    sample1: data/SI00001.fastq
 
 excludebed:
 
@@ -21,4 +21,9 @@ genome:
 
 vcf:
 
-    data/hack.vcf
+    data/hack.vcf.gz
+
+fofn:
+
+    data/input.fofn
+
