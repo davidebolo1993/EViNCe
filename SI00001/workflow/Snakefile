@@ -12,6 +12,8 @@ VCFDIR=os.path.dirname(VCFTRUTH)
 include: "rules/align.smk"
 include: "rules/depth.smk"
 include: "rules/subsample.smk"
+include: "rules/cutesv.smk"
+include: "rules/svim.smk"
 
 rule align:
     input:
@@ -25,6 +27,14 @@ rule depth:
 
 rule subsample:
     input:
-        #expand(f"{ALIGNDIR}/{{coverage}}/SI00001.{{aligner}}.srt.bam", coverage=["5X", "10X", "15X", "20X", "25X", "35X"], aligner=["minimap2","pbmm2","ngmlr"]),
+        #expand(f"{ALIGNDIR}/{{coverage}}/SI00001.{{aligner}}.srt.bam", coverage=["5X", "10X", "15X", "20X", "25X", "35X"], aligner=["minimap2","pbmm2","ngmlr","lra"]),
         expand(f"{ALIGNDIR}/{{coverage}}/SI00001.{{aligner}}.srt.bam.bai", coverage=["5X", "10X", "15X", "20X", "25X", "35X"], aligner=["minimap2","pbmm2","ngmlr","lra"])
+
+rule cutesv:
+    input:
+        expand(f"{RESULTDIR}/{{aligner}}/cutesv/{{coverage}}/SI00001.vcf", aligner=["minimap2","ngmlr", "lra"], coverage=["5X", "10X", "15X", "20X", "25X", "35X", "total"])
+
+rule svim:
+    input:
+        expand(f"{RESULTDIR}/{{aligner}}/svim/{{coverage}}/SI00001.vcf", aligner=["minimap2","ngmlr", "lra"], coverage=["5X", "10X", "15X", "20X", "25X", "35X", "total"])
 

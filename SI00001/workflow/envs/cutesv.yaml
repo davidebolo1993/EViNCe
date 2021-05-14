@@ -1,0 +1,4 @@
+channels:
+ - bioconda
+dependencies:
+ - cuteSV=1.0.10
