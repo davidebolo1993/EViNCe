@@ -13,7 +13,11 @@ include: "rules/align.smk"
 include: "rules/depth.smk"
 include: "rules/subsample.smk"
 include: "rules/cutesv.smk"
+include: "rules/sniffles.smk"
 include: "rules/svim.smk"
+include: "rules/pbsv.smk"
+include: "rules/npinv.smk"
+include: "rules/sumsvs.smk"
 
 rule align:
     input:
@@ -34,7 +38,28 @@ rule cutesv:
     input:
         expand(f"{RESULTDIR}/{{aligner}}/cutesv/{{coverage}}/SI00001.vcf", aligner=["minimap2","ngmlr", "lra"], coverage=["5X", "10X", "15X", "20X", "25X", "35X", "total"])
 
+rule sniffles:
+    input:
+        expand(f"{RESULTDIR}/{{aligner}}/sniffles/{{coverage}}/SI00001.vcf", aligner=["minimap2","ngmlr","lra"], coverage=["5X", "10X", "15X", "20X", "25X", "35X", "total"])
+
 rule svim:
     input:
         expand(f"{RESULTDIR}/{{aligner}}/svim/{{coverage}}/SI00001.vcf", aligner=["minimap2","ngmlr", "lra"], coverage=["5X", "10X", "15X", "20X", "25X", "35X", "total"])
+
+rule pbsv:
+    input:
+        expand(f"{RESULTDIR}/pbmm2/pbsv/{{coverage}}/SI00001.vcf",coverage=["5X", "10X", "15X", "20X", "25X", "35X", "total"])
+
+rule npinv:
+    input:
+        expand(f"{RESULTDIR}/{{aligner}}/npinv/{{coverage}}/SI00001.vcf", aligner=["minimap2","ngmlr","lra"], coverage=["5X", "10X", "15X", "20X", "25X", "35X", "total"])
+
+#third part: summarize SVs and calculate precision/recall/f1 score
+
+rule sumsvs:
+    input:
+        expand(f"{RESULTDIR}/SI00001.{{aligner}}.upset.pdf", aligner=["minimap2", "ngmlr","lra"]),
+        expand(f"{RESULTDIR}/SI00001.{{set}}.svs.pdf", set=["cutesv", "sniffles", "svim", "pbsv", "npinv","truth"]),
+        f"{RESULTDIR}/SI00001.consensus.svs.pdf",
+        f"{RESULTDIR}/SI00001.varstats.tsv"
 

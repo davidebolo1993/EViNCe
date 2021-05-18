@@ -29,3 +29,33 @@ snakemake depth --cores 20
 snakemake subsample --cores 20
 ```
 
+### Call SVs with cuteSV
+
+``` bash
+snakemake cutesv --cores 20
+```
+
+### Call SVs with sniffles
+
+``` bash
+snakemake sniffles --cores 20
+```
+
+### Call SVs with svim
+
+``` bash
+snakemake svim --cores 20
+```
+
+### Call INVs with npinv
+
+``` bash
+snakemake npinv --cores 20
+```
+
+### Compute/plot upset plots and plot variants per chromosome
+
+``` bash
+snakemake sumsvs --cores 20
+```
+
