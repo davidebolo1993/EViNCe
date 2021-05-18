@@ -42,5 +42,5 @@ colnames(upsetn_tsv)<-mod
 upsetn_tsv$CHROM<-factor(upsetn_tsv$CHROM, levels=wanted)
 
 pdf(file.path(args[1], 'GM24385.lra.upset.pdf'), width=15, height=7, onefile=FALSE)
-upset(upsetn_tsv, query.legend = "bottom", nintersects = NA, sets = c("TRUTH", "CUTESV", "NPINV", "SNIFFLES", "SVIM"), mb.ratio = c(0.55, 0.45), order.by = "freq", queries = list(list(query = FilterFunction, params = list("DEL"), color = "darkblue", active = F, query.name = "DEL"), list(query = FilterFunction, params = list("INS"), color = "darkred", active = F, query.name = "INS")))
+upset(upsetn_tsv, query.legend = "bottom", nintersects = NA, sets = c("TRUTH", "CUTESV", "NPINV", "SNIFFLES", "SVIM"), mb.ratio = c(0.55, 0.45), order.by = "freq", queries = list(list(query = FilterFunction, params = list("DEL"), color = "darkblue", active = F, query.name = "DEL"), list(query = FilterFunction, params = list("INS"), color = "darkred", active = F, query.name = "INS"), list(query = FilterFunction, params = list("INV"), color = "grey60", active = F, query.name = "INV"))) #no DUP/TRA here
 dev.off()

@@ -4,7 +4,7 @@ library(grid)
 library(circlize)
 library(data.table)
 library(GenomicRanges)
-library(BSgenome.Hsapiens.UCSC.hg19)
+library(BSgenome.Hsapiens.UCSC.hg38)
 library(ComplexHeatmap)
 
 #legend 
@@ -26,35 +26,32 @@ if (length(args) == 5) {
 
   tool<-args[4]
   outdir<-file.path(args[5])
-  pdf(file.path(outdir, paste0("GM24385.", tool, ".svs.pdf")), height=10, width=15)
+  pdf(file.path(outdir, paste0("SI00001.", tool, ".svs.pdf")), height=6, width=15)
   layout(matrix(1:3, 1,3))
 
   for (dir in c(args[1], args[2], args[3])) {
 
-    bedpe<-file.path(dir, "GM24385.bnd.bedpe") #this exists, but can be empty
+    bedpe<-file.path(dir, "SI00001.bnd.bedpe") #this exists, but can be empty
     info<-file.info(bedpe)
 
     if (info$size != 0) { #this is not always true
 
       BNDs<-fread(bedpe, sep="\t", header=FALSE)
-      BNDs$V1<-paste0("chr", BNDs$V1)
-      BNDs$V4<-paste0("chr", BNDs$V4)
       colnames(BNDs)<-c("chr", "pos1", "end1", "chr2", "pos2", "end2", "type", "num", "s1", "s2")
 
     }
           
-    bed<-file.path(dir, "GM24385.nobnd.bed")
+    bed<-file.path(dir, "SI00001.nobnd.bed")
     info2<-file.info(bed)
 
     if (info2$size == 0) {
       #empty ploy
       circos.par("start.degree" = 90, circle.margin=0.0001)
-      circos.initializeWithIdeogram(species = "hg19")
+      circos.initializeWithIdeogram(species = "hg38")
       next
     }
 
     NOBNDs<-fread(bed, sep="\t", header=FALSE)
-    NOBNDs$V1<-paste0("chr", NOBNDs$V1)
     colnames(NOBNDs)<-c("chr", "pos", "end", "type")
     NOBNDRanges<-makeGRangesFromDataFrame(NOBNDs, keep.extra.columns = TRUE,start.field = "pos", end.field = "end")
     chrSizes<-seqlengths(Hsapiens)[c(1:24)]
@@ -162,7 +159,7 @@ if (length(args) == 5) {
     mat_col<-matrix(do.call(rbind,reslist),ncol = 4)
           
     circos.par("start.degree" = 90, circle.margin=0.0001)
-    circos.initializeWithIdeogram(species = "hg19")
+    circos.initializeWithIdeogram(species = "hg38")
     circos.genomicHeatmap(heattable, col = mat_col,line_col = as.numeric(factor(heatdataframe[[1]])),connection_height = NULL)
           
     NONBNSs_colors<-list()
@@ -201,26 +198,23 @@ if (length(args) == 5) {
 
   tool<-args[2]
   outdir<-file.path(args[3])
-  pdf(file.path(outdir, paste0("GM24385.", tool, ".svs.pdf")), height=10, width=14)
+  pdf(file.path(outdir, paste0("SI00001.", tool, ".svs.pdf")), height=6, width=14)
 
   for (dir in c(args[1])) {
 
 
-    bedpe<-file.path(dir, "GM24385.bnd.bedpe") #this can exists or not
+    bedpe<-file.path(dir, "SI00001.bnd.bedpe") #this can exists or not
     info<-file.info(bedpe)
 
     if (info$size != 0 && ! is.na(info$size)) { #this is not always true
 
       BNDs<-fread(bedpe, sep="\t", header=FALSE)
-      BNDs$V1<-paste0("chr", BNDs$V1)
-      BNDs$V4<-paste0("chr", BNDs$V4)
       colnames(BNDs)<-c("chr", "pos1", "end1", "chr2", "pos2", "end2", "type", "num", "s1", "s2")
 
     }
           
-    bed<-file.path(dir, "GM24385.nobnd.bed") #this is always true
+    bed<-file.path(dir, "SI00001.nobnd.bed") #this is always true
     NOBNDs<-fread(bed, sep="\t", header=FALSE)
-    NOBNDs$V1<-paste0("chr", NOBNDs$V1)
     colnames(NOBNDs)<-c("chr", "pos", "end", "type")
     NOBNDRanges<-makeGRangesFromDataFrame(NOBNDs, keep.extra.columns = TRUE,start.field = "pos", end.field = "end")
     chrSizes<-seqlengths(Hsapiens)[c(1:24)]
@@ -328,7 +322,7 @@ if (length(args) == 5) {
     mat_col<-matrix(do.call(rbind,reslist),ncol = 4)
           
     circos.par("start.degree" = 90)
-    circos.initializeWithIdeogram(species = "hg19")
+    circos.initializeWithIdeogram(species = "hg38")
     circos.genomicHeatmap(heattable, col = mat_col,line_col = as.numeric(factor(heatdataframe[[1]])),connection_height = NULL)
           
     NONBNSs_colors<-list()
@@ -377,5 +371,6 @@ if (file.exists("Rplots.pdf")) {
   file.remove("Rplots.pdf")
 
 }
+
 
 
