@@ -1054,7 +1054,8 @@ rule plot_stats_by_length:
     input:
         f"{RESULTDIR}/GM24385.tpfpfn.bylength.tsv"
     output:
-        f"{RESULTDIR}/GM24385.tpfpfn.bylength.pdf"
+        f"{RESULTDIR}/GM24385.tpfpfn.bylength.pdf",
+        f"{RESULTDIR}/GM24385.svtype.bylength.pdf"
     threads: 1
     conda: "../envs/plot.yaml"    
     log:

@@ -32,7 +32,8 @@ rule na24385:
         f"{RESULTDIR}/GM24385.prf1.bysupport.pdf",
         f"{RESULTDIR}/GM24385.prf1.bycoverage.pdf",
         f"{RESULTDIR}/GM24385.prf1.bycombo.pdf",
-        f"{RESULTDIR}/GM24385.tpfpfn.bylength.pdf"
+        f"{RESULTDIR}/GM24385.tpfpfn.bylength.pdf",
+        f"{RESULTDIR}/GM24385.svtype.bylength.pdf"
 
 #first part: map reads to reference and perform kind of QC (coverage)
 
@@ -88,6 +89,7 @@ rule prf1:
         f"{RESULTDIR}/GM24385.prf1.bysupport.pdf",
         f"{RESULTDIR}/GM24385.prf1.bycoverage.pdf",
         f"{RESULTDIR}/GM24385.prf1.bycombo.pdf",
-        f"{RESULTDIR}/GM24385.tpfpfn.bylength.pdf"                
+        f"{RESULTDIR}/GM24385.tpfpfn.bylength.pdf",
+        f"{RESULTDIR}/GM24385.svtype.bylength.pdf"                
 
 
