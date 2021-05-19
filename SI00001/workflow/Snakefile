@@ -19,6 +19,8 @@ include: "rules/pbsv.smk"
 include: "rules/npinv.smk"
 include: "rules/sumsvs.smk"
 
+#first part: map reads to reference and perform kind of QC (coverage)
+
 rule align:
     input:
         expand(f"{ALIGNDIR}/SI00001.{{aligner}}.srt.bam.bai",aligner=["minimap2","pbmm2","ngmlr","lra"])
@@ -33,6 +35,8 @@ rule subsample:
     input:
         #expand(f"{ALIGNDIR}/{{coverage}}/SI00001.{{aligner}}.srt.bam", coverage=["5X", "10X", "15X", "20X", "25X", "35X"], aligner=["minimap2","pbmm2","ngmlr","lra"]),
         expand(f"{ALIGNDIR}/{{coverage}}/SI00001.{{aligner}}.srt.bam.bai", coverage=["5X", "10X", "15X", "20X", "25X", "35X"], aligner=["minimap2","pbmm2","ngmlr","lra"])
+
+#second part: call variants
 
 rule cutesv:
     input:
@@ -62,4 +66,13 @@ rule sumsvs:
         expand(f"{RESULTDIR}/SI00001.{{set}}.svs.pdf", set=["cutesv", "sniffles", "svim", "pbsv", "npinv","truth"]),
         f"{RESULTDIR}/SI00001.consensus.svs.pdf",
         f"{RESULTDIR}/SI00001.varstats.tsv"
+
+rule prf1:
+    input:
+        expand(f"{RESULTDIR}/{{aligner}}/{{tool}}/total/{{tool}}.{{aligner}}.bysupport.tsv", tool=["cutesv", "svim", "sniffles"], aligner=["minimap2", "ngmlr","lra"]),
+        f"{RESULTDIR}/SI00001.prf1.bysupport.pdf",
+        f"{RESULTDIR}/SI00001.prf1.bycoverage.pdf",
+        f"{RESULTDIR}/SI00001.prf1.bycombo.pdf",
+        f"{RESULTDIR}/SI00001.tpfpfn.bylength.pdf",
+        f"{RESULTDIR}/SI00001.svtype.bylength.pdf"                
 
