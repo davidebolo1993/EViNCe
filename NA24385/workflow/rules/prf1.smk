@@ -998,6 +998,27 @@ rule prf1_lra_cutesv_sniffles_svim:
         truvari bench -f {params.ref} -b {params.truthvcf} --includebed {params.truthbed} --passonly --giabreport -p 0 -c {params.mergedvcfgz} -o {params.outdir}/truvari_lra_cutesv_sniffles_svim && cat {params.outdir}/truvari_lra_cutesv_sniffles_svim/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk '{{OFS=FS="\t"}}{{print $0,10,"cutesv-sniffles-svim","lra"}}' >> {output}
         """ 
 
+rule prf1_minimap2_ngmlr_lra_consensus:    
+    input:
+        f"{RESULTDIR}/GM24385.consensus.vcf"
+    output:
+        f"{RESULTDIR}/calls_combined/consensus.tsv"
+    threads: 1
+    log:
+        f"{LOGDIR}/results/consensus.log"
+    params:
+        outdir=f"{RESULTDIR}/calls_combined",
+        tmp=f"{RESULTDIR}/calls_combined/minimap2_ngmlr_lra.txt",
+        mergedvcfgz=f"{RESULTDIR}/calls_combined/minimap2_ngmlr_lra.vcf.gz",
+        truthvcf=f"{VCFDIR}/HG002_SVs_Tier1_v0.6.vcf.gz",
+        truthbed=f"{VCFDIR}/HG002_SVs_Tier1_v0.6.bed",
+        ref=config["genome"]
+    shell:
+        """
+        mkdir -p {params.outdir} && echo -e "precision\trecall\tf1\tprecision_gt\trecall_gt\tf1_gt\tsupport\ttool\taligner" > {output} && \
+        bcftools view -i 'SVTYPE=="DEL" || SVTYPE =="INS"' {input} | bcftools sort -O z -o {params.mergedvcfgz} && bcftools index -t {params.mergedvcfgz} && \
+        truvari bench -f {params.ref} -b {params.truthvcf} --includebed {params.truthbed} --passonly --giabreport -p 0 -c {params.mergedvcfgz} -o {params.outdir}/truvari_consensus && cat {params.outdir}/truvari_consensus/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk '{{OFS=FS="\t"}}{{print $0,10,"consensus","consensus"}}' >> {output}
+        """ 
 
 rule combine_results_bycombo:
     input:
@@ -1011,7 +1032,8 @@ rule combine_results_bycombo:
         f"{RESULTDIR}/calls_combined/minimap2_cutesv_sniffles_pbsv.tsv",
         f"{RESULTDIR}/calls_combined/minimap2_cutesv_svim_pbsv.tsv",
         f"{RESULTDIR}/calls_combined/minimap2_sniffles_svim_pbsv.tsv",
-        f"{RESULTDIR}/calls_combined/minimap2_cutesv_sniffles_svim_pbsv.tsv"
+        f"{RESULTDIR}/calls_combined/minimap2_cutesv_sniffles_svim_pbsv.tsv",
+        f"{RESULTDIR}/calls_combined/consensus.tsv"
     output:
         f"{RESULTDIR}/GM24385.prf1.bycombo.tsv"
     threads: 1
@@ -1063,7 +1085,3 @@ rule plot_stats_by_length:
         f"{LOGDIR}/results/plot_stats_by_length"
     shell:
         "Rscript {SCRIPTDIR}/tpfpfnbysize.R {RESULTDIR} 2> {log}"
-
-
-
-
