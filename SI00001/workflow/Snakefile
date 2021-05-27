@@ -18,6 +18,23 @@ include: "rules/svim.smk"
 include: "rules/pbsv.smk"
 include: "rules/npinv.smk"
 include: "rules/sumsvs.smk"
+include: "rules/prf1.smk"
+
+rule si00001:
+    input:
+        expand(f"{RESULTDIR}/{{aligner}}/cutesv/{{coverage}}/SI00001.vcf", aligner=["minimap2","ngmlr","lra"], coverage=["5X", "10X", "15X", "20X", "25X", "35X", "total"]),
+        expand(f"{RESULTDIR}/{{aligner}}/sniffles/{{coverage}}/SI00001.vcf", aligner=["minimap2","ngmlr","lra"], coverage=["5X", "10X", "15X", "20X", "25X", "35X", "total"]),
+        expand(f"{RESULTDIR}/{{aligner}}/svim/{{coverage}}/SI00001.vcf", aligner=["minimap2","ngmlr","lra"], coverage=["5X", "10X", "15X", "20X", "25X", "35X", "total"]),
+        expand(f"{RESULTDIR}/pbmm2/pbsv/{{coverage}}/SI00001.vcf",coverage=["5X", "10X", "15X", "20X", "25X", "35X", "total"]),
+        expand(f"{RESULTDIR}/{{aligner}}/npinv/{{coverage}}/SI00001.vcf", aligner=["minimap2","ngmlr","lra"], coverage=["5X", "10X", "15X", "20X", "25X", "35X", "total"]),
+        expand(f"{RESULTDIR}/SI00001.{{aligner}}.upset.pdf", aligner=["minimap2", "ngmlr","lra"]),
+        expand(f"{RESULTDIR}/SI00001.{{set}}.svs.pdf", set=["cutesv", "sniffles", "svim", "pbsv", "npinv","truth","consensus"]),
+        f"{RESULTDIR}/SI00001.prf1.bysupport.pdf",
+        f"{RESULTDIR}/SI00001.prf1.bycoverage.pdf",
+        f"{RESULTDIR}/SI00001.prf1.bycombo.pdf",
+        f"{RESULTDIR}/SI00001.tpfpfn.bylength.pdf",
+        f"{RESULTDIR}/SI00001.svtype.bylength.pdf",
+        f"{RESULTDIR}/SI00001.prf1.bysvtype.pdf"
 
 #first part: map reads to reference and perform kind of QC (coverage)
 
@@ -69,7 +86,7 @@ rule sumsvs:
 
 rule prf1:
     input:
-        expand(f"{RESULTDIR}/{{aligner}}/{{tool}}/total/{{tool}}.{{aligner}}.bysupport.tsv", tool=["cutesv", "svim", "sniffles"], aligner=["minimap2", "ngmlr","lra"]),
+        #expand(f"{RESULTDIR}/{{aligner}}/{{tool}}/total/{{tool}}.{{aligner}}.bysupport.tsv", tool=["cutesv", "svim", "sniffles","npinv"], aligner=["minimap2", "ngmlr","lra"]),
         f"{RESULTDIR}/SI00001.prf1.bysupport.pdf",
         f"{RESULTDIR}/SI00001.prf1.bycoverage.pdf",
         f"{RESULTDIR}/SI00001.prf1.bycombo.pdf",

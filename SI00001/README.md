@@ -59,3 +59,9 @@ snakemake npinv --cores 20
 snakemake sumsvs --cores 20
 ```
 
+### Calculate/plot precision/recall/f1 scores by coverage and number of reads supporting the variants
+
+``` bash
+snakemake prf1 --cores 20
+```
+
