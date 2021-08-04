@@ -76,17 +76,12 @@ rule mosdepth_pbmm2_depth:
 
 rule plot_cov:
     input:
-        expand(f"{ALIGNDIR}/GM24385.{{aligner}}.mosdepth.global.dist.txt", aligner=['minimap2','pbmm2','ngmlr','lra']),
-        expand(f"{ALIGNDIR}/GM24385.{{aligner}}.regions.bed.gz", aligner=['minimap2','pbmm2','ngmlr','lra'])
+        expand(f"{ALIGNDIR}/GM24385.{{aligner}}.mosdepth.global.dist.txt", aligner=['minimap2','pbmm2','ngmlr','lra'])
     output:
-        expand(f"{ALIGNDIR}/GM24385.{{aligner}}.coverage_per_chromosome.png", aligner=['minimap2','pbmm2','ngmlr','lra']),
-        expand(f"{VCFDIR}/GM24385.{{aligner}}.exclude.tsv", aligner=['minimap2','pbmm2','ngmlr','lra']),
-        f"{ALIGNDIR}/GM24385.fraction_of_bases_per_depth.png"
+       f"{ALIGNDIR}/GM24385.fraction_of_bases_per_depth.pdf"
     log:
         f"{LOGDIR}/alignments/plot_depth.log"
     conda:
         "../envs/plot.yaml"
     shell:
         "Rscript {SCRIPTDIR}/coveragestats.R {ALIGNDIR} {VCFDIR} 2> {log}"
-
-

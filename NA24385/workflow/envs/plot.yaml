@@ -11,8 +11,4 @@ dependencies:
  - r-dplyr
  - r-viridis
  - r-r.utils
- - r-upsetr
- - r-circlize
- - bioconductor-genomicranges
- - bioconductor-bsgenome.hsapiens.ucsc.hg19
- - bioconductor-complexheatmap
+ - r-complexupset

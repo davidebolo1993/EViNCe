@@ -76,12 +76,9 @@ rule mosdepth_pbmm2_depth:
 
 rule plot_cov:
     input:
-        expand(f"{ALIGNDIR}/SI00001.{{aligner}}.mosdepth.global.dist.txt", aligner=['minimap2','pbmm2','ngmlr','lra']),
-        expand(f"{ALIGNDIR}/SI00001.{{aligner}}.regions.bed.gz", aligner=['minimap2','pbmm2','ngmlr','lra'])
+        expand(f"{ALIGNDIR}/SI00001.{{aligner}}.mosdepth.global.dist.txt", aligner=['minimap2','pbmm2','ngmlr','lra'])
     output:
-        expand(f"{ALIGNDIR}/SI00001.{{aligner}}.coverage_per_chromosome.png", aligner=['minimap2','pbmm2','ngmlr','lra']),
-        expand(f"{VCFDIR}/SI00001.{{aligner}}.exclude.tsv", aligner=['minimap2','pbmm2','ngmlr','lra']),
-        f"{ALIGNDIR}/SI00001.fraction_of_bases_per_depth.png"
+       f"{ALIGNDIR}/SI00001.fraction_of_bases_per_depth.pdf"
     log:
         f"{LOGDIR}/alignments/plot_depth.log"
     conda:

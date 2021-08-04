@@ -19,7 +19,7 @@ rule minimap2_cutesv_bysupport:
         """
         echo -e "precision\trecall\tf1\tprecision_gt\trecall_gt\tf1_gt\tsupport\ttool\taligner" > {output} && \
         supp="2 5 10 15 20 25 30 35 40 45 50" && \
-        for var in ${{supp}}; do bcftools view -f PASS -i "DV>=${{var}}" {input.testvcf} | bcftools view -e 'GT[*]="RR"' | grep -v -f {params.exclude} | bcftools view -i 'SVTYPE=="DEL" || SVTYPE =="INS"' | bcftools sort > {params.vcf} && bgzip {params.vcf} && tabix {params.vcfgz} && truvari bench -f {input.ref} -b {input.truthvcf} --includebed {input.truthbed} --passonly --giabreport -p 0 -c {params.vcfgz} -o {params.outdir}/truvari_supporting_${{var}} && bcftools query -f '%SVLEN\t%SVTYPE\n' {params.outdir}/truvari_supporting_${{var}}/tp-call.vcf | awk '{{OFS=FS="\t"}}{{print ($1>0)?$1:-$1,$2,"TP","CUTESV","minimap2"}}' > {params.outdir}/truvari_supporting_${{var}}/svlen.info.tsv && bcftools query -f '%SVLEN\t%SVTYPE\n' {params.outdir}/truvari_supporting_${{var}}/fp.vcf | awk '{{OFS=FS="\t"}}{{print ($1>0)?$1:-$1,$2,"FP","CUTESV","minimap2"}}' >> {params.outdir}/truvari_supporting_${{var}}/svlen.info.tsv && bcftools query -f '%SVLEN\t%SVTYPE\n' {params.outdir}/truvari_supporting_${{var}}/fn.vcf | awk '{{OFS=FS="\t"}}{{print ($1>0)?$1:-$1,$2,"FN","CUTESV","minimap2"}}' >> {params.outdir}/truvari_supporting_${{var}}/svlen.info.tsv && cat {params.outdir}/truvari_supporting_${{var}}/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk -v su=${{var}} '{{OFS=FS="\t"}}{{print $0,su,"CUTESV","minimap2"}}' >> {output} && rm {params.vcfgz} && rm {params.vcfgztbi} 2>>{log}; done
+        for var in ${{supp}}; do bcftools view -f PASS -i "DV>=${{var}}" {input.testvcf} | bcftools view -e 'GT[*]="RR"' | grep -v -f {params.exclude} | bcftools view -i 'SVTYPE=="DEL" || SVTYPE =="INS"' | bcftools sort > {params.vcf} && bgzip {params.vcf} && tabix {params.vcfgz} && truvari bench -f {input.ref} -b {input.truthvcf} --includebed {input.truthbed} --passonly --giabreport -p 0 -c {params.vcfgz} -o {params.outdir}/truvari_supporting_${{var}} && bcftools query -f '%SVLEN\t%SVTYPE\n' {params.outdir}/truvari_supporting_${{var}}/tp-call.vcf | awk '{{OFS=FS="\t"}}{{print ($1>0)?$1:-$1,$2,"TP","cuteSV","minimap2"}}' > {params.outdir}/truvari_supporting_${{var}}/svlen.info.tsv && bcftools query -f '%SVLEN\t%SVTYPE\n' {params.outdir}/truvari_supporting_${{var}}/fp.vcf | awk '{{OFS=FS="\t"}}{{print ($1>0)?$1:-$1,$2,"FP","cuteSV","minimap2"}}' >> {params.outdir}/truvari_supporting_${{var}}/svlen.info.tsv && bcftools query -f '%SVLEN\t%SVTYPE\n' {params.outdir}/truvari_supporting_${{var}}/fn.vcf | awk '{{OFS=FS="\t"}}{{print ($1>0)?$1:-$1,$2,"FN","cuteSV","minimap2"}}' >> {params.outdir}/truvari_supporting_${{var}}/svlen.info.tsv && cat {params.outdir}/truvari_supporting_${{var}}/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk -v su=${{var}} '{{OFS=FS="\t"}}{{print $0,su,"cuteSV","minimap2"}}' >> {output} && rm {params.vcfgz} && rm {params.vcfgztbi} 2>>{log}; done
         """
 
 rule ngmlr_cutesv_bysupport:
@@ -43,7 +43,7 @@ rule ngmlr_cutesv_bysupport:
         """
         echo -e "precision\trecall\tf1\tprecision_gt\trecall_gt\tf1_gt\tsupport\ttool\taligner" > {output} && \
         supp="2 5 10 15 20 25 30 35 40 45 50" && \
-        for var in ${{supp}}; do bcftools view -f PASS -i "DV>=${{var}}" {input.testvcf} | bcftools view -e 'GT[*]="RR"' | grep -v -f {params.exclude} | bcftools view -i 'SVTYPE=="DEL" || SVTYPE =="INS"' | bcftools sort > {params.vcf} && bgzip {params.vcf} && tabix {params.vcfgz} && truvari bench -f {input.ref} -b {input.truthvcf} --includebed {input.truthbed} --passonly --giabreport -p 0 -c {params.vcfgz} -o {params.outdir}/truvari_supporting_${{var}} && bcftools query -f '%SVLEN\t%SVTYPE\n' {params.outdir}/truvari_supporting_${{var}}/tp-call.vcf | awk '{{OFS=FS="\t"}}{{print ($1>0)?$1:-$1,$2,"TP","CUTESV","ngmlr"}}' > {params.outdir}/truvari_supporting_${{var}}/svlen.info.tsv && bcftools query -f '%SVLEN\t%SVTYPE\n' {params.outdir}/truvari_supporting_${{var}}/fp.vcf | awk '{{OFS=FS="\t"}}{{print ($1>0)?$1:-$1,$2,"FP","CUTESV","ngmlr"}}' >> {params.outdir}/truvari_supporting_${{var}}/svlen.info.tsv && bcftools query -f '%SVLEN\t%SVTYPE\n' {params.outdir}/truvari_supporting_${{var}}/fn.vcf | awk '{{OFS=FS="\t"}}{{print ($1>0)?$1:-$1,$2,"FN","CUTESV","ngmlr"}}' >> {params.outdir}/truvari_supporting_${{var}}/svlen.info.tsv && cat {params.outdir}/truvari_supporting_${{var}}/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk -v su=${{var}} '{{OFS=FS="\t"}}{{print $0,su,"CUTESV","ngmlr"}}' >> {output} && rm {params.vcfgz} && rm {params.vcfgztbi} 2>>{log}; done
+        for var in ${{supp}}; do bcftools view -f PASS -i "DV>=${{var}}" {input.testvcf} | bcftools view -e 'GT[*]="RR"' | grep -v -f {params.exclude} | bcftools view -i 'SVTYPE=="DEL" || SVTYPE =="INS"' | bcftools sort > {params.vcf} && bgzip {params.vcf} && tabix {params.vcfgz} && truvari bench -f {input.ref} -b {input.truthvcf} --includebed {input.truthbed} --passonly --giabreport -p 0 -c {params.vcfgz} -o {params.outdir}/truvari_supporting_${{var}} && bcftools query -f '%SVLEN\t%SVTYPE\n' {params.outdir}/truvari_supporting_${{var}}/tp-call.vcf | awk '{{OFS=FS="\t"}}{{print ($1>0)?$1:-$1,$2,"TP","cuteSV","NGMLR"}}' > {params.outdir}/truvari_supporting_${{var}}/svlen.info.tsv && bcftools query -f '%SVLEN\t%SVTYPE\n' {params.outdir}/truvari_supporting_${{var}}/fp.vcf | awk '{{OFS=FS="\t"}}{{print ($1>0)?$1:-$1,$2,"FP","cuteSV","NGMLR"}}' >> {params.outdir}/truvari_supporting_${{var}}/svlen.info.tsv && bcftools query -f '%SVLEN\t%SVTYPE\n' {params.outdir}/truvari_supporting_${{var}}/fn.vcf | awk '{{OFS=FS="\t"}}{{print ($1>0)?$1:-$1,$2,"FN","cuteSV","NGMLR"}}' >> {params.outdir}/truvari_supporting_${{var}}/svlen.info.tsv && cat {params.outdir}/truvari_supporting_${{var}}/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk -v su=${{var}} '{{OFS=FS="\t"}}{{print $0,su,"cuteSV","NGMLR"}}' >> {output} && rm {params.vcfgz} && rm {params.vcfgztbi} 2>>{log}; done
         """
 
 rule lra_cutesv_bysupport:
@@ -67,7 +67,7 @@ rule lra_cutesv_bysupport:
         """
         echo -e "precision\trecall\tf1\tprecision_gt\trecall_gt\tf1_gt\tsupport\ttool\taligner" > {output} && \
         supp="2 5 10 15 20 25 30 35 40 45 50" && \
-        for var in ${{supp}}; do bcftools view -f PASS -i "DV>=${{var}}" {input.testvcf} | bcftools view -e 'GT[*]="RR"' | grep -v -f {params.exclude} | bcftools view -i 'SVTYPE=="DEL" || SVTYPE =="INS"' | bcftools sort > {params.vcf} && bgzip {params.vcf} && tabix {params.vcfgz} && truvari bench -f {input.ref} -b {input.truthvcf} --includebed {input.truthbed} --passonly --giabreport -p 0 -c {params.vcfgz} -o {params.outdir}/truvari_supporting_${{var}} && bcftools query -f '%SVLEN\t%SVTYPE\n' {params.outdir}/truvari_supporting_${{var}}/tp-call.vcf | awk '{{OFS=FS="\t"}}{{print ($1>0)?$1:-$1,$2,"TP","CUTESV","lra"}}' > {params.outdir}/truvari_supporting_${{var}}/svlen.info.tsv && bcftools query -f '%SVLEN\t%SVTYPE\n' {params.outdir}/truvari_supporting_${{var}}/fp.vcf | awk '{{OFS=FS="\t"}}{{print ($1>0)?$1:-$1,$2,"FP","CUTESV","lra"}}' >> {params.outdir}/truvari_supporting_${{var}}/svlen.info.tsv && bcftools query -f '%SVLEN\t%SVTYPE\n' {params.outdir}/truvari_supporting_${{var}}/fn.vcf | awk '{{OFS=FS="\t"}}{{print ($1>0)?$1:-$1,$2,"FN","CUTESV","lra"}}' >> {params.outdir}/truvari_supporting_${{var}}/svlen.info.tsv && cat {params.outdir}/truvari_supporting_${{var}}/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk -v su=${{var}} '{{OFS=FS="\t"}}{{print $0,su,"CUTESV","lra"}}' >> {output} && rm {params.vcfgz} && rm {params.vcfgztbi} 2>>{log}; done
+        for var in ${{supp}}; do bcftools view -f PASS -i "DV>=${{var}}" {input.testvcf} | bcftools view -e 'GT[*]="RR"' | grep -v -f {params.exclude} | bcftools view -i 'SVTYPE=="DEL" || SVTYPE =="INS"' | bcftools sort > {params.vcf} && bgzip {params.vcf} && tabix {params.vcfgz} && truvari bench -f {input.ref} -b {input.truthvcf} --includebed {input.truthbed} --passonly --giabreport -p 0 -c {params.vcfgz} -o {params.outdir}/truvari_supporting_${{var}} && bcftools query -f '%SVLEN\t%SVTYPE\n' {params.outdir}/truvari_supporting_${{var}}/tp-call.vcf | awk '{{OFS=FS="\t"}}{{print ($1>0)?$1:-$1,$2,"TP","cuteSV","lra"}}' > {params.outdir}/truvari_supporting_${{var}}/svlen.info.tsv && bcftools query -f '%SVLEN\t%SVTYPE\n' {params.outdir}/truvari_supporting_${{var}}/fp.vcf | awk '{{OFS=FS="\t"}}{{print ($1>0)?$1:-$1,$2,"FP","cuteSV","lra"}}' >> {params.outdir}/truvari_supporting_${{var}}/svlen.info.tsv && bcftools query -f '%SVLEN\t%SVTYPE\n' {params.outdir}/truvari_supporting_${{var}}/fn.vcf | awk '{{OFS=FS="\t"}}{{print ($1>0)?$1:-$1,$2,"FN","cuteSV","lra"}}' >> {params.outdir}/truvari_supporting_${{var}}/svlen.info.tsv && cat {params.outdir}/truvari_supporting_${{var}}/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk -v su=${{var}} '{{OFS=FS="\t"}}{{print $0,su,"cuteSV","lra"}}' >> {output} && rm {params.vcfgz} && rm {params.vcfgztbi} 2>>{log}; done
         """
 
 rule minimap2_sniffles_bysupport:
@@ -91,7 +91,7 @@ rule minimap2_sniffles_bysupport:
         """
         echo -e "precision\trecall\tf1\tprecision_gt\trecall_gt\tf1_gt\tsupport\ttool\taligner" > {output} && \
         supp="2 5 10 15 20 25 30 35 40 45 50" && \
-        for var in ${{supp}}; do cat <(cat {input.testvcf}| grep "^#") <(cat {input.testvcf}| grep -vE "^#" | grep -v "0/0:" | grep -v -f {params.exclude} | grep -v -E "BND|DUP|INV" | sort -k1,1 -k2,2g) | bgzip -c > {params.vcfgz} && bcftools view -f PASS -i "DV>=${{var}}" -o {params.vcf} {params.vcfgz} && rm {params.vcfgz} && bgzip {params.vcf} && tabix {params.vcfgz} && truvari bench -f {input.ref} -b {input.truthvcf} --includebed {input.truthbed} --passonly --giabreport -p 0 -c {params.vcfgz} -o {params.outdir}/truvari_supporting_${{var}} && bcftools query -f '%SVLEN\t%SVTYPE\n' {params.outdir}/truvari_supporting_${{var}}/tp-call.vcf | awk '{{OFS=FS="\t"}}{{print ($1>0)?$1:-$1,$2,"TP","SNIFFLES","minimap2"}}' > {params.outdir}/truvari_supporting_${{var}}/svlen.info.tsv && bcftools query -f '%SVLEN\t%SVTYPE\n' {params.outdir}/truvari_supporting_${{var}}/fp.vcf | awk '{{OFS=FS="\t"}}{{print ($1>0)?$1:-$1,$2,"FP","SNIFFLES","minimap2"}}' >> {params.outdir}/truvari_supporting_${{var}}/svlen.info.tsv && bcftools query -f '%SVLEN\t%SVTYPE\n' {params.outdir}/truvari_supporting_${{var}}/fn.vcf | awk '{{OFS=FS="\t"}}{{print ($1>0)?$1:-$1,$2,"FN","SNIFFLES","minimap2"}}' >> {params.outdir}/truvari_supporting_${{var}}/svlen.info.tsv && cat {params.outdir}/truvari_supporting_${{var}}/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk -v su=${{var}} '{{OFS=FS="\t"}}{{print $0,su,"SNIFFLES","minimap2"}}' >> {output} && rm {params.vcfgz} && rm {params.vcfgztbi} 2>>{log}; done
+        for var in ${{supp}}; do cat <(cat {input.testvcf}| grep "^#") <(cat {input.testvcf}| grep -vE "^#" | grep -v "0/0:" | grep -v -f {params.exclude} | grep -v -E "BND|DUP|INV" | sort -k1,1 -k2,2g) | bgzip -c > {params.vcfgz} && bcftools view -f PASS -i "DV>=${{var}}" -o {params.vcf} {params.vcfgz} && rm {params.vcfgz} && bgzip {params.vcf} && tabix {params.vcfgz} && truvari bench -f {input.ref} -b {input.truthvcf} --includebed {input.truthbed} --passonly --giabreport -p 0 -c {params.vcfgz} -o {params.outdir}/truvari_supporting_${{var}} && bcftools query -f '%SVLEN\t%SVTYPE\n' {params.outdir}/truvari_supporting_${{var}}/tp-call.vcf | awk '{{OFS=FS="\t"}}{{print ($1>0)?$1:-$1,$2,"TP","Sniffles","minimap2"}}' > {params.outdir}/truvari_supporting_${{var}}/svlen.info.tsv && bcftools query -f '%SVLEN\t%SVTYPE\n' {params.outdir}/truvari_supporting_${{var}}/fp.vcf | awk '{{OFS=FS="\t"}}{{print ($1>0)?$1:-$1,$2,"FP","Sniffles","minimap2"}}' >> {params.outdir}/truvari_supporting_${{var}}/svlen.info.tsv && bcftools query -f '%SVLEN\t%SVTYPE\n' {params.outdir}/truvari_supporting_${{var}}/fn.vcf | awk '{{OFS=FS="\t"}}{{print ($1>0)?$1:-$1,$2,"FN","Sniffles","minimap2"}}' >> {params.outdir}/truvari_supporting_${{var}}/svlen.info.tsv && cat {params.outdir}/truvari_supporting_${{var}}/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk -v su=${{var}} '{{OFS=FS="\t"}}{{print $0,su,"Sniffles","minimap2"}}' >> {output} && rm {params.vcfgz} && rm {params.vcfgztbi} 2>>{log}; done
         """
 
 rule ngmlr_sniffles_bysupport:
@@ -115,7 +115,7 @@ rule ngmlr_sniffles_bysupport:
         """
         echo -e "precision\trecall\tf1\tprecision_gt\trecall_gt\tf1_gt\tsupport\ttool\taligner" > {output} && \
         supp="2 5 10 15 20 25 30 35 40 45 50" && \
-        for var in ${{supp}}; do cat <(cat {input.testvcf}| grep "^#") <(cat {input.testvcf}| grep -vE "^#" | grep -v "0/0:" | grep -v -f {params.exclude} | grep -v -E "BND|DUP|INV" | sort -k1,1 -k2,2g) | bgzip -c > {params.vcfgz} && bcftools view -f PASS -i "DV>=${{var}}" -o {params.vcf} {params.vcfgz} && rm {params.vcfgz} && bgzip {params.vcf} && tabix {params.vcfgz} && truvari bench -f {input.ref} -b {input.truthvcf} --includebed {input.truthbed} --passonly --giabreport -p 0 -c {params.vcfgz} -o {params.outdir}/truvari_supporting_${{var}} && bcftools query -f '%SVLEN\t%SVTYPE\n' {params.outdir}/truvari_supporting_${{var}}/tp-call.vcf | awk '{{OFS=FS="\t"}}{{print ($1>0)?$1:-$1,$2,"TP","SNIFFLES","ngmlr"}}' > {params.outdir}/truvari_supporting_${{var}}/svlen.info.tsv && bcftools query -f '%SVLEN\t%SVTYPE\n' {params.outdir}/truvari_supporting_${{var}}/fp.vcf | awk '{{OFS=FS="\t"}}{{print ($1>0)?$1:-$1,$2,"FP","SNIFFLES","ngmlr"}}' >> {params.outdir}/truvari_supporting_${{var}}/svlen.info.tsv && bcftools query -f '%SVLEN\t%SVTYPE\n' {params.outdir}/truvari_supporting_${{var}}/fn.vcf | awk '{{OFS=FS="\t"}}{{print ($1>0)?$1:-$1,$2,"FN","SNIFFLES","ngmlr"}}' >> {params.outdir}/truvari_supporting_${{var}}/svlen.info.tsv && cat {params.outdir}/truvari_supporting_${{var}}/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk -v su=${{var}} '{{OFS=FS="\t"}}{{print $0,su,"SNIFFLES","ngmlr"}}' >> {output} && rm {params.vcfgz} && rm {params.vcfgztbi} 2>>{log}; done
+        for var in ${{supp}}; do cat <(cat {input.testvcf}| grep "^#") <(cat {input.testvcf}| grep -vE "^#" | grep -v "0/0:" | grep -v -f {params.exclude} | grep -v -E "BND|DUP|INV" | sort -k1,1 -k2,2g) | bgzip -c > {params.vcfgz} && bcftools view -f PASS -i "DV>=${{var}}" -o {params.vcf} {params.vcfgz} && rm {params.vcfgz} && bgzip {params.vcf} && tabix {params.vcfgz} && truvari bench -f {input.ref} -b {input.truthvcf} --includebed {input.truthbed} --passonly --giabreport -p 0 -c {params.vcfgz} -o {params.outdir}/truvari_supporting_${{var}} && bcftools query -f '%SVLEN\t%SVTYPE\n' {params.outdir}/truvari_supporting_${{var}}/tp-call.vcf | awk '{{OFS=FS="\t"}}{{print ($1>0)?$1:-$1,$2,"TP","Sniffles","NGMLR"}}' > {params.outdir}/truvari_supporting_${{var}}/svlen.info.tsv && bcftools query -f '%SVLEN\t%SVTYPE\n' {params.outdir}/truvari_supporting_${{var}}/fp.vcf | awk '{{OFS=FS="\t"}}{{print ($1>0)?$1:-$1,$2,"FP","Sniffles","NGMLR"}}' >> {params.outdir}/truvari_supporting_${{var}}/svlen.info.tsv && bcftools query -f '%SVLEN\t%SVTYPE\n' {params.outdir}/truvari_supporting_${{var}}/fn.vcf | awk '{{OFS=FS="\t"}}{{print ($1>0)?$1:-$1,$2,"FN","Sniffles","NGMLR"}}' >> {params.outdir}/truvari_supporting_${{var}}/svlen.info.tsv && cat {params.outdir}/truvari_supporting_${{var}}/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk -v su=${{var}} '{{OFS=FS="\t"}}{{print $0,su,"Sniffles","NGMLR"}}' >> {output} && rm {params.vcfgz} && rm {params.vcfgztbi} 2>>{log}; done
         """
 
 rule lra_sniffles_bysupport:
@@ -139,7 +139,7 @@ rule lra_sniffles_bysupport:
         """
         echo -e "precision\trecall\tf1\tprecision_gt\trecall_gt\tf1_gt\tsupport\ttool\taligner" > {output} && \
         supp="2 5 10 15 20 25 30 35 40 45 50" && \
-        for var in ${{supp}}; do cat <(cat {input.testvcf}| grep "^#") <(cat {input.testvcf}| grep -vE "^#" | grep -v "0/0:" | grep -v -f {params.exclude} | grep -v -E "BND|DUP|INV" | sort -k1,1 -k2,2g) | bgzip -c > {params.vcfgz} && bcftools view -f PASS -i "DV>=${{var}}" -o {params.vcf} {params.vcfgz} && rm {params.vcfgz} && bgzip {params.vcf} && tabix {params.vcfgz} && truvari bench -f {input.ref} -b {input.truthvcf} --includebed {input.truthbed} --passonly --giabreport -p 0 -c {params.vcfgz} -o {params.outdir}/truvari_supporting_${{var}} && bcftools query -f '%SVLEN\t%SVTYPE\n' {params.outdir}/truvari_supporting_${{var}}/tp-call.vcf | awk '{{OFS=FS="\t"}}{{print ($1>0)?$1:-$1,$2,"TP","SNIFFLES","lra"}}' > {params.outdir}/truvari_supporting_${{var}}/svlen.info.tsv && bcftools query -f '%SVLEN\t%SVTYPE\n' {params.outdir}/truvari_supporting_${{var}}/fp.vcf | awk '{{OFS=FS="\t"}}{{print ($1>0)?$1:-$1,$2,"FP","SNIFFLES","lra"}}' >> {params.outdir}/truvari_supporting_${{var}}/svlen.info.tsv && bcftools query -f '%SVLEN\t%SVTYPE\n' {params.outdir}/truvari_supporting_${{var}}/fn.vcf | awk '{{OFS=FS="\t"}}{{print ($1>0)?$1:-$1,$2,"FN","SNIFFLES","lra"}}' >> {params.outdir}/truvari_supporting_${{var}}/svlen.info.tsv && cat {params.outdir}/truvari_supporting_${{var}}/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk -v su=${{var}} '{{OFS=FS="\t"}}{{print $0,su,"SNIFFLES","lra"}}' >> {output} && rm {params.vcfgz} && rm {params.vcfgztbi} 2>>{log}; done
+        for var in ${{supp}}; do cat <(cat {input.testvcf}| grep "^#") <(cat {input.testvcf}| grep -vE "^#" | grep -v "0/0:" | grep -v -f {params.exclude} | grep -v -E "BND|DUP|INV" | sort -k1,1 -k2,2g) | bgzip -c > {params.vcfgz} && bcftools view -f PASS -i "DV>=${{var}}" -o {params.vcf} {params.vcfgz} && rm {params.vcfgz} && bgzip {params.vcf} && tabix {params.vcfgz} && truvari bench -f {input.ref} -b {input.truthvcf} --includebed {input.truthbed} --passonly --giabreport -p 0 -c {params.vcfgz} -o {params.outdir}/truvari_supporting_${{var}} && bcftools query -f '%SVLEN\t%SVTYPE\n' {params.outdir}/truvari_supporting_${{var}}/tp-call.vcf | awk '{{OFS=FS="\t"}}{{print ($1>0)?$1:-$1,$2,"TP","Sniffles","lra"}}' > {params.outdir}/truvari_supporting_${{var}}/svlen.info.tsv && bcftools query -f '%SVLEN\t%SVTYPE\n' {params.outdir}/truvari_supporting_${{var}}/fp.vcf | awk '{{OFS=FS="\t"}}{{print ($1>0)?$1:-$1,$2,"FP","Sniffles","lra"}}' >> {params.outdir}/truvari_supporting_${{var}}/svlen.info.tsv && bcftools query -f '%SVLEN\t%SVTYPE\n' {params.outdir}/truvari_supporting_${{var}}/fn.vcf | awk '{{OFS=FS="\t"}}{{print ($1>0)?$1:-$1,$2,"FN","Sniffles","lra"}}' >> {params.outdir}/truvari_supporting_${{var}}/svlen.info.tsv && cat {params.outdir}/truvari_supporting_${{var}}/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk -v su=${{var}} '{{OFS=FS="\t"}}{{print $0,su,"Sniffles","lra"}}' >> {output} && rm {params.vcfgz} && rm {params.vcfgztbi} 2>>{log}; done
         """
 
 rule minimap2_svim_bysupport:
@@ -187,7 +187,7 @@ rule ngmlr_svim_bysupport:
         """
         echo -e "precision\trecall\tf1\tprecision_gt\trecall_gt\tf1_gt\tsupport\ttool\taligner" > {output} && \
         supp="2 5 10 15 20 25 30 35 40 45 50" && \
-        for var in ${{supp}}; do bcftools view -f PASS -i "SUPPORT>=${{var}}" {input.testvcf} | bcftools view -e 'GT[*]="RR"' | grep -v -f {params.exclude} | bcftools view -i 'SVTYPE=="DEL" || SVTYPE =="INS"' | bcftools sort > {params.vcf} && bgzip {params.vcf} && tabix {params.vcfgz} && truvari bench -f {input.ref} -b {input.truthvcf} --includebed {input.truthbed} --passonly --giabreport -p 0 -c {params.vcfgz} -o {params.outdir}/truvari_supporting_${{var}} && bcftools query -f '%SVLEN\t%SVTYPE\n' {params.outdir}/truvari_supporting_${{var}}/tp-call.vcf | awk '{{OFS=FS="\t"}}{{print ($1>0)?$1:-$1,$2,"TP","SVIM","ngmlr"}}' > {params.outdir}/truvari_supporting_${{var}}/svlen.info.tsv && bcftools query -f '%SVLEN\t%SVTYPE\n' {params.outdir}/truvari_supporting_${{var}}/fp.vcf | awk '{{OFS=FS="\t"}}{{print ($1>0)?$1:-$1,$2,"FP","SVIM","ngmlr"}}' >> {params.outdir}/truvari_supporting_${{var}}/svlen.info.tsv && bcftools query -f '%SVLEN\t%SVTYPE\n' {params.outdir}/truvari_supporting_${{var}}/fn.vcf | awk '{{OFS=FS="\t"}}{{print ($1>0)?$1:-$1,$2,"FN","SVIM","ngmlr"}}' >> {params.outdir}/truvari_supporting_${{var}}/svlen.info.tsv && cat {params.outdir}/truvari_supporting_${{var}}/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk -v su=${{var}} '{{OFS=FS="\t"}}{{print $0,su,"SVIM","ngmlr"}}' >> {output} && rm {params.vcfgz} && rm {params.vcfgztbi} 2>>{log}; done
+        for var in ${{supp}}; do bcftools view -f PASS -i "SUPPORT>=${{var}}" {input.testvcf} | bcftools view -e 'GT[*]="RR"' | grep -v -f {params.exclude} | bcftools view -i 'SVTYPE=="DEL" || SVTYPE =="INS"' | bcftools sort > {params.vcf} && bgzip {params.vcf} && tabix {params.vcfgz} && truvari bench -f {input.ref} -b {input.truthvcf} --includebed {input.truthbed} --passonly --giabreport -p 0 -c {params.vcfgz} -o {params.outdir}/truvari_supporting_${{var}} && bcftools query -f '%SVLEN\t%SVTYPE\n' {params.outdir}/truvari_supporting_${{var}}/tp-call.vcf | awk '{{OFS=FS="\t"}}{{print ($1>0)?$1:-$1,$2,"TP","SVIM","NGMLR"}}' > {params.outdir}/truvari_supporting_${{var}}/svlen.info.tsv && bcftools query -f '%SVLEN\t%SVTYPE\n' {params.outdir}/truvari_supporting_${{var}}/fp.vcf | awk '{{OFS=FS="\t"}}{{print ($1>0)?$1:-$1,$2,"FP","SVIM","NGMLR"}}' >> {params.outdir}/truvari_supporting_${{var}}/svlen.info.tsv && bcftools query -f '%SVLEN\t%SVTYPE\n' {params.outdir}/truvari_supporting_${{var}}/fn.vcf | awk '{{OFS=FS="\t"}}{{print ($1>0)?$1:-$1,$2,"FN","SVIM","NGMLR"}}' >> {params.outdir}/truvari_supporting_${{var}}/svlen.info.tsv && cat {params.outdir}/truvari_supporting_${{var}}/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk -v su=${{var}} '{{OFS=FS="\t"}}{{print $0,su,"SVIM","NGMLR"}}' >> {output} && rm {params.vcfgz} && rm {params.vcfgztbi} 2>>{log}; done
         """
 
 rule lra_svim_bysupport:
@@ -235,7 +235,7 @@ rule pbmm2_pbsv_bysupport:
         """
         echo -e "precision\trecall\tf1\tprecision_gt\trecall_gt\tf1_gt\tsupport\ttool\taligner" > {output} && \
         supp="2 5 10 15 20 25 30 35 40 45 50" && \
-        for var in ${{supp}}; do bcftools view -f PASS -i "AD[:1]>=${{var}}" {input.testvcf} | bcftools view -e 'GT[*]="RR"' | grep -v -f {params.exclude} | bcftools view -i 'SVTYPE=="DEL" || SVTYPE =="INS"' | bcftools sort > {params.vcf} && bgzip {params.vcf} && tabix {params.vcfgz} && truvari bench -f {input.ref} -b {input.truthvcf} --includebed {input.truthbed} --passonly --giabreport -p 0 -c {params.vcfgz} -o {params.outdir}/truvari_supporting_${{var}} && bcftools query -f '%SVLEN\t%SVTYPE\n' {params.outdir}/truvari_supporting_${{var}}/tp-call.vcf | awk '{{OFS=FS="\t"}}{{print ($1>0)?$1:-$1,$2,"TP","PBSV","minimap2"}}' > {params.outdir}/truvari_supporting_${{var}}/svlen.info.tsv && bcftools query -f '%SVLEN\t%SVTYPE\n' {params.outdir}/truvari_supporting_${{var}}/fp.vcf | awk '{{OFS=FS="\t"}}{{print ($1>0)?$1:-$1,$2,"FP","PBSV","minimap2"}}' >> {params.outdir}/truvari_supporting_${{var}}/svlen.info.tsv && bcftools query -f '%SVLEN\t%SVTYPE\n' {params.outdir}/truvari_supporting_${{var}}/fn.vcf | awk '{{OFS=FS="\t"}}{{print ($1>0)?$1:-$1,$2,"FN","PBSV","minimap2"}}' >> {params.outdir}/truvari_supporting_${{var}}/svlen.info.tsv && cat {params.outdir}/truvari_supporting_${{var}}/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk -v su=${{var}} '{{OFS=FS="\t"}}{{print $0,su,"PBSV","minimap2"}}' >> {output} && rm {params.vcfgz} && rm {params.vcfgztbi} 2>>{log}; done
+        for var in ${{supp}}; do bcftools view -f PASS -i "AD[:1]>=${{var}}" {input.testvcf} | bcftools view -e 'GT[*]="RR"' | grep -v -f {params.exclude} | bcftools view -i 'SVTYPE=="DEL" || SVTYPE =="INS"' | bcftools sort > {params.vcf} && bgzip {params.vcf} && tabix {params.vcfgz} && truvari bench -f {input.ref} -b {input.truthvcf} --includebed {input.truthbed} --passonly --giabreport -p 0 -c {params.vcfgz} -o {params.outdir}/truvari_supporting_${{var}} && bcftools query -f '%SVLEN\t%SVTYPE\n' {params.outdir}/truvari_supporting_${{var}}/tp-call.vcf | awk '{{OFS=FS="\t"}}{{print ($1>0)?$1:-$1,$2,"TP","pbsv","minimap2"}}' > {params.outdir}/truvari_supporting_${{var}}/svlen.info.tsv && bcftools query -f '%SVLEN\t%SVTYPE\n' {params.outdir}/truvari_supporting_${{var}}/fp.vcf | awk '{{OFS=FS="\t"}}{{print ($1>0)?$1:-$1,$2,"FP","pbsv","minimap2"}}' >> {params.outdir}/truvari_supporting_${{var}}/svlen.info.tsv && bcftools query -f '%SVLEN\t%SVTYPE\n' {params.outdir}/truvari_supporting_${{var}}/fn.vcf | awk '{{OFS=FS="\t"}}{{print ($1>0)?$1:-$1,$2,"FN","pbsv","minimap2"}}' >> {params.outdir}/truvari_supporting_${{var}}/svlen.info.tsv && cat {params.outdir}/truvari_supporting_${{var}}/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk -v su=${{var}} '{{OFS=FS="\t"}}{{print $0,su,"pbsv","minimap2"}}' >> {output} && rm {params.vcfgz} && rm {params.vcfgztbi} 2>>{log}; done
         """
 
 rule combine_results_bysupport:
@@ -284,8 +284,8 @@ rule minimap2_cutesv_bycoverage:
     shell:
         """
         echo -e "precision\trecall\tf1\tprecision_gt\trecall_gt\tf1_gt\tcoverage\ttool\taligner" > {output} && \
-        cov="5:2 10:4 15:7 20:9 25:10 35:10 total:10" && files=$(ls {params.outdir}/*/GM24385.vcf | sort -V) && set ${{cov}} && \
-        for var in ${{files}}; do c=$(echo ${{1}} | cut -f1 -d ":") && s=$(echo ${{1}} | cut -f2 -d ":") && bcftools view -f PASS -i "DV>=${{s}}" ${{var}} | bcftools view -e 'GT[*]="RR"' | grep -v -f {params.exclude} | bcftools view -i 'SVTYPE=="DEL" || SVTYPE =="INS"' | bcftools sort > {params.vcf} && bgzip {params.vcf} && tabix {params.vcfgz} && truvari bench -f {params.ref} -b {params.truthvcf} --includebed {params.truthbed} --passonly --giabreport -p 0 -c {params.vcfgz} -o {params.outdir}/truvari_coverage_${{c}} && cat {params.outdir}/truvari_coverage_${{c}}/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk -v su=${{c}} '{{OFS=FS="\t"}}{{print $0,su,"CUTESV","minimap2"}}' >> {output} && rm {params.vcfgz} && rm {params.vcfgztbi} 2>>{log} && shift; done
+        cov="5:2 10:2 15:2 20:2 25:2 35:2 total:2" && files=$(ls {params.outdir}/*/GM24385.vcf | sort -V) && set ${{cov}} && \
+        for var in ${{files}}; do c=$(echo ${{1}} | cut -f1 -d ":") && s=$(echo ${{1}} | cut -f2 -d ":") && bcftools view -f PASS -i "DV>=${{s}}" ${{var}} | bcftools view -e 'GT[*]="RR"' | grep -v -f {params.exclude} | bcftools view -i 'SVTYPE=="DEL" || SVTYPE =="INS"' | bcftools sort > {params.vcf} && bgzip {params.vcf} && tabix {params.vcfgz} && truvari bench -f {params.ref} -b {params.truthvcf} --includebed {params.truthbed} --passonly --giabreport -p 0 -c {params.vcfgz} -o {params.outdir}/truvari_coverage_${{c}} && cat {params.outdir}/truvari_coverage_${{c}}/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk -v su=${{c}} '{{OFS=FS="\t"}}{{print $0,su,"cuteSV","minimap2"}}' >> {output} && rm {params.vcfgz} && rm {params.vcfgztbi} 2>>{log} && shift; done
         """
 
 rule ngmlr_cutesv_bycoverage:
@@ -308,8 +308,8 @@ rule ngmlr_cutesv_bycoverage:
     shell:
         """
         echo -e "precision\trecall\tf1\tprecision_gt\trecall_gt\tf1_gt\tcoverage\ttool\taligner" > {output} && \
-        cov="5:2 10:4 15:7 20:9 25:10 35:10 total:10" && files=$(ls {params.outdir}/*/GM24385.vcf | sort -V) && set ${{cov}} && \
-        for var in ${{files}}; do c=$(echo ${{1}} | cut -f1 -d ":") && s=$(echo ${{1}} | cut -f2 -d ":") && bcftools view -f PASS -i "DV>=${{s}}" ${{var}} | bcftools view -e 'GT[*]="RR"' | grep -v -f {params.exclude} | bcftools view -i 'SVTYPE=="DEL" || SVTYPE =="INS"' | bcftools sort > {params.vcf} && bgzip {params.vcf} && tabix {params.vcfgz} && truvari bench -f {params.ref} -b {params.truthvcf} --includebed {params.truthbed} --passonly --giabreport -p 0 -c {params.vcfgz} -o {params.outdir}/truvari_coverage_${{c}} && cat {params.outdir}/truvari_coverage_${{c}}/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk -v su=${{c}} '{{OFS=FS="\t"}}{{print $0,su,"CUTESV","ngmlr"}}' >> {output} && rm {params.vcfgz} && rm {params.vcfgztbi} 2>>{log} && shift; done
+        cov="5:2 10:2 15:2 20:2 25:2 35:2 total:2" && files=$(ls {params.outdir}/*/GM24385.vcf | sort -V) && set ${{cov}} && \
+        for var in ${{files}}; do c=$(echo ${{1}} | cut -f1 -d ":") && s=$(echo ${{1}} | cut -f2 -d ":") && bcftools view -f PASS -i "DV>=${{s}}" ${{var}} | bcftools view -e 'GT[*]="RR"' | grep -v -f {params.exclude} | bcftools view -i 'SVTYPE=="DEL" || SVTYPE =="INS"' | bcftools sort > {params.vcf} && bgzip {params.vcf} && tabix {params.vcfgz} && truvari bench -f {params.ref} -b {params.truthvcf} --includebed {params.truthbed} --passonly --giabreport -p 0 -c {params.vcfgz} -o {params.outdir}/truvari_coverage_${{c}} && cat {params.outdir}/truvari_coverage_${{c}}/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk -v su=${{c}} '{{OFS=FS="\t"}}{{print $0,su,"cuteSV","NGMLR"}}' >> {output} && rm {params.vcfgz} && rm {params.vcfgztbi} 2>>{log} && shift; done
         """
 
 rule lra_cutesv_bycoverage:
@@ -332,8 +332,8 @@ rule lra_cutesv_bycoverage:
     shell:
         """
         echo -e "precision\trecall\tf1\tprecision_gt\trecall_gt\tf1_gt\tcoverage\ttool\taligner" > {output} && \
-        cov="5:2 10:4 15:7 20:9 25:10 35:10 total:10" && files=$(ls {params.outdir}/*/GM24385.vcf | sort -V) && set ${{cov}} && \
-        for var in ${{files}}; do c=$(echo ${{1}} | cut -f1 -d ":") && s=$(echo ${{1}} | cut -f2 -d ":") && bcftools view -f PASS -i "DV>=${{s}}" ${{var}} | bcftools view -e 'GT[*]="RR"' | grep -v -f {params.exclude} | bcftools view -i 'SVTYPE=="DEL" || SVTYPE =="INS"' | bcftools sort > {params.vcf} && bgzip {params.vcf} && tabix {params.vcfgz} && truvari bench -f {params.ref} -b {params.truthvcf} --includebed {params.truthbed} --passonly --giabreport -p 0 -c {params.vcfgz} -o {params.outdir}/truvari_coverage_${{c}} && cat {params.outdir}/truvari_coverage_${{c}}/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk -v su=${{c}} '{{OFS=FS="\t"}}{{print $0,su,"CUTESV","lra"}}' >> {output} && rm {params.vcfgz} && rm {params.vcfgztbi} 2>>{log} && shift; done
+        cov="5:2 10:2 15:2 20:2 25:2 35:2 total:2" && files=$(ls {params.outdir}/*/GM24385.vcf | sort -V) && set ${{cov}} && \
+        for var in ${{files}}; do c=$(echo ${{1}} | cut -f1 -d ":") && s=$(echo ${{1}} | cut -f2 -d ":") && bcftools view -f PASS -i "DV>=${{s}}" ${{var}} | bcftools view -e 'GT[*]="RR"' | grep -v -f {params.exclude} | bcftools view -i 'SVTYPE=="DEL" || SVTYPE =="INS"' | bcftools sort > {params.vcf} && bgzip {params.vcf} && tabix {params.vcfgz} && truvari bench -f {params.ref} -b {params.truthvcf} --includebed {params.truthbed} --passonly --giabreport -p 0 -c {params.vcfgz} -o {params.outdir}/truvari_coverage_${{c}} && cat {params.outdir}/truvari_coverage_${{c}}/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk -v su=${{c}} '{{OFS=FS="\t"}}{{print $0,su,"cuteSV","lra"}}' >> {output} && rm {params.vcfgz} && rm {params.vcfgztbi} 2>>{log} && shift; done
         """
 
 
@@ -357,8 +357,8 @@ rule minimap2_sniffles_bycoverage:
     shell:
         """
         echo -e "precision\trecall\tf1\tprecision_gt\trecall_gt\tf1_gt\tcoverage\ttool\taligner" > {output} && \
-        cov="5:2 10:4 15:7 20:9 25:10 35:10 total:10" && files=$(ls {params.outdir}/*/GM24385.vcf | sort -V) && set ${{cov}} && \
-        for var in ${{files}}; do c=$(echo ${{1}} | cut -f1 -d ":") && s=$(echo ${{1}} | cut -f2 -d ":") && cat <(cat ${{var}}| grep "^#") <(cat ${{var}}| grep -vE "^#" | grep -v "0/0:" | grep -v -f {params.exclude} | grep -v -E "BND|DUP|INV" | sort -k1,1 -k2,2g) | bgzip -c > {params.vcfgz} && bcftools view -f PASS -i "DV>=${{s}}" -o {params.vcf} {params.vcfgz} && rm {params.vcfgz} && bgzip {params.vcf} && tabix {params.vcfgz} && truvari bench -f {params.ref} -b {params.truthvcf} --includebed {params.truthbed} --passonly --giabreport -p 0 -c {params.vcfgz} -o {params.outdir}/truvari_coverage_${{c}} && cat {params.outdir}/truvari_coverage_${{c}}/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk -v su=${{c}} '{{OFS=FS="\t"}}{{print $0,su,"SNIFFLES","minimap2"}}' >> {output} && rm {params.vcfgz} && rm {params.vcfgztbi} 2>>{log} && shift; done
+        cov="5:2 10:2 15:2 20:2 25:2 35:2 total:2" && files=$(ls {params.outdir}/*/GM24385.vcf | sort -V) && set ${{cov}} && \
+        for var in ${{files}}; do c=$(echo ${{1}} | cut -f1 -d ":") && s=$(echo ${{1}} | cut -f2 -d ":") && cat <(cat ${{var}}| grep "^#") <(cat ${{var}}| grep -vE "^#" | grep -v "0/0:" | grep -v -f {params.exclude} | grep -v -E "BND|DUP|INV" | sort -k1,1 -k2,2g) | bgzip -c > {params.vcfgz} && bcftools view -f PASS -i "DV>=${{s}}" -o {params.vcf} {params.vcfgz} && rm {params.vcfgz} && bgzip {params.vcf} && tabix {params.vcfgz} && truvari bench -f {params.ref} -b {params.truthvcf} --includebed {params.truthbed} --passonly --giabreport -p 0 -c {params.vcfgz} -o {params.outdir}/truvari_coverage_${{c}} && cat {params.outdir}/truvari_coverage_${{c}}/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk -v su=${{c}} '{{OFS=FS="\t"}}{{print $0,su,"Sniffles","minimap2"}}' >> {output} && rm {params.vcfgz} && rm {params.vcfgztbi} 2>>{log} && shift; done
         """
 
 
@@ -382,11 +382,9 @@ rule ngmlr_sniffles_bycoverage:
     shell:
         """
         echo -e "precision\trecall\tf1\tprecision_gt\trecall_gt\tf1_gt\tcoverage\ttool\taligner" > {output} && \
-        cov="5:2 10:4 15:7 20:9 25:10 35:10 total:10" && files=$(ls {params.outdir}/*/GM24385.vcf | sort -V) && set ${{cov}} && \
-        for var in ${{files}}; do c=$(echo ${{1}} | cut -f1 -d ":") && s=$(echo ${{1}} | cut -f2 -d ":") && cat <(cat ${{var}}| grep "^#") <(cat ${{var}}| grep -vE "^#" | grep -v "0/0:" | grep -v -f {params.exclude} | grep -v -E "BND|DUP|INV" | sort -k1,1 -k2,2g) | bgzip -c > {params.vcfgz} && bcftools view -f PASS -i "DV>=${{s}}" -o {params.vcf} {params.vcfgz} && rm {params.vcfgz} && bgzip {params.vcf} && tabix {params.vcfgz} && truvari bench -f {params.ref} -b {params.truthvcf} --includebed {params.truthbed} --passonly --giabreport -p 0 -c {params.vcfgz} -o {params.outdir}/truvari_coverage_${{c}} && cat {params.outdir}/truvari_coverage_${{c}}/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk -v su=${{c}} '{{OFS=FS="\t"}}{{print $0,su,"SNIFFLES","ngmlr"}}' >> {output} && rm {params.vcfgz} && rm {params.vcfgztbi} 2>>{log} && shift; done
+        cov="5:2 10:2 15:2 20:2 25:2 35:2 total:2" && files=$(ls {params.outdir}/*/GM24385.vcf | sort -V) && set ${{cov}} && \
+        for var in ${{files}}; do c=$(echo ${{1}} | cut -f1 -d ":") && s=$(echo ${{1}} | cut -f2 -d ":") && cat <(cat ${{var}}| grep "^#") <(cat ${{var}}| grep -vE "^#" | grep -v "0/0:" | grep -v -f {params.exclude} | grep -v -E "BND|DUP|INV" | sort -k1,1 -k2,2g) | bgzip -c > {params.vcfgz} && bcftools view -f PASS -i "DV>=${{s}}" -o {params.vcf} {params.vcfgz} && rm {params.vcfgz} && bgzip {params.vcf} && tabix {params.vcfgz} && truvari bench -f {params.ref} -b {params.truthvcf} --includebed {params.truthbed} --passonly --giabreport -p 0 -c {params.vcfgz} -o {params.outdir}/truvari_coverage_${{c}} && cat {params.outdir}/truvari_coverage_${{c}}/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk -v su=${{c}} '{{OFS=FS="\t"}}{{print $0,su,"Sniffles","NGMLR"}}' >> {output} && rm {params.vcfgz} && rm {params.vcfgztbi} 2>>{log} && shift; done
         """
-
-
 
 rule lra_sniffles_bycoverage:
     input:
@@ -408,8 +406,8 @@ rule lra_sniffles_bycoverage:
     shell:
         """
         echo -e "precision\trecall\tf1\tprecision_gt\trecall_gt\tf1_gt\tcoverage\ttool\taligner" > {output} && \
-        cov="5:2 10:4 15:7 20:9 25:10 35:10 total:10" && files=$(ls {params.outdir}/*/GM24385.vcf | sort -V) && set ${{cov}} && \
-        for var in ${{files}}; do c=$(echo ${{1}} | cut -f1 -d ":") && s=$(echo ${{1}} | cut -f2 -d ":") && cat <(cat ${{var}}| grep "^#") <(cat ${{var}}| grep -vE "^#" | grep -v "0/0:" | grep -v -f {params.exclude} | grep -v -E "BND|DUP|INV" | sort -k1,1 -k2,2g) | bgzip -c > {params.vcfgz} && bcftools view -f PASS -i "DV>=${{s}}" -o {params.vcf} {params.vcfgz} && rm {params.vcfgz} && bgzip {params.vcf} && tabix {params.vcfgz} && truvari bench -f {params.ref} -b {params.truthvcf} --includebed {params.truthbed} --passonly --giabreport -p 0 -c {params.vcfgz} -o {params.outdir}/truvari_coverage_${{c}} && cat {params.outdir}/truvari_coverage_${{c}}/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk -v su=${{c}} '{{OFS=FS="\t"}}{{print $0,su,"SNIFFLES","lra"}}' >> {output} && rm {params.vcfgz} && rm {params.vcfgztbi} 2>>{log} && shift; done
+        cov="5:2 10:2 15:2 20:2 25:2 35:2 total:2" && files=$(ls {params.outdir}/*/GM24385.vcf | sort -V) && set ${{cov}} && \
+        for var in ${{files}}; do c=$(echo ${{1}} | cut -f1 -d ":") && s=$(echo ${{1}} | cut -f2 -d ":") && cat <(cat ${{var}}| grep "^#") <(cat ${{var}}| grep -vE "^#" | grep -v "0/0:" | grep -v -f {params.exclude} | grep -v -E "BND|DUP|INV" | sort -k1,1 -k2,2g) | bgzip -c > {params.vcfgz} && bcftools view -f PASS -i "DV>=${{s}}" -o {params.vcf} {params.vcfgz} && rm {params.vcfgz} && bgzip {params.vcf} && tabix {params.vcfgz} && truvari bench -f {params.ref} -b {params.truthvcf} --includebed {params.truthbed} --passonly --giabreport -p 0 -c {params.vcfgz} -o {params.outdir}/truvari_coverage_${{c}} && cat {params.outdir}/truvari_coverage_${{c}}/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk -v su=${{c}} '{{OFS=FS="\t"}}{{print $0,su,"Sniffles","lra"}}' >> {output} && rm {params.vcfgz} && rm {params.vcfgztbi} 2>>{log} && shift; done
         """
 
 rule minimap2_svim_bycoverage:
@@ -432,7 +430,7 @@ rule minimap2_svim_bycoverage:
     shell:
         """
         echo -e "precision\trecall\tf1\tprecision_gt\trecall_gt\tf1_gt\tcoverage\ttool\taligner" > {output} && \
-        cov="5:2 10:4 15:7 20:9 25:10 35:10 total:10" && files=$(ls {params.outdir}/*/GM24385.vcf | sort -V) && set ${{cov}} && \
+        cov="5:2 10:2 15:2 20:2 25:2 35:2 total:2" && files=$(ls {params.outdir}/*/GM24385.vcf | sort -V) && set ${{cov}} && \
         for var in ${{files}}; do c=$(echo ${{1}} | cut -f1 -d ":") && s=$(echo ${{1}} | cut -f2 -d ":") && bcftools view -f PASS -i "SUPPORT>=${{s}}" ${{var}} | bcftools view -e 'GT[*]="RR"' | grep -v -f {params.exclude} | bcftools view -i 'SVTYPE=="DEL" || SVTYPE =="INS"' | bcftools sort > {params.vcf} && bgzip {params.vcf} && tabix {params.vcfgz} && truvari bench -f {params.ref} -b {params.truthvcf} --includebed {params.truthbed} --passonly --giabreport -p 0 -c {params.vcfgz} -o {params.outdir}/truvari_coverage_${{c}} && cat {params.outdir}/truvari_coverage_${{c}}/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk -v su=${{c}} '{{OFS=FS="\t"}}{{print $0,su,"SVIM","minimap2"}}' >> {output} && rm {params.vcfgz} && rm {params.vcfgztbi} 2>>{log} && shift; done
         """
 
@@ -456,8 +454,8 @@ rule ngmlr_svim_bycoverage:
     shell:
         """
         echo -e "precision\trecall\tf1\tprecision_gt\trecall_gt\tf1_gt\tcoverage\ttool\taligner" > {output} && \
-        cov="5:2 10:4 15:7 20:9 25:10 35:10 total:10" && files=$(ls {params.outdir}/*/GM24385.vcf | sort -V) && set ${{cov}} && \
-        for var in ${{files}}; do c=$(echo ${{1}} | cut -f1 -d ":") && s=$(echo ${{1}} | cut -f2 -d ":") && bcftools view -f PASS -i "SUPPORT>=${{s}}" ${{var}} | bcftools view -e 'GT[*]="RR"' | grep -v -f {params.exclude} | bcftools view -i 'SVTYPE=="DEL" || SVTYPE =="INS"' | bcftools sort > {params.vcf} && bgzip {params.vcf} && tabix {params.vcfgz} && truvari bench -f {params.ref} -b {params.truthvcf} --includebed {params.truthbed} --passonly --giabreport -p 0 -c {params.vcfgz} -o {params.outdir}/truvari_coverage_${{c}} && cat {params.outdir}/truvari_coverage_${{c}}/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk -v su=${{c}} '{{OFS=FS="\t"}}{{print $0,su,"SVIM","ngmlr"}}' >> {output} && rm {params.vcfgz} && rm {params.vcfgztbi} 2>>{log} && shift; done
+        cov="5:2 10:2 15:2 20:2 25:2 35:2 total:2" && files=$(ls {params.outdir}/*/GM24385.vcf | sort -V) && set ${{cov}} && \
+        for var in ${{files}}; do c=$(echo ${{1}} | cut -f1 -d ":") && s=$(echo ${{1}} | cut -f2 -d ":") && bcftools view -f PASS -i "SUPPORT>=${{s}}" ${{var}} | bcftools view -e 'GT[*]="RR"' | grep -v -f {params.exclude} | bcftools view -i 'SVTYPE=="DEL" || SVTYPE =="INS"' | bcftools sort > {params.vcf} && bgzip {params.vcf} && tabix {params.vcfgz} && truvari bench -f {params.ref} -b {params.truthvcf} --includebed {params.truthbed} --passonly --giabreport -p 0 -c {params.vcfgz} -o {params.outdir}/truvari_coverage_${{c}} && cat {params.outdir}/truvari_coverage_${{c}}/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk -v su=${{c}} '{{OFS=FS="\t"}}{{print $0,su,"SVIM","NGMLR"}}' >> {output} && rm {params.vcfgz} && rm {params.vcfgztbi} 2>>{log} && shift; done
         """
 
 rule lra_svim_bycoverage:
@@ -480,7 +478,7 @@ rule lra_svim_bycoverage:
     shell:
         """
         echo -e "precision\trecall\tf1\tprecision_gt\trecall_gt\tf1_gt\tcoverage\ttool\taligner" > {output} && \
-        cov="5:2 10:4 15:7 20:9 25:10 35:10 total:10" && files=$(ls {params.outdir}/*/GM24385.vcf | sort -V) && set ${{cov}} && \
+        cov="5:2 10:2 15:2 20:2 25:2 35:2 total:2" && files=$(ls {params.outdir}/*/GM24385.vcf | sort -V) && set ${{cov}} && \
         for var in ${{files}}; do c=$(echo ${{1}} | cut -f1 -d ":") && s=$(echo ${{1}} | cut -f2 -d ":") && bcftools view -f PASS -i "SUPPORT>=${{s}}" ${{var}} | bcftools view -e 'GT[*]="RR"' | grep -v -f {params.exclude} | bcftools view -i 'SVTYPE=="DEL" || SVTYPE =="INS"' | bcftools sort > {params.vcf} && bgzip {params.vcf} && tabix {params.vcfgz} && truvari bench -f {params.ref} -b {params.truthvcf} --includebed {params.truthbed} --passonly --giabreport -p 0 -c {params.vcfgz} -o {params.outdir}/truvari_coverage_${{c}} && cat {params.outdir}/truvari_coverage_${{c}}/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk -v su=${{c}} '{{OFS=FS="\t"}}{{print $0,su,"SVIM","lra"}}' >> {output} && rm {params.vcfgz} && rm {params.vcfgztbi} 2>>{log} && shift; done
         """
 
@@ -504,8 +502,8 @@ rule pbmm2_pbsv_bycoverage:
     shell:
         """
         echo -e "precision\trecall\tf1\tprecision_gt\trecall_gt\tf1_gt\tcoverage\ttool\taligner" > {output} && \
-        cov="5:2 10:4 15:7 20:9 25:10 35:10 total:10" && files=$(ls {params.outdir}/*/GM24385.vcf | sort -V) && set ${{cov}} && \
-        for var in ${{files}}; do c=$(echo ${{1}} | cut -f1 -d ":") && s=$(echo ${{1}} | cut -f2 -d ":") && bcftools view -f PASS -i "AD[:1]>=${{s}}" ${{var}} | bcftools view -e 'GT[*]="RR"' | grep -v -f {params.exclude} | bcftools view -i 'SVTYPE=="DEL" || SVTYPE =="INS"' | bcftools sort > {params.vcf} && bgzip {params.vcf} && tabix {params.vcfgz} && truvari bench -f {params.ref} -b {params.truthvcf} --includebed {params.truthbed} --passonly --giabreport -p 0 -c {params.vcfgz} -o {params.outdir}/truvari_coverage_${{c}} && cat {params.outdir}/truvari_coverage_${{c}}/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk -v su=${{c}} '{{OFS=FS="\t"}}{{print $0,su,"PBSV","minimap2"}}' >> {output} && rm {params.vcfgz} && rm {params.vcfgztbi} 2>>{log} && shift; done
+        cov="5:2 10:2 15:2 20:2 25:2 35:2 total:2" && files=$(ls {params.outdir}/*/GM24385.vcf | sort -V) && set ${{cov}} && \
+        for var in ${{files}}; do c=$(echo ${{1}} | cut -f1 -d ":") && s=$(echo ${{1}} | cut -f2 -d ":") && bcftools view -f PASS -i "AD[:1]>=${{s}}" ${{var}} | bcftools view -e 'GT[*]="RR"' | grep -v -f {params.exclude} | bcftools view -i 'SVTYPE=="DEL" || SVTYPE =="INS"' | bcftools sort > {params.vcf} && bgzip {params.vcf} && tabix {params.vcfgz} && truvari bench -f {params.ref} -b {params.truthvcf} --includebed {params.truthbed} --passonly --giabreport -p 0 -c {params.vcfgz} -o {params.outdir}/truvari_coverage_${{c}} && cat {params.outdir}/truvari_coverage_${{c}}/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk -v su=${{c}} '{{OFS=FS="\t"}}{{print $0,su,"pbsv","minimap2"}}' >> {output} && rm {params.vcfgz} && rm {params.vcfgztbi} 2>>{log} && shift; done
         """
 
 rule combine_results_bycoverage:
@@ -553,7 +551,7 @@ rule prf1_minimap2_cutesv_sniffles:
     shell:
         """
         ls {input} > {params.tmp} && mkdir -p {params.outdir} && echo -e "precision\trecall\tf1\tprecision_gt\trecall_gt\tf1_gt\tsupport\ttool\taligner" > {output} && \
-        SURVIVOR merge {params.tmp} 1000 2 1 1 0 50 {params.mergedvcf} && rm {params.tmp} && \
+        SURVIVOR merge {params.tmp} 500 2 1 1 0 50 {params.mergedvcf} && rm {params.tmp} && \
         bcftools view -i 'SVTYPE=="DEL" || SVTYPE =="INS"' {params.mergedvcf} | bcftools sort -O z -o {params.mergedvcfgz} && bcftools index -t {params.mergedvcfgz} && rm {params.mergedvcf} && \
         truvari bench -f {params.ref} -b {params.truthvcf} --includebed {params.truthbed} --passonly --giabreport -p 0 -c {params.mergedvcfgz} -o {params.outdir}/truvari_minimap2_cutesv_sniffles && cat {params.outdir}/truvari_minimap2_cutesv_sniffles/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk '{{OFS=FS="\t"}}{{print $0,10,"cutesv-sniffles","minimap2"}}' >> {output}
         """ 
@@ -577,7 +575,7 @@ rule prf1_minimap2_cutesv_svim:
     shell:
         """
         ls {input} > {params.tmp} && mkdir -p {params.outdir} && echo -e "precision\trecall\tf1\tprecision_gt\trecall_gt\tf1_gt\tsupport\ttool\taligner" > {output} && \
-        SURVIVOR merge {params.tmp} 1000 2 1 1 0 50 {params.mergedvcf} && rm {params.tmp} && \
+        SURVIVOR merge {params.tmp} 500 2 1 1 0 50 {params.mergedvcf} && rm {params.tmp} && \
         bcftools view -i 'SVTYPE=="DEL" || SVTYPE =="INS"' {params.mergedvcf} | bcftools sort -O z -o {params.mergedvcfgz} && bcftools index -t {params.mergedvcfgz} && rm {params.mergedvcf} && \
         truvari bench -f {params.ref} -b {params.truthvcf} --includebed {params.truthbed} --passonly --giabreport -p 0 -c {params.mergedvcfgz} -o {params.outdir}/truvari_minimap2_cutesv_svim && cat {params.outdir}/truvari_minimap2_cutesv_svim/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk '{{OFS=FS="\t"}}{{print $0,10,"cutesv-svim","minimap2"}}' >> {output}
         """ 
@@ -602,7 +600,7 @@ rule prf1_minimap2_cutesv_pbsv:
     shell:
         """
         ls {input} > {params.tmp} && mkdir -p {params.outdir} && echo -e "precision\trecall\tf1\tprecision_gt\trecall_gt\tf1_gt\tsupport\ttool\taligner" > {output} && \
-        SURVIVOR merge {params.tmp} 1000 2 1 1 0 50 {params.mergedvcf} && rm {params.tmp} && \
+        SURVIVOR merge {params.tmp} 500 2 1 1 0 50 {params.mergedvcf} && rm {params.tmp} && \
         bcftools view -i 'SVTYPE=="DEL" || SVTYPE =="INS"' {params.mergedvcf} | bcftools sort -O z -o {params.mergedvcfgz} && bcftools index -t {params.mergedvcfgz} && rm {params.mergedvcf} && \
         truvari bench -f {params.ref} -b {params.truthvcf} --includebed {params.truthbed} --passonly --giabreport -p 0 -c {params.mergedvcfgz} -o {params.outdir}/truvari_minimap2_cutesv_pbsv && cat {params.outdir}/truvari_minimap2_cutesv_pbsv/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk '{{OFS=FS="\t"}}{{print $0,10,"cutesv-pbsv","minimap2"}}' >> {output}
         """ 
@@ -627,7 +625,7 @@ rule prf1_minimap2_sniffles_pbsv:
     shell:
         """
         ls {input} > {params.tmp} && mkdir -p {params.outdir} && echo -e "precision\trecall\tf1\tprecision_gt\trecall_gt\tf1_gt\tsupport\ttool\taligner" > {output} && \
-        SURVIVOR merge {params.tmp} 1000 2 1 1 0 50 {params.mergedvcf} && rm {params.tmp} && \
+        SURVIVOR merge {params.tmp} 500 2 1 1 0 50 {params.mergedvcf} && rm {params.tmp} && \
         bcftools view -i 'SVTYPE=="DEL" || SVTYPE =="INS"' {params.mergedvcf} | bcftools sort -O z -o {params.mergedvcfgz} && bcftools index -t {params.mergedvcfgz} && rm {params.mergedvcf} && \
         truvari bench -f {params.ref} -b {params.truthvcf} --includebed {params.truthbed} --passonly --giabreport -p 0 -c {params.mergedvcfgz} -o {params.outdir}/truvari_minimap2_sniffles_pbsv && cat {params.outdir}/truvari_minimap2_sniffles_pbsv/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk '{{OFS=FS="\t"}}{{print $0,10,"sniffles-pbsv","minimap2"}}' >> {output}
         """ 
@@ -652,7 +650,7 @@ rule prf1_minimap2_svim_pbsv:
     shell:
         """
         ls {input} > {params.tmp} && mkdir -p {params.outdir} && echo -e "precision\trecall\tf1\tprecision_gt\trecall_gt\tf1_gt\tsupport\ttool\taligner" > {output} && \
-        SURVIVOR merge {params.tmp} 1000 2 1 1 0 50 {params.mergedvcf} && rm {params.tmp} && \
+        SURVIVOR merge {params.tmp} 500 2 1 1 0 50 {params.mergedvcf} && rm {params.tmp} && \
         bcftools view -i 'SVTYPE=="DEL" || SVTYPE =="INS"' {params.mergedvcf} | bcftools sort -O z -o {params.mergedvcfgz} && bcftools index -t {params.mergedvcfgz} && rm {params.mergedvcf} && \
         truvari bench -f {params.ref} -b {params.truthvcf} --includebed {params.truthbed} --passonly --giabreport -p 0 -c {params.mergedvcfgz} -o {params.outdir}/truvari_minimap2_svim_pbsv && cat {params.outdir}/truvari_minimap2_svim_pbsv/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk '{{OFS=FS="\t"}}{{print $0,10,"svim-pbsv","minimap2"}}' >> {output}
         """ 
@@ -676,7 +674,7 @@ rule prf1_minimap2_sniffles_svim:
     shell:
         """
         ls {input} > {params.tmp} && mkdir -p {params.outdir} && echo -e "precision\trecall\tf1\tprecision_gt\trecall_gt\tf1_gt\tsupport\ttool\taligner" > {output} && \
-        SURVIVOR merge {params.tmp} 1000 2 1 1 0 50 {params.mergedvcf} && rm {params.tmp} && \
+        SURVIVOR merge {params.tmp} 500 2 1 1 0 50 {params.mergedvcf} && rm {params.tmp} && \
         bcftools view -i 'SVTYPE=="DEL" || SVTYPE =="INS"' {params.mergedvcf} | bcftools sort -O z -o {params.mergedvcfgz} && bcftools index -t {params.mergedvcfgz} && rm {params.mergedvcf} && \
         truvari bench -f {params.ref} -b {params.truthvcf} --includebed {params.truthbed} --passonly --giabreport -p 0 -c {params.mergedvcfgz} -o {params.outdir}/truvari_minimap2_sniffles_svim && cat {params.outdir}/truvari_minimap2_sniffles_svim/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk '{{OFS=FS="\t"}}{{print $0,10,"sniffles-svim","minimap2"}}' >> {output}
         """ 
@@ -700,7 +698,7 @@ rule prf1_minimap2_cutesv_sniffles_svim:
     shell:
         """
         ls {input} > {params.tmp} && mkdir -p {params.outdir} && echo -e "precision\trecall\tf1\tprecision_gt\trecall_gt\tf1_gt\tsupport\ttool\taligner" > {output} && \
-        SURVIVOR merge {params.tmp} 1000 3 1 1 0 50 {params.mergedvcf} && rm {params.tmp} && \
+        SURVIVOR merge {params.tmp} 500 3 1 1 0 50 {params.mergedvcf} && rm {params.tmp} && \
         bcftools view -i 'SVTYPE=="DEL" || SVTYPE =="INS"' {params.mergedvcf} | bcftools sort -O z -o {params.mergedvcfgz} && bcftools index -t {params.mergedvcfgz} && rm {params.mergedvcf} && \
         truvari bench -f {params.ref} -b {params.truthvcf} --includebed {params.truthbed} --passonly --giabreport -p 0 -c {params.mergedvcfgz} -o {params.outdir}/truvari_minimap2_cutesv_sniffles_svim && cat {params.outdir}/truvari_minimap2_cutesv_sniffles_svim/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk '{{OFS=FS="\t"}}{{print $0,10,"cutesv-sniffles-svim","minimap2"}}' >> {output}
         """ 
@@ -725,7 +723,7 @@ rule prf1_minimap2_cutesv_sniffles_pbsv:
     shell:
         """
         ls {input} > {params.tmp} && mkdir -p {params.outdir} && echo -e "precision\trecall\tf1\tprecision_gt\trecall_gt\tf1_gt\tsupport\ttool\taligner" > {output} && \
-        SURVIVOR merge {params.tmp} 1000 3 1 1 0 50 {params.mergedvcf} && rm {params.tmp} && \
+        SURVIVOR merge {params.tmp} 500 3 1 1 0 50 {params.mergedvcf} && rm {params.tmp} && \
         bcftools view -i 'SVTYPE=="DEL" || SVTYPE =="INS"' {params.mergedvcf} | bcftools sort -O z -o {params.mergedvcfgz} && bcftools index -t {params.mergedvcfgz} && rm {params.mergedvcf} && \
         truvari bench -f {params.ref} -b {params.truthvcf} --includebed {params.truthbed} --passonly --giabreport -p 0 -c {params.mergedvcfgz} -o {params.outdir}/truvari_minimap2_cutesv_sniffles_pbsv && cat {params.outdir}/truvari_minimap2_cutesv_sniffles_pbsv/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk '{{OFS=FS="\t"}}{{print $0,10,"cutesv-sniffles-pbsv","minimap2"}}' >> {output}
         """ 
@@ -750,7 +748,7 @@ rule prf1_minimap2_cutesv_svim_pbsv:
     shell:
         """
         ls {input} > {params.tmp} && mkdir -p {params.outdir} && echo -e "precision\trecall\tf1\tprecision_gt\trecall_gt\tf1_gt\tsupport\ttool\taligner" > {output} && \
-        SURVIVOR merge {params.tmp} 1000 3 1 1 0 50 {params.mergedvcf} && rm {params.tmp} && \
+        SURVIVOR merge {params.tmp} 500 3 1 1 0 50 {params.mergedvcf} && rm {params.tmp} && \
         bcftools view -i 'SVTYPE=="DEL" || SVTYPE =="INS"' {params.mergedvcf} | bcftools sort -O z -o {params.mergedvcfgz} && bcftools index -t {params.mergedvcfgz} && rm {params.mergedvcf} && \
         truvari bench -f {params.ref} -b {params.truthvcf} --includebed {params.truthbed} --passonly --giabreport -p 0 -c {params.mergedvcfgz} -o {params.outdir}/truvari_minimap2_cutesv_svim_pbsv && cat {params.outdir}/truvari_minimap2_cutesv_svim_pbsv/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk '{{OFS=FS="\t"}}{{print $0,10,"cutesv-svim-pbsv","minimap2"}}' >> {output}
         """ 
@@ -776,7 +774,7 @@ rule prf1_minimap2_sniffles_svim_pbsv:
     shell:
         """
         ls {input} > {params.tmp} && mkdir -p {params.outdir} && echo -e "precision\trecall\tf1\tprecision_gt\trecall_gt\tf1_gt\tsupport\ttool\taligner" > {output} && \
-        SURVIVOR merge {params.tmp} 1000 3 1 1 0 50 {params.mergedvcf} && rm {params.tmp} && \
+        SURVIVOR merge {params.tmp} 500 3 1 1 0 50 {params.mergedvcf} && rm {params.tmp} && \
         bcftools view -i 'SVTYPE=="DEL" || SVTYPE =="INS"' {params.mergedvcf} | bcftools sort -O z -o {params.mergedvcfgz} && bcftools index -t {params.mergedvcfgz} && rm {params.mergedvcf} && \
         truvari bench -f {params.ref} -b {params.truthvcf} --includebed {params.truthbed} --passonly --giabreport -p 0 -c {params.mergedvcfgz} -o {params.outdir}/truvari_minimap2_sniffles_svim_pbsv && cat {params.outdir}/truvari_minimap2_sniffles_svim_pbsv/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk '{{OFS=FS="\t"}}{{print $0,10,"sniffles-svim-pbsv","minimap2"}}' >> {output}
         """ 
@@ -801,7 +799,7 @@ rule prf1_minimap2_cutesv_sniffles_svim_pbsv:
     shell:
         """
         ls {input} > {params.tmp} && mkdir -p {params.outdir} && echo -e "precision\trecall\tf1\tprecision_gt\trecall_gt\tf1_gt\tsupport\ttool\taligner" > {output} && \
-        SURVIVOR merge {params.tmp} 1000 4 1 1 0 50 {params.mergedvcf} && rm {params.tmp} && \
+        SURVIVOR merge {params.tmp} 500 4 1 1 0 50 {params.mergedvcf} && rm {params.tmp} && \
         bcftools view -i 'SVTYPE=="DEL" || SVTYPE =="INS"' {params.mergedvcf} | bcftools sort -O z -o {params.mergedvcfgz} && bcftools index -t {params.mergedvcfgz} && rm {params.mergedvcf} && \
         truvari bench -f {params.ref} -b {params.truthvcf} --includebed {params.truthbed} --passonly --giabreport -p 0 -c {params.mergedvcfgz} -o {params.outdir}/truvari_minimap2_cutesv_sniffles_svim_pbsv && cat {params.outdir}/truvari_minimap2_cutesv_sniffles_svim_pbsv/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk '{{OFS=FS="\t"}}{{print $0,10,"cutesv-sniffles-svim-pbsv","minimap2"}}' >> {output}
         """ 
@@ -825,9 +823,9 @@ rule prf1_ngmlr_cutesv_sniffles:
     shell:
         """
         ls {input} > {params.tmp} && mkdir -p {params.outdir} && echo -e "precision\trecall\tf1\tprecision_gt\trecall_gt\tf1_gt\tsupport\ttool\taligner" > {output} && \
-        SURVIVOR merge {params.tmp} 1000 2 1 1 0 50 {params.mergedvcf} && rm {params.tmp} && \
+        SURVIVOR merge {params.tmp} 500 2 1 1 0 50 {params.mergedvcf} && rm {params.tmp} && \
         bcftools view -i 'SVTYPE=="DEL" || SVTYPE =="INS"' {params.mergedvcf} | bcftools sort -O z -o {params.mergedvcfgz} && bcftools index -t {params.mergedvcfgz} && rm {params.mergedvcf} && \
-        truvari bench -f {params.ref} -b {params.truthvcf} --includebed {params.truthbed} --passonly --giabreport -p 0 -c {params.mergedvcfgz} -o {params.outdir}/truvari_ngmlr_cutesv_sniffles && cat {params.outdir}/truvari_ngmlr_cutesv_sniffles/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk '{{OFS=FS="\t"}}{{print $0,10,"cutesv-sniffles","ngmlr"}}' >> {output}
+        truvari bench -f {params.ref} -b {params.truthvcf} --includebed {params.truthbed} --passonly --giabreport -p 0 -c {params.mergedvcfgz} -o {params.outdir}/truvari_ngmlr_cutesv_sniffles && cat {params.outdir}/truvari_ngmlr_cutesv_sniffles/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk '{{OFS=FS="\t"}}{{print $0,10,"cutesv-sniffles","NGMLR"}}' >> {output}
         """ 
 
 rule prf1_ngmlr_cutesv_svim:    
@@ -849,9 +847,9 @@ rule prf1_ngmlr_cutesv_svim:
     shell:
         """
         ls {input} > {params.tmp} && mkdir -p {params.outdir} && echo -e "precision\trecall\tf1\tprecision_gt\trecall_gt\tf1_gt\tsupport\ttool\taligner" > {output} && \
-        SURVIVOR merge {params.tmp} 1000 2 1 1 0 50 {params.mergedvcf} && rm {params.tmp} && \
+        SURVIVOR merge {params.tmp} 500 2 1 1 0 50 {params.mergedvcf} && rm {params.tmp} && \
         bcftools view -i 'SVTYPE=="DEL" || SVTYPE =="INS"' {params.mergedvcf} | bcftools sort -O z -o {params.mergedvcfgz} && bcftools index -t {params.mergedvcfgz} && rm {params.mergedvcf} && \
-        truvari bench -f {params.ref} -b {params.truthvcf} --includebed {params.truthbed} --passonly --giabreport -p 0 -c {params.mergedvcfgz} -o {params.outdir}/truvari_ngmlr_cutesv_svim && cat {params.outdir}/truvari_ngmlr_cutesv_svim/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk '{{OFS=FS="\t"}}{{print $0,10,"cutesv-svim","ngmlr"}}' >> {output}
+        truvari bench -f {params.ref} -b {params.truthvcf} --includebed {params.truthbed} --passonly --giabreport -p 0 -c {params.mergedvcfgz} -o {params.outdir}/truvari_ngmlr_cutesv_svim && cat {params.outdir}/truvari_ngmlr_cutesv_svim/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk '{{OFS=FS="\t"}}{{print $0,10,"cutesv-svim","NGMLR"}}' >> {output}
         """ 
 
 rule prf1_ngmlr_sniffles_svim:    
@@ -873,9 +871,9 @@ rule prf1_ngmlr_sniffles_svim:
     shell:
         """
         ls {input} > {params.tmp} && mkdir -p {params.outdir} && echo -e "precision\trecall\tf1\tprecision_gt\trecall_gt\tf1_gt\tsupport\ttool\taligner" > {output} && \
-        SURVIVOR merge {params.tmp} 1000 2 1 1 0 50 {params.mergedvcf} && rm {params.tmp} && \
+        SURVIVOR merge {params.tmp} 500 2 1 1 0 50 {params.mergedvcf} && rm {params.tmp} && \
         bcftools view -i 'SVTYPE=="DEL" || SVTYPE =="INS"' {params.mergedvcf} | bcftools sort -O z -o {params.mergedvcfgz} && bcftools index -t {params.mergedvcfgz} && rm {params.mergedvcf} && \
-        truvari bench -f {params.ref} -b {params.truthvcf} --includebed {params.truthbed} --passonly --giabreport -p 0 -c {params.mergedvcfgz} -o {params.outdir}/truvari_ngmlr_sniffles_svim && cat {params.outdir}/truvari_ngmlr_sniffles_svim/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk '{{OFS=FS="\t"}}{{print $0,10,"sniffles-svim","ngmlr"}}' >> {output}
+        truvari bench -f {params.ref} -b {params.truthvcf} --includebed {params.truthbed} --passonly --giabreport -p 0 -c {params.mergedvcfgz} -o {params.outdir}/truvari_ngmlr_sniffles_svim && cat {params.outdir}/truvari_ngmlr_sniffles_svim/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk '{{OFS=FS="\t"}}{{print $0,10,"sniffles-svim","NGMLR"}}' >> {output}
         """ 
 
 rule prf1_ngmlr_cutesv_sniffles_svim:    
@@ -897,9 +895,9 @@ rule prf1_ngmlr_cutesv_sniffles_svim:
     shell:
         """
         ls {input} > {params.tmp} && mkdir -p {params.outdir} && echo -e "precision\trecall\tf1\tprecision_gt\trecall_gt\tf1_gt\tsupport\ttool\taligner" > {output} && \
-        SURVIVOR merge {params.tmp} 1000 3 1 1 0 50 {params.mergedvcf} && rm {params.tmp} && \
+        SURVIVOR merge {params.tmp} 500 3 1 1 0 50 {params.mergedvcf} && rm {params.tmp} && \
         bcftools view -i 'SVTYPE=="DEL" || SVTYPE =="INS"' {params.mergedvcf} | bcftools sort -O z -o {params.mergedvcfgz} && bcftools index -t {params.mergedvcfgz} && rm {params.mergedvcf} && \
-        truvari bench -f {params.ref} -b {params.truthvcf} --includebed {params.truthbed} --passonly --giabreport -p 0 -c {params.mergedvcfgz} -o {params.outdir}/truvari_ngmlr_cutesv_sniffles_svim && cat {params.outdir}/truvari_ngmlr_cutesv_sniffles_svim/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk '{{OFS=FS="\t"}}{{print $0,10,"cutesv-sniffles-svim","ngmlr"}}' >> {output}
+        truvari bench -f {params.ref} -b {params.truthvcf} --includebed {params.truthbed} --passonly --giabreport -p 0 -c {params.mergedvcfgz} -o {params.outdir}/truvari_ngmlr_cutesv_sniffles_svim && cat {params.outdir}/truvari_ngmlr_cutesv_sniffles_svim/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk '{{OFS=FS="\t"}}{{print $0,10,"cutesv-sniffles-svim","NGMLR"}}' >> {output}
         """ 
 
 rule prf1_lra_cutesv_sniffles:    
@@ -921,7 +919,7 @@ rule prf1_lra_cutesv_sniffles:
     shell:
         """
         ls {input} > {params.tmp} && mkdir -p {params.outdir} && echo -e "precision\trecall\tf1\tprecision_gt\trecall_gt\tf1_gt\tsupport\ttool\taligner" > {output} && \
-        SURVIVOR merge {params.tmp} 1000 2 1 1 0 50 {params.mergedvcf} && rm {params.tmp} && \
+        SURVIVOR merge {params.tmp} 500 2 1 1 0 50 {params.mergedvcf} && rm {params.tmp} && \
         bcftools view -i 'SVTYPE=="DEL" || SVTYPE =="INS"' {params.mergedvcf} | bcftools sort -O z -o {params.mergedvcfgz} && bcftools index -t {params.mergedvcfgz} && rm {params.mergedvcf} && \
         truvari bench -f {params.ref} -b {params.truthvcf} --includebed {params.truthbed} --passonly --giabreport -p 0 -c {params.mergedvcfgz} -o {params.outdir}/truvari_lra_cutesv_sniffles && cat {params.outdir}/truvari_lra_cutesv_sniffles/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk '{{OFS=FS="\t"}}{{print $0,10,"cutesv-sniffles","lra"}}' >> {output}
         """ 
@@ -945,7 +943,7 @@ rule prf1_lra_cutesv_svim:
     shell:
         """
         ls {input} > {params.tmp} && mkdir -p {params.outdir} && echo -e "precision\trecall\tf1\tprecision_gt\trecall_gt\tf1_gt\tsupport\ttool\taligner" > {output} && \
-        SURVIVOR merge {params.tmp} 1000 2 1 1 0 50 {params.mergedvcf} && rm {params.tmp} && \
+        SURVIVOR merge {params.tmp} 500 2 1 1 0 50 {params.mergedvcf} && rm {params.tmp} && \
         bcftools view -i 'SVTYPE=="DEL" || SVTYPE =="INS"' {params.mergedvcf} | bcftools sort -O z -o {params.mergedvcfgz} && bcftools index -t {params.mergedvcfgz} && rm {params.mergedvcf} && \
         truvari bench -f {params.ref} -b {params.truthvcf} --includebed {params.truthbed} --passonly --giabreport -p 0 -c {params.mergedvcfgz} -o {params.outdir}/truvari_lra_cutesv_svim && cat {params.outdir}/truvari_lra_cutesv_svim/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk '{{OFS=FS="\t"}}{{print $0,10,"cutesv-svim","lra"}}' >> {output}
         """ 
@@ -969,7 +967,7 @@ rule prf1_lra_sniffles_svim:
     shell:
         """
         ls {input} > {params.tmp} && mkdir -p {params.outdir} && echo -e "precision\trecall\tf1\tprecision_gt\trecall_gt\tf1_gt\tsupport\ttool\taligner" > {output} && \
-        SURVIVOR merge {params.tmp} 1000 2 1 1 0 50 {params.mergedvcf} && rm {params.tmp} && \
+        SURVIVOR merge {params.tmp} 500 2 1 1 0 50 {params.mergedvcf} && rm {params.tmp} && \
         bcftools view -i 'SVTYPE=="DEL" || SVTYPE =="INS"' {params.mergedvcf} | bcftools sort -O z -o {params.mergedvcfgz} && bcftools index -t {params.mergedvcfgz} && rm {params.mergedvcf} && \
         truvari bench -f {params.ref} -b {params.truthvcf} --includebed {params.truthbed} --passonly --giabreport -p 0 -c {params.mergedvcfgz} -o {params.outdir}/truvari_lra_sniffles_svim && cat {params.outdir}/truvari_lra_sniffles_svim/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk '{{OFS=FS="\t"}}{{print $0,10,"sniffles-svim","lra"}}' >> {output}
         """ 
@@ -993,7 +991,7 @@ rule prf1_lra_cutesv_sniffles_svim:
     shell:
         """
         ls {input} > {params.tmp} && mkdir -p {params.outdir} && echo -e "precision\trecall\tf1\tprecision_gt\trecall_gt\tf1_gt\tsupport\ttool\taligner" > {output} && \
-        SURVIVOR merge {params.tmp} 1000 3 1 1 0 50 {params.mergedvcf} && rm {params.tmp} && \
+        SURVIVOR merge {params.tmp} 500 3 1 1 0 50 {params.mergedvcf} && rm {params.tmp} && \
         bcftools view -i 'SVTYPE=="DEL" || SVTYPE =="INS"' {params.mergedvcf} | bcftools sort -O z -o {params.mergedvcfgz} && bcftools index -t {params.mergedvcfgz} && rm {params.mergedvcf} && \
         truvari bench -f {params.ref} -b {params.truthvcf} --includebed {params.truthbed} --passonly --giabreport -p 0 -c {params.mergedvcfgz} -o {params.outdir}/truvari_lra_cutesv_sniffles_svim && cat {params.outdir}/truvari_lra_cutesv_sniffles_svim/summary.txt | tail -n+2 | head -n -1 | sed "s/^[ \t]*//" | grep -E "precision|recall|f1|gt_precision|gt_recall|gt_f1" | cut -d ":" -f 2 | sed "s/,//g" | sed "s/^ //g" | paste -s -d "\t" | awk '{{OFS=FS="\t"}}{{print $0,10,"cutesv-sniffles-svim","lra"}}' >> {output}
         """ 
@@ -1071,17 +1069,16 @@ rule combine_stats_by_length:
         find {RESULTDIR} -wholename '*truvari_supporting_10/svlen.info.tsv*' -exec cat {{}} + >> {output} 2> {log}
         """
 
-
-rule plot_stats_by_length:
+rule plot_stats:
     input:
         f"{RESULTDIR}/GM24385.tpfpfn.bylength.tsv"
     output:
-        f"{RESULTDIR}/GM24385.tpfpfn.bylength.pdf",
-        f"{RESULTDIR}/GM24385.svtype.bylength.pdf",
+        f"{RESULTDIR}/GM24385.prf1.bysvlength.pdf",
         f"{RESULTDIR}/GM24385.prf1.bysvtype.pdf"
     threads: 1
-    conda: "../envs/plot.yaml"    
+    conda: "../envs/plot.yaml"
     log:
         f"{LOGDIR}/results/plot_stats_by_length"
     shell:
-        "Rscript {SCRIPTDIR}/tpfpfnbysize.R {RESULTDIR} 2> {log}"
+        "Rscript {SCRIPTDIR}/prf1.R {RESULTDIR} 2> {log}"
+

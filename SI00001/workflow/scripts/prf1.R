@@ -6,13 +6,6 @@ library(data.table)
 library(ggplot2)
 library(scales)
 
-tab<-fread(file.path(args[1],"SI00001.tpfpfn.bylength.tsv"), header=TRUE, sep="\t")
-colors<-c("TP" = "#440154FF", "FP"="#21908CFF", "FN" =  "#FDE725FF", "DEL" ="#0D0887FF", "INS" = "#ED7953FF", "DUP" = "darkred", "INV" = "gold4")
-p<-ggplot() + geom_histogram(data=tab, aes(size, fill=vartype), binwidth = 0.01)  + theme_bw() + facet_grid(aligner~tool) + labs(x = expression("SV size" [" (log10)"]), y="Count") + theme(legend.title = element_blank(), legend.position = "bottom", legend.direction = "horizontal",strip.background =element_rect(fill="grey20"), strip.text = element_text(colour = 'white')) + scale_fill_manual(values=colors,breaks=c("DEL","INS", "DUP", "INV", "FP", "TP", "FN")) + scale_x_continuous(trans="log10")
-ggsave(file.path(args[1],"SI00001.tpfpfn.bylength.pdf"), width=12, height=7) 
-p<-ggplot() + geom_histogram(data=tab, aes(size, fill=svtype), binwidth = 0.01)  + theme_bw() + facet_grid(aligner~tool) + labs(x = expression("SV size" [" (log10)"]), y="Count") + theme(legend.title = element_blank(), legend.position = "bottom", legend.direction = "horizontal",strip.background =element_rect(fill="grey20"), strip.text = element_text(colour = 'white')) + scale_fill_manual(values=colors,breaks=c("DEL","INS", "DUP", "INV","FP", "TP", "FN")) + scale_x_continuous(trans="log10")
-ggsave(file.path(args[1],"SI00001.svtype.bylength.pdf"), width=12, height=7) 
-
 fmeasureCurve<- function(f,p) {
   
   return((f*p)/((2*p)-f))
@@ -57,11 +50,14 @@ plotFMeasures<-function() {
 }
 
 
+tab<-fread(file.path(args[1],"SI00001.tpfpfn.bylength.tsv"), header=TRUE, sep="\t")
+
+#prbysvtype
 
 result<-list()
 
-aligners<- c("minimap2", "ngmlr", "lra")
-tools<-c("CUTESV", "SNIFFLES", "PBSV", "SVIM", "NPINV")
+aligners<- c("minimap2", "NGMLR", "lra")
+tools<-c("cuteSV", "Sniffles", "pbsv", "SVIM")
 counter<-0
 
 for (a in aligners) {
@@ -93,10 +89,9 @@ for (a in aligners) {
 
 
     #DUP
-
+    
     stab<-subset(tab, (tool==t & aligner==a & svtype=="DUP"))
-
-
+    
     tp<-length(which(stab$vartype=="TP"))
     fp<-length(which(stab$vartype=="FP"))
     fn<-length(which(stab$vartype=="FN"))
@@ -104,11 +99,12 @@ for (a in aligners) {
     pdup<-tp/(tp+fp)
     rdup<-tp/(tp+fn)
 
+
+
     #INV
-
+    
     stab<-subset(tab, (tool==t & aligner==a & svtype=="INV"))
-
-
+    
     tp<-length(which(stab$vartype=="TP"))
     fp<-length(which(stab$vartype=="FP"))
     fn<-length(which(stab$vartype=="FN"))
@@ -122,30 +118,46 @@ for (a in aligners) {
     
   }
   
-  
 }
+
 
 result<-do.call(rbind,result)
 result<-result[complete.cases(result),]
 
-
 bnds<-fread(file.path(args[1],"SI00001.bnds.prf1.tsv"),header=FALSE, sep="\t")
 bnds<-bnds[complete.cases(bnds),]
-bnds$V7<-toupper(bnds$V7)
+bnds$V7[which(bnds$V7=="sniffles")]<- "Sniffles"
+bnds$V7[which(bnds$V7=="cutesv")]<- "cuteSV"
+bnds$V7[which(bnds$V7=="svim")]<- "SVIM"
+bnds$V8[which(bnds$V8=="ngmlr")]<- "NGMLR"
+
+
 r<-data.frame(aligner=bnds$V8, tool=bnds$V7,vartype="BND",precision=bnds$V4, recall=bnds$V5)
 
 result<-rbind(result,r)
+result$aligner<-factor(result$aligner, levels=c("minimap2", "NGMLR", "lra"))
+result$vartype<-factor(result$vartype, levels=c("DEL", "INS", "DUP","INV", "BND"))
+
 
 F1df<-plotFMeasures()
 Background<-ggplot() + geom_line(data=F1df,aes(x=x,y=y,group=group),linetype='dashed', color='lightgray') + scale_x_continuous(limits = c(-0.02,1.03), expand=c(0,0), breaks = c(0.0,0.2,0.4,0.6,0.8,1.0)) + scale_y_continuous(expand=c(0,0), breaks=c(0.0,0.2,0.4,0.6,0.8,1.0), limits=c(-0.02,1.03)) + theme_bw() + xlab('Recall') + ylab('Precision') + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + annotate(geom="text", x=0.97, y=0.025, color="black", label='f=0.1', size=3, fontface='italic') + annotate(geom="text", x=0.97, y=0.083, color="black", label='f=0.2', size=3, fontface='italic') + annotate(geom="text", x=0.97, y=0.143, color="black", label='f=0.3', size=3, fontface='italic') + annotate(geom="text", x=0.97, y=0.213, color="black", label='f=0.4', size=3, fontface='italic') + annotate(geom="text", x=0.97, y=0.290, color="black", label='f=0.5', size=3, fontface='italic') + annotate(geom="text", x=0.97, y=0.383, color="black", label='f=0.6', size=3, fontface='italic') + annotate(geom="text", x=0.97, y=0.483, color="black", label='f=0.7', size=3, fontface='italic') + annotate(geom="text", x=0.97, y=0.610, color="black", label='f=0.8', size=3, fontface='italic') + annotate(geom="text", x=0.97, y=0.750, color="black", label='f=0.9', size=3, fontface='italic') + annotate(geom="text", x=0.97, y=0.920, color="black", label='f=1.0', size=3, fontface='italic')
-prf1<-Background + geom_point(data=result, aes(x=as.numeric(recall), y=as.numeric(precision), col=tool, shape=aligner), alpha=.8) + facet_wrap(~vartype) + scale_color_manual(values=viridis_pal()(5)) + theme(legend.title=element_blank(), legend.position="bottom", legend.direction = "horizontal",strip.background =element_rect(fill="grey20"), strip.text = element_text(colour = 'white')) +guides(colour = guide_legend(ncol = 7))
+prf1<-Background + geom_point(data=result, aes(x=as.numeric(recall), y=as.numeric(precision), col=tool, shape=aligner), alpha=.8) + facet_wrap(~vartype) + theme(legend.title=element_blank(), legend.position="bottom", legend.direction = "horizontal",strip.background =element_rect(fill="grey20"), strip.text = element_text(colour = 'white')) +guides(colour = guide_legend(ncol = 7))
 
-ggsave(file.path(args[1],"SI00001.prf1.bysvtype.pdf"), width=12, height=7) 
+ggsave(file.path(args[1],"SI00001.prf1.bysvtype.pdf"), width=12, height=7)
+
+
+tab$aligner<-factor(tab$aligner, levels=c("minimap2", "NGMLR", "lra"))
+
+
+p<-ggplot() + geom_histogram(data=tab, aes(size, fill=vartype), binwidth = 0.01)  + theme_bw() + facet_grid(aligner~tool) + labs(x = expression("SV size" [" (log10)"]), y="Count") + theme(legend.title = element_blank(), legend.position = "bottom", legend.direction = "horizontal",strip.background =element_rect(fill="grey20"), strip.text = element_text(colour = 'white')) + scale_x_continuous(trans="log10")
+
+
+ggsave(file.path(args[1],"SI00001.prf1.bysvlength.pdf"), width=12, height=7)
+
 
 
 if (file.exists("Rplots.pdf")) {
 
     file.remove("Rplots.pdf")
 }
-
 

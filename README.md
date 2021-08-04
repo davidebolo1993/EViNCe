@@ -1,7 +1,7 @@
 # EViNCe
 EValuation of Nanopore (SV) Callers
 
-The aim is to evaluate the performances of several long-read structural variant (SV) callers on long reads from Oxford Nanopore Technologies. This will include tests both on real and simulated datasets.
+Evaluation of the performances of long-read structural variant (SV) callers on long reads from Oxford Nanopore Technologies. This will include tests both on real and simulated datasets.
 
 ## SV callers
 

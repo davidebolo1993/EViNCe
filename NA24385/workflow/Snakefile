@@ -20,22 +20,6 @@ include: "rules/npinv.smk"
 include: "rules/sumsvs.smk"
 include: "rules/prf1.smk"
 
-rule na24385:
-    input:
-        expand(f"{RESULTDIR}/{{aligner}}/cutesv/{{coverage}}/GM24385.vcf", aligner=["minimap2","ngmlr","lra"], coverage=["5X", "10X", "15X", "20X", "25X", "35X", "total"]),
-        expand(f"{RESULTDIR}/{{aligner}}/sniffles/{{coverage}}/GM24385.vcf", aligner=["minimap2","ngmlr","lra"], coverage=["5X", "10X", "15X", "20X", "25X", "35X", "total"]),
-        expand(f"{RESULTDIR}/{{aligner}}/svim/{{coverage}}/GM24385.vcf", aligner=["minimap2","ngmlr","lra"], coverage=["5X", "10X", "15X", "20X", "25X", "35X", "total"]),
-        expand(f"{RESULTDIR}/pbmm2/pbsv/{{coverage}}/GM24385.vcf",coverage=["5X", "10X", "15X", "20X", "25X", "35X", "total"]),
-        expand(f"{RESULTDIR}/{{aligner}}/npinv/{{coverage}}/GM24385.vcf", aligner=["minimap2","ngmlr","lra"], coverage=["5X", "10X", "15X", "20X", "25X", "35X", "total"]),
-        expand(f"{RESULTDIR}/GM24385.{{aligner}}.upset.pdf", aligner=["minimap2", "ngmlr","lra"]),
-        expand(f"{RESULTDIR}/GM24385.{{set}}.svs.pdf", set=["cutesv", "sniffles", "svim", "pbsv", "npinv","truth","consensus"]),
-        f"{RESULTDIR}/GM24385.prf1.bysupport.pdf",
-        f"{RESULTDIR}/GM24385.prf1.bycoverage.pdf",
-        f"{RESULTDIR}/GM24385.prf1.bycombo.pdf",
-        f"{RESULTDIR}/GM24385.tpfpfn.bylength.pdf",
-        f"{RESULTDIR}/GM24385.svtype.bylength.pdf",
-        f"{RESULTDIR}/GM24385.prf1.bysvtype.pdf"
-
 #first part: map reads to reference and perform kind of QC (coverage)
 
 rule align:
@@ -44,9 +28,7 @@ rule align:
 
 rule depth:
     input:
-        expand(f"{ALIGNDIR}/GM24385.{{aligner}}.coverage_per_chromosome.png", aligner=["minimap2","pbmm2","ngmlr", "lra"]),
-        expand(f"{VCFDIR}/GM24385.{{aligner}}.exclude.tsv", aligner=["minimap2","pbmm2","ngmlr","lra"]),
-        f"{ALIGNDIR}/GM24385.fraction_of_bases_per_depth.png"
+        f"{ALIGNDIR}/GM24385.fraction_of_bases_per_depth.pdf"
 
 rule subsample:
     input:
@@ -80,18 +62,10 @@ rule npinv:
 rule sumsvs:
     input:
         expand(f"{RESULTDIR}/GM24385.{{aligner}}.upset.pdf", aligner=["minimap2", "ngmlr","lra"]),
-        expand(f"{RESULTDIR}/GM24385.{{set}}.svs.pdf", set=["cutesv", "sniffles", "svim", "pbsv", "npinv","truth"]),
-        f"{RESULTDIR}/GM24385.consensus.svs.pdf",
-        f"{RESULTDIR}/GM24385.varstats.tsv"
+        f"{RESULTDIR}/GM24385.varstats.tsv",
+        f"{RESULTDIR}/GM24385.consensus.vcf"
 
 rule prf1:
     input:
-        expand(f"{RESULTDIR}/{{aligner}}/{{tool}}/total/{{tool}}.{{aligner}}.bysupport.tsv", tool=["cutesv", "svim", "sniffles"], aligner=["minimap2", "ngmlr","lra"]),
-        f"{RESULTDIR}/GM24385.prf1.bysupport.pdf",
-        f"{RESULTDIR}/GM24385.prf1.bycoverage.pdf",
-        f"{RESULTDIR}/GM24385.prf1.bycombo.pdf",
-        f"{RESULTDIR}/GM24385.tpfpfn.bylength.pdf",
-        f"{RESULTDIR}/GM24385.svtype.bylength.pdf",
-        f"{RESULTDIR}/GM24385.prf1.bysvtype.pdf"                
-
+        expand(f"{RESULTDIR}/GM24385.prf1.{{analysis}}.pdf",analysis=["bycoverage", "bysupport", "bycombo", "bysvtype", "bysvlength"]),
 

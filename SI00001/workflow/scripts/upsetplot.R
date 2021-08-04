@@ -2,46 +2,71 @@
 
 args = commandArgs(trailingOnly=TRUE)
 
-library(UpSetR)
 library(ggplot2)
 library(data.table)
+library(ComplexUpset)
 
-FilterFunction <- function(row, svtype) {
-  data <- (row["ALT"] == svtype)
-}
-
-wanted<-c(paste0("chr",c(1:22)),"chrX","chrY")
+wanted<-paste0("chr", c(1:22, "X", "Y"))
 
 upset_minimap2<-file.path(args[1],'SI00001.minimap2.upset.tsv')
 upsetm_tsv<-fread(upset_minimap2, sep="\t", header=TRUE)
-mod<-colnames(upsetm_tsv)
-mod[length(mod)]<-"CHROM"
-colnames(upsetm_tsv)<-mod
+colnames(upsetm_tsv)<-c("ID", "truth", "cuteSV", "npInv", "Sniffles", "SVIM", "pbsv", "ALT", "CHROM")
 upsetm_tsv$CHROM<-factor(upsetm_tsv$CHROM, levels=wanted)
+upsetm_tsv$ALT<-factor(upsetm_tsv$ALT, levels=c("DEL","INS","DUP","INV","TRA"))
 
-pdf(file.path(args[1], 'SI00001.minimap2.upset.pdf'), width=15, height=7, onefile=FALSE)
-upset(upsetm_tsv, query.legend = "bottom", nintersects = NA, sets = c("TRUTH", "CUTESV", "NPINV", "SNIFFLES", "SVIM", "PBSV"), mb.ratio = c(0.55, 0.45), order.by = "freq", queries = list(list(query = FilterFunction, params = list("DEL"), color = "darkblue", active = F, query.name = "DEL"), list(query = FilterFunction, params = list("INS"), color = "darkred", active = F, query.name = "INS"), list(query = FilterFunction, params = list("DUP"), color = "darkgreen", active = F, query.name = "DUP"), list(query = FilterFunction, params = list("INV"), color = "grey60", active = F, query.name = "INV"),list(query = FilterFunction, params = list("TRA"), color = "yellow", active = F, query.name = "TRA")))
-dev.off()
+#minimap2
+
+p<-upset(data=upsetm_tsv,intersect=c("truth", "cuteSV", "npInv", "Sniffles", "SVIM", "pbsv"), 
+          annotations = list("SV distribution"=(ggplot(mapping=aes(fill=ALT)) + geom_bar(stat='count', position='fill',) + theme_classic() + scale_y_continuous(labels=scales::percent_format()) + ylab('SV distribution') + 
+                                                  theme(axis.title.x=element_blank(), axis.text.x=element_blank(),axis.ticks.x=element_blank(), legend.title=element_blank()))),
+          base_annotations=list('Intersection size'=intersection_size(text_colors=c(on_background='black', on_bar='black'), text=list(size=3,angle=45,vjust=0.1,hjust=0.1)) + ylab('Intersection size')),
+          #stripes=c('cornsilk1', 'deepskyblue1', 'grey90'),
+          width_ratio=0.1,
+          keep_empty_groups=TRUE,
+          name='Combinations')
+
+ggsave(file.path(args[1], 'SI00001.minimap2.upset.pdf'), width=20, height=15)
+
+#ngmlr
 
 upset_ngmlr<-file.path(args[1],'SI00001.ngmlr.upset.tsv')
-upsetn_tsv<-fread(upset_ngmlr, sep="\t", header=TRUE)
-mod<-colnames(upsetn_tsv)
-mod[length(mod)]<-"CHROM"
-colnames(upsetn_tsv)<-mod
-upsetn_tsv$CHROM<-factor(upsetn_tsv$CHROM, levels=wanted)
+upsetm_tsv<-fread(upset_ngmlr, sep="\t", header=TRUE)
+colnames(upsetm_tsv)<-c("ID", "truth", "cuteSV", "npInv", "Sniffles", "SVIM", "ALT", "CHROM")
+upsetm_tsv$CHROM<-factor(upsetm_tsv$CHROM, levels=wanted)
+upsetm_tsv$ALT<-factor(upsetm_tsv$ALT, levels=c("DEL","INS","DUP","INV","TRA"))
 
-pdf(file.path(args[1], 'SI00001.ngmlr.upset.pdf'), width=15, height=7, onefile=FALSE)
-upset(upsetn_tsv, query.legend = "bottom", nintersects = NA, sets = c("TRUTH", "CUTESV", "NPINV", "SNIFFLES", "SVIM"), mb.ratio = c(0.55, 0.45), order.by = "freq", queries = list(list(query = FilterFunction, params = list("DEL"), color = "darkblue", active = F, query.name = "DEL"), list(query = FilterFunction, params = list("INS"), color = "darkred", active = F, query.name = "INS"), list(query = FilterFunction, params = list("DUP"), color = "darkgreen", active = F, query.name = "DUP"), list(query = FilterFunction, params = list("INV"), color = "grey60", active = F, query.name = "INV"),list(query = FilterFunction, params = list("TRA"), color = "yellow", active = F, query.name = "TRA")))
-dev.off()
+p<-upset(data=upsetm_tsv,intersect=c("truth", "cuteSV", "npInv", "Sniffles", "SVIM"), 
+          annotations = list("SV distribution"=(ggplot(mapping=aes(fill=ALT)) + geom_bar(stat='count', position='fill',) + theme_classic() + scale_y_continuous(labels=scales::percent_format()) + ylab('SV distribution') + 
+                                                  theme(axis.title.x=element_blank(), axis.text.x=element_blank(),axis.ticks.x=element_blank(), legend.title=element_blank()))),
+          base_annotations=list('Intersection size'=intersection_size(text_colors=c(on_background='black', on_bar='black'), text=list(size=3,angle=45,vjust=0.1,hjust=0.1)) + ylab('Intersection size')),
+          #stripes=c('cornsilk1', 'deepskyblue1', 'grey90'),
+          width_ratio=0.1,
+          keep_empty_groups=TRUE,
+          name='Combinations')
+
+ggsave(file.path(args[1], 'SI00001.ngmlr.upset.pdf'), width=20, height=15)
+
+#lra
 
 upset_lra<-file.path(args[1],'SI00001.lra.upset.tsv')
-upsetn_tsv<-fread(upset_lra, sep="\t", header=TRUE)
-mod<-colnames(upsetn_tsv)
-mod[length(mod)]<-"CHROM"
-colnames(upsetn_tsv)<-mod
-upsetn_tsv$CHROM<-factor(upsetn_tsv$CHROM, levels=wanted)
+upsetm_tsv<-fread(upset_lra, sep="\t", header=TRUE)
+colnames(upsetm_tsv)<-c("ID", "truth", "cuteSV", "npInv", "Sniffles", "SVIM", "ALT", "CHROM")
+upsetm_tsv$CHROM<-factor(upsetm_tsv$CHROM, levels=wanted)
+upsetm_tsv$ALT<-factor(upsetm_tsv$ALT, levels=c("DEL","INS","DUP","INV","TRA"))
 
-pdf(file.path(args[1], 'SI00001.lra.upset.pdf'), width=15, height=7, onefile=FALSE)
-upset(upsetn_tsv, query.legend = "bottom", nintersects = NA, sets = c("TRUTH", "CUTESV", "NPINV", "SNIFFLES", "SVIM"), mb.ratio = c(0.55, 0.45), order.by = "freq", queries = list(list(query = FilterFunction, params = list("DEL"), color = "darkblue", active = F, query.name = "DEL"), list(query = FilterFunction, params = list("INS"), color = "darkred", active = F, query.name = "INS"), list(query = FilterFunction, params = list("DUP"), color = "darkgreen", active = F, query.name = "DUP"), list(query = FilterFunction, params = list("INV"), color = "grey60", active = F, query.name = "INV"),list(query = FilterFunction, params = list("TRA"), color = "yellow", active = F, query.name = "TRA")))
-dev.off()
+p<-upset(data=upsetm_tsv,intersect=c("truth", "cuteSV", "npInv", "Sniffles", "SVIM"), 
+          annotations = list("SV distribution"=(ggplot(mapping=aes(fill=ALT)) + geom_bar(stat='count', position='fill',) + theme_classic() + scale_y_continuous(labels=scales::percent_format()) + ylab('SV distribution') + 
+                                                  theme(axis.title.x=element_blank(), axis.text.x=element_blank(),axis.ticks.x=element_blank(), legend.title=element_blank()))),
+          base_annotations=list('Intersection size'=intersection_size(text_colors=c(on_background='black', on_bar='black'), text=list(size=3,angle=45,vjust=0.1,hjust=0.1)) + ylab('Intersection size')),
+          #stripes=c('cornsilk1', 'deepskyblue1', 'grey90'),
+          width_ratio=0.1,
+          keep_empty_groups=TRUE,
+          name='Combinations')
 
+ggsave(file.path(args[1], 'SI00001.lra.upset.pdf'), width=20, height=15)
+
+
+if (file.exists("Rplots.pdf")) {
+
+    file.remove("Rplots.pdf")
+}

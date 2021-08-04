@@ -51,14 +51,18 @@ plotFMeasures<-function() {
 
 
 tab<-fread(file.path(args[1],"SI00001.prf1.bycombo.tsv"), sep="\t", header=TRUE)
+tab$tool<-gsub("sniffles", "Sniffles", tab$tool)
+tab$tool<-gsub("svim", "SVIM", tab$tool)
+tab$tool<-gsub("cutesv", "cuteSV", tab$tool)
 tabvar<-cbind(tab$precision,tab$recall,tab$f1,tab$support,tab$tool, tab$aligner, "variant detection")
 tabgen<-cbind(tab$precision_gt,tab$recall_gt,tab$f1_gt,tab$support,tab$tool, tab$aligner, "genotype assignment")
 taball<-data.frame(rbind(tabvar,tabgen), stringsAsFactors = FALSE)
 colnames(taball)<-c("precision", "recall", "f1", "support", "combo", "aligner", "variable")
 taball$variable<-factor(taball$variable, levels=c("variant detection","genotype assignment"))
+taball$aligner<-factor(taball$aligner, levels=c("minimap2", "NGMLR", "lra", "consensus"))
 F1df<-plotFMeasures()
 Background<-ggplot() + geom_line(data=F1df,aes(x=x,y=y,group=group),linetype='dashed', color='lightgray') + scale_x_continuous(limits = c(-0.02,1.03), expand=c(0,0), breaks = c(0.0,0.2,0.4,0.6,0.8,1.0)) + scale_y_continuous(expand=c(0,0), breaks=c(0.0,0.2,0.4,0.6,0.8,1.0), limits=c(-0.02,1.03)) + theme_bw() + xlab('Recall') + ylab('Precision') + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + annotate(geom="text", x=0.97, y=0.025, color="black", label='f=0.1', size=3, fontface='italic') + annotate(geom="text", x=0.97, y=0.083, color="black", label='f=0.2', size=3, fontface='italic') + annotate(geom="text", x=0.97, y=0.143, color="black", label='f=0.3', size=3, fontface='italic') + annotate(geom="text", x=0.97, y=0.213, color="black", label='f=0.4', size=3, fontface='italic') + annotate(geom="text", x=0.97, y=0.290, color="black", label='f=0.5', size=3, fontface='italic') + annotate(geom="text", x=0.97, y=0.383, color="black", label='f=0.6', size=3, fontface='italic') + annotate(geom="text", x=0.97, y=0.483, color="black", label='f=0.7', size=3, fontface='italic') + annotate(geom="text", x=0.97, y=0.610, color="black", label='f=0.8', size=3, fontface='italic') + annotate(geom="text", x=0.97, y=0.750, color="black", label='f=0.9', size=3, fontface='italic') + annotate(geom="text", x=0.97, y=0.920, color="black", label='f=1.0', size=3, fontface='italic')
-prf1<-Background + geom_point(data=subset(taball, (aligner != "consensus")), aes(x=as.numeric(recall), y=as.numeric(precision), col=combo), alpha=.8) + facet_grid(aligner~variable) + scale_color_manual(values=viridis_pal()(11)) + theme(legend.title=element_blank(), legend.position="bottom", legend.direction = "horizontal",strip.background =element_rect(fill="grey20"), strip.text = element_text(colour = 'white')) +guides(colour = guide_legend(ncol = 7))
+prf1<-Background + geom_point(data=taball, aes(x=as.numeric(recall), y=as.numeric(precision), col=combo), alpha=.8) + facet_grid(aligner~variable) + theme(legend.title=element_blank(), legend.position="bottom", legend.direction = "horizontal",strip.background =element_rect(fill="grey20"), strip.text = element_text(colour = 'white')) +guides(colour = guide_legend(ncol = 7))
 
 ggsave(file.path(args[1],"SI00001.prf1.bycombo.pdf"), width=10, height=10) 
 
@@ -67,3 +71,8 @@ if (file.exists("Rplots.pdf")) {
 
     file.remove("Rplots.pdf")
 }
+  
+  
+
+
+
