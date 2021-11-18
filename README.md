@@ -29,3 +29,10 @@ Other tools used by the pipeline:
 - [VISOR](https://github.com/davidebolo1993/VISOR) (1.1)
 
 Pipelines are built using [Snakemake](https://snakemake.readthedocs.io/en/stable) to improve readability/reproducibility of the results. This also allows to install most of the tools required for each command on-the-fly, using the --use-conda flag. 
+
+
+## Citation
+
+Are you using EViNCe in your works? Please cite:
+
+> Davide Bolognini, Alberto Magi. [Evaluation of Germline Structural Variant Calling Methods for Nanopore Sequencing Data](https://www.frontiersin.org/articles/10.3389/fgene.2021.761791/full). Front Genet. 2021 Nov 18.
